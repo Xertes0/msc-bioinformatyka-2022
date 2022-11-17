@@ -1,0 +1,24 @@
+{
+  "name": "msc-bioinformatyka-2022",
+  "version": "0.0.1-alpha",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xertes0/msc-bioinformatyka-2022.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Xertes0/msc-bioinformatyka-2022/issues"
+  },
+  "homepage": "https://github.com/Xertes0/msc-bioinformatyka-2022#readme"
+}
