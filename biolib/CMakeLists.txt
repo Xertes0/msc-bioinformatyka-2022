@@ -1,4 +1,4 @@
-if(CMAKE_BUILD_TYPE STREQUAL "Emscripten")
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     add_executable(bio)
 else()
     add_library(bio)
