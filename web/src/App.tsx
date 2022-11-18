@@ -2,6 +2,9 @@ import {useEffect, useState} from 'react';
 import reactLogo from './assets/react.svg';
 import './App.css';
 
+// TODO think of a way to automatically
+//      link the output wasm and mjs files
+//      without having to manually copy them
 // @ts-ignore
 import BioModule from './bio.mjs';
 
