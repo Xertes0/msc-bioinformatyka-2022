@@ -23,7 +23,10 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     )
 
     add_compile_options(${COMPILE_AND_LINK_OPTIONS})
-    add_link_options(${COMPILE_AND_LINK_OPTIONS})
+    add_link_options(${COMPILE_AND_LINK_OPTIONS}
+        -sMODULARIZE=1
+        -sEXPORT_ES6=1
+    )
 endif()
 
 include(cmake/Conan.cmake)

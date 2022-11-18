@@ -1,24 +1,22 @@
 {
   "name": "msc-bioinformatyka-2022",
-  "version": "0.0.1-alpha",
-  "description": "",
-  "main": "server.js",
-  "dependencies": {
-    "express": "^4.18.2"
-  },
-  "devDependencies": {},
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Xertes0/msc-bioinformatyka-2022.git"
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Xertes0/msc-bioinformatyka-2022/issues"
-  },
-  "homepage": "https://github.com/Xertes0/msc-bioinformatyka-2022#readme"
+  "devDependencies": {
+    "@types/react": "^18.0.24",
+    "@types/react-dom": "^18.0.8",
+    "@vitejs/plugin-react": "^2.2.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.2.3"
+  }
 }
