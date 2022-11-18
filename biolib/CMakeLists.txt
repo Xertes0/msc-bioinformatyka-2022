@@ -1,5 +1,6 @@
 if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     add_executable(bio)
+    set(CMAKE_EXECUTABLE_SUFFIX ".mjs")
 else()
     add_library(bio)
 endif()
