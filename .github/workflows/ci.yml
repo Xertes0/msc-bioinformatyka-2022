@@ -32,6 +32,7 @@ jobs:
           style: ''
           tidy-checks: ''
           database: ${{github.workspace}}/build
+          version: '14'
 
       - name: Check cpp linter output
         if: steps.linter.outputs.checks-failed > 0
