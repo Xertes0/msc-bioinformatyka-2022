@@ -10,3 +10,8 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 target_sources(bio PRIVATE ${SOURCES})
 
 target_link_options(bio PRIVATE -lembind)
+
+target_link_libraries(
+    bio PRIVATE
+    CONAN_PKG::range-v3
+)
