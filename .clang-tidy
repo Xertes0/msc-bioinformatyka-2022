@@ -1,0 +1,17 @@
+Checks: '
+    boost-*,
+    bugprone-*,
+    clang-analyzer-*,
+    concurrency-*,
+    cppcoreguidelines-*,
+    google-*,
+    hicpp-*,
+    misc-*,
+    modernize-*,
+    openmp-*,
+    performance-*,
+    portability-*,
+    readability-*,
+    -modernize-use-trailing-return-type,
+    -readability-redundant-access-specifiers,
+'
