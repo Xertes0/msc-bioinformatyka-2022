@@ -21,7 +21,12 @@ translate(std::string const& sequence)
         | ranges::views::transform([](auto group) { return group | ranges::views::transform([](auto nucl){ return ctoaaai(nucl); }); })
         | ranges::views::transform([](auto group) {
             auto beg = group.begin();
-            return amino_acid_arr[*(beg++)][*(beg++)][*beg];
+            assert(group.size() == 3);
+#ifndef NDEBUG
+            return amino_acid_arr.at(*(beg++)).at(*(beg++)).at(*beg);
+#else
+            return amino_acid_arr[*(beg++)][*(beg++)][*beg]; // NOLINT(cppcoreguidelines-pro-bounds-constant-array-index)
+#endif
         })
         | ranges::to<std::string>();
 }
