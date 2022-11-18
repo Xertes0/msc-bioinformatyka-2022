@@ -1,6 +1,11 @@
 #include "bio/translate.hh"
 
-#include <range/v3/all.hpp>
+#include <cassert>
+
+#include <range/v3/range/conversion.hpp>
+#include <range/v3/view/chunk.hpp>
+#include <range/v3/view/filter.hpp>
+#include <range/v3/view/transform.hpp>
 
 #include "bio/amino_acid_arr.hh"
 
