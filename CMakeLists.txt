@@ -26,6 +26,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     add_link_options(${COMPILE_AND_LINK_OPTIONS})
 endif()
 
+include(cmake/Conan.cmake)
+
 add_subdirectory(biolib)
 
 if (NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
