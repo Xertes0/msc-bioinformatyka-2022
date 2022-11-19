@@ -26,7 +26,7 @@ jobs:
           - macos-12
         compiler:
           - llvm-14.0.0
-        #  - gcc-11 TODO cannot build with gcc on ubuntu
+          - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -36,8 +36,8 @@ jobs:
         exclude:
           - os: macos-12
             compiler: gcc-11
-        #  - os: ubuntu-20.04
-        #    compiler: llvm-14.0.0
+          - os: ubuntu-20.04
+            compiler: llvm-14.0.0
 
         include:
           - compiler: gcc-11
