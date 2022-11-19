@@ -26,7 +26,7 @@ jobs:
           - macos-11
         compiler:
           - llvm-14.0.0
-          - gcc-12
+          - gcc-11
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -35,12 +35,12 @@ jobs:
 
         exclude:
           - os: macos-11
-            compiler: gcc-12
+            compiler: gcc-11
           - os: ubuntu-20.04
             compiler: llvm-14.0.0
 
         include:
-          - compiler: gcc-12
+          - compiler: gcc-11
             gcov_executable: gcov
           - compiler: llvm-14.0.0
             gcov_executable: "llvm-cov gcov"
