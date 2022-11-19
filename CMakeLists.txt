@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
+option("TESTS_ENABLED" ON "Build unit tests")
 option("DOXYGEN_ENABLED" ON "Build doxygen documentation")
-
-enable_testing()
 
 project(msc-bioinformatyka-2022)
 
@@ -10,6 +9,13 @@ set(CMAKE_CXX_STANDARD 20)
 
 if(DOXYGEN_ENABLED)
     find_package(Doxygen REQUIRED)
+endif()
+
+if(TESTS_ENABLED)
+    if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+        message(WARNING "Tests are enabled (TESTS_ENABLED) but emscripten is used. Disabling.")
+        set(TESTS_ENABLED OFF)
+    endif()
 endif()
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -39,6 +45,7 @@ include(cmake/Conan.cmake)
 
 add_subdirectory(biolib)
 
-if (NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+if (TESTS_ENABLED)
+    enable_testing()
     add_subdirectory(tests)
 endif()
