@@ -11,3 +11,10 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 target_sources(bio PRIVATE ${SOURCES})
 
 target_link_options(bio PRIVATE -lembind)
+
+if(DOXYGEN_ENABLED)
+    set(DOXYGEN_GENERATE_HTML YES)
+    set(DOXYGEN_GENERATE_MAN YES)
+    set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
+    doxygen_add_docs(biolib_docs ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
