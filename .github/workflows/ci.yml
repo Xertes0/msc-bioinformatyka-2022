@@ -21,7 +21,7 @@ jobs:
         uses: turtlebrowser/get-conan@main
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -S ${{github.workspace}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{github.workspace}}/build -S ${{github.workspace}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DDOXYGEN_ENABLED=OFF
 
       - name: Cpp Linter
         uses: cpp-linter/cpp-linter-action@v2

@@ -14,7 +14,7 @@ target_link_options(bio PRIVATE -lembind)
 
 target_link_libraries(
     bio PRIVATE
-    CONAN_PKG::range-v3
+    range-v3::range-v3
 )
 
 if(DOXYGEN_ENABLED)

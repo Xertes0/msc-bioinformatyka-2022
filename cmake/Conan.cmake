@@ -13,10 +13,14 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
+if(TESTS_ENABLED)
+    set(TESTS_REQUIRES catch2/3.2.0)
+endif()
+
 conan_cmake_configure(
     REQUIRES range-v3/0.12.0
-    #GENERATORS cmake_find_package cmake_paths
-    GENERATORS cmake
+             ${TESTS_REQUIRES}
+    GENERATORS cmake_find_package cmake_paths
 )
 
 conan_cmake_autodetect(conan_settings)
@@ -27,6 +31,3 @@ conan_cmake_install(
     OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/conan_output
     SETTINGS ${conan_settings}
 )
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS NO_OUTPUT_DIRS)
