@@ -100,14 +100,14 @@ jobs:
         run: |
           cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
 
-      - name: Unix - Test and coverage
+      - name: Test and coverage - Unix
         if: runner.os != 'Windows'
         working-directory: ${{github.workspace}}/build
         run: |
           ctest -C ${{matrix.build_type}}
           gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
 
-      - name: Windows - Test and coverage
+      - name: Test and coverage - Windows
         if: runner.os == 'Windows'
         working-directory: ${{github.workspace}}/build
         run: |
