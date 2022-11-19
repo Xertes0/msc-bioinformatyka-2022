@@ -1,46 +1,122 @@
-name: CI
+name: 'ci'
 
 on:
   push:
-    branches: [ "master" ]
+    tags:
+    branches:
+      - "master"
+      - "develop"
   pull_request:
-    branches: [ "master" ]
 
 env:
-  BUILD_TYPE: Release
+  CONAN_SYSREQUIRES_MODE: enabled
+  CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
+  CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
+  CLANG_TIDY_VERSION: "14.0.0"
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  Test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - ubuntu-20.04
+          - macos-11
+        compiler:
+          - llvm-14.0.0
+          - gcc-12
+        generator:
+          - "Ninja Multi-Config"
+        build_type:
+          - Release
+          - Debug
+
+        exclude:
+          - os: macos-11
+            compiler: gcc-12
+          - os: ubuntu-20.04
+            compiler: llvm-14.0.0
+
+        include:
+          - compiler: gcc-12
+            gcov_executable: gcov
+          - compiler: llvm-14.0.0
+            gcov_executable: "llvm-cov gcov"
+
+          - os: windows-2022
+            compiler: msvc
+            generator: "Visual Studio 17 2022"
+            build_type: Debug
+
+          - os: windows-2022
+            compiler: msvc
+            generator: "Visual Studio 17 2022"
+            build_type: Release
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Check for llvm version mismatches
+        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
 
-      - name: Install conan
-        id: conan
-        uses: turtlebrowser/get-conan@main
+      - uses: actions/checkout@v3
+        
+      - name: Setup Cache
+        uses: ./.github/actions/setup_cache
+        with:
+          compiler: ${{ matrix.compiler }}
+          build_type: ${{ matrix.build_type }}
+          generator: ${{ matrix.generator }}
+
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
+
+          cmake: true
+          ninja: true
+          conan: true
+          vcpkg: false
+          ccache: true
+          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
+          #cppcheck: true
+          gcovr: true
+          #opencppcoverage: true
+
+      - name: Cleanup Conan system packages
+        run: |
+          conan remove -f '*/system'
 
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -S ${{github.workspace}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DDOXYGEN_ENABLED=OFF
-
-      - name: Cpp Linter
-        uses: cpp-linter/cpp-linter-action@v2
-        id: linter
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        with:
-          style: ''
-          tidy-checks: ''
-          database: ${{github.workspace}}/build
-          version: '14'
-
-      - name: Check cpp linter output
-        if: steps.linter.outputs.checks-failed > 0
-        run: exit 1
+        run: |
+          cmake -B ${{github.workspace}}/build -S ${{github.workspace}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DDOXYGEN_ENABLED:BOOL=OFF
 
       - name: Build
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        run: |
+          cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
 
-      - name: Test
+      - name: Unix - Test and coverage
+        if: runner.os != 'Windows'
         working-directory: ${{github.workspace}}/build
-        run: ctest -C ${{env.BUILD_TYPE}}
+        run: |
+          ctest -C ${{matrix.build_type}}
+          gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
+
+      - name: Windows - Test and coverage
+        if: runner.os == 'Windows'
+        working-directory: ${{github.workspace}}/build
+        run: |
+          OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
+
+      - name: Publish to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ runner.os }}
+          name: ${{ runner.os }}-coverage
+          files: ${{github.workspaces}}/build/coverage.xml
