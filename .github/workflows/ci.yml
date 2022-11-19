@@ -84,9 +84,9 @@ jobs:
           vcpkg: false
           ccache: true
           clangtidy: ${{ env.CLANG_TIDY_VERSION }}
-          #cppcheck: true
+          cppcheck: true
           gcovr: true
-          #opencppcoverage: true
+          opencppcoverage: true
 
       - name: Cleanup Conan system packages
         run: |
