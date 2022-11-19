@@ -6,7 +6,8 @@ option(CONAN_ENABLED "Use conan package manager" ON)
 
 project(msc-bioinformatyka-2022)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
 if(DOXYGEN_ENABLED)
     find_package(Doxygen REQUIRED)
