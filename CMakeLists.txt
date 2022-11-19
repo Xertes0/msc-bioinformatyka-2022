@@ -19,7 +19,7 @@ if(TESTS_ENABLED)
     endif()
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
     add_compile_options(-Wall -Wextra -Wshadow -Wpedantic -Wconversion)
 
     add_compile_options (-fsanitize=address,leak,undefined)
