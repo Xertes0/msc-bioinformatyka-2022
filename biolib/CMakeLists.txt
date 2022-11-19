@@ -15,3 +15,10 @@ target_link_libraries(
     bio PRIVATE
     CONAN_PKG::range-v3
 )
+
+if(DOXYGEN_ENABLED)
+    set(DOXYGEN_GENERATE_HTML YES)
+    set(DOXYGEN_GENERATE_MAN YES)
+    set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
+    doxygen_add_docs(biolib_docs ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
