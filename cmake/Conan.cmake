@@ -29,5 +29,5 @@ conan_cmake_install(
     PATH_OR_REFERENCE .
     BUILD missing
     OUTPUT_FOLDER ${CMAKE_CURRENT_BINARY_DIR}/conan_output
-    SETTINGS ${conan_settings}
+    SETTINGS ${conan_settings} compiler.libcxx=libstdc++11
 )
