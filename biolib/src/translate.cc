@@ -19,8 +19,6 @@ translate(std::string const& sequence)
 {
     auto const orf = [](auto range){
         return range
-            // Filter out white spaces
-            | ranges::views::filter([](auto nucl) { return std::isspace(nucl) == 0; })
             // Chunk by 3 nucleotides
             | ranges::views::chunk(3)
             // Last group can be < 3 so filter it out
@@ -40,10 +38,14 @@ translate(std::string const& sequence)
             | ranges::to<std::string>();
     };
 
+    auto prepared = sequence
+        // Filter out whitespaces
+        | ranges::views::filter([](auto nucl) { return std::isspace(nucl) == 0; });
+
     return std::array<std::string, 3> {
-        orf(sequence),
-        orf(sequence | ranges::views::drop(1)),
-        orf(sequence | ranges::views::drop(2))
+        orf(prepared),
+        orf(prepared | ranges::views::drop(1)),
+        orf(prepared | ranges::views::drop(2))
     };
 }
 
