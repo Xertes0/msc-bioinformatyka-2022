@@ -13,6 +13,7 @@ add_executable(
     tests
 
     biolib/example.cc
+    biolib/translate.cc
 )
 
 target_link_libraries(tests PRIVATE bio Catch2::Catch2WithMain)

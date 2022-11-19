@@ -12,6 +12,11 @@ target_sources(bio PRIVATE ${SOURCES})
 
 target_link_options(bio PRIVATE -lembind)
 
+target_link_libraries(
+    bio PRIVATE
+    CONAN_PKG::range-v3
+)
+
 if(DOXYGEN_ENABLED)
     set(DOXYGEN_GENERATE_HTML YES)
     set(DOXYGEN_GENERATE_MAN YES)
