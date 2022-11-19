@@ -1,3 +1,8 @@
+/**
+ * Amino acid array.
+ * @file amino_acid_arr.hh
+ */
+
 #pragma once
 
 #include <array>
@@ -5,8 +10,13 @@
 namespace bio
 {
 
-// U C A G
-
+/**
+ * Returns bio::amino_acid_arr index corresponding to nucleotide's symbol.
+ * @param symbol Nucleotide's symbol.
+ * @throws Throws std::runtime_error when invalid amino acid character was passed.
+ * @note Uracil and thymine are treated the same.
+ * @see bio::amino_acid_arr
+ */
 std::size_t
 ctoaaai(char symbol)
 {
@@ -20,6 +30,11 @@ ctoaaai(char symbol)
     }
 }
 
+/**
+ * Amino acid array.
+ * See bio::ctoaaai on how to index.
+ * @see bio::ctoaaai
+ */
 static
 constexpr
 std::array<std::array<std::array<char, 4>, 4>, 4> amino_acid_arr
