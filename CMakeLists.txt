@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 
 option(TESTS_ENABLED "Build unit tests" ON)
 option(DOXYGEN_ENABLED "Build doxygen documentation" ON)
+option(CONAN_ENABLED "Use conan package manager" ON)
 
 project(msc-bioinformatyka-2022)
 
@@ -41,11 +42,16 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     )
 endif()
 
-include(cmake/Conan.cmake)
+if(CONAN_ENABLED)
+    include(cmake/Conan.cmake)
+endif()
+
+find_package(range-v3 REQUIRED)
 
 add_subdirectory(biolib)
 
 if (TESTS_ENABLED)
     enable_testing()
+    find_package(Catch2 REQUIRED)
     add_subdirectory(tests)
 endif()
