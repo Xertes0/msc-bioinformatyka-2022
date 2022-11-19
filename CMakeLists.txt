@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 
-option("TESTS_ENABLED" ON "Build unit tests")
-option("DOXYGEN_ENABLED" ON "Build doxygen documentation")
+option(TESTS_ENABLED "Build unit tests" ON)
+option(DOXYGEN_ENABLED "Build doxygen documentation" ON)
 
 project(msc-bioinformatyka-2022)
 
