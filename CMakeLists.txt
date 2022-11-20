@@ -6,7 +6,8 @@ option(CONAN_ENABLED "Use conan package manager" ON)
 
 project(msc-bioinformatyka-2022)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED 17)
 
 if(DOXYGEN_ENABLED)
     find_package(Doxygen REQUIRED)
@@ -19,7 +20,7 @@ if(TESTS_ENABLED)
     endif()
 endif()
 
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
     add_compile_options(-Wall -Wextra -Wshadow -Wpedantic -Wconversion)
 
     add_compile_options (-fsanitize=address,leak,undefined)

@@ -1,0 +1,33 @@
+name: 'setup_cache'
+description: 'Sets up the shared cache'
+
+inputs:
+  compiler:
+    required: true
+    type: string
+  build_type:
+    required: true
+    type: string
+  generator:
+    required: true
+    type: string
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/vcpkg
+          ./build/vcpkg_installed
+          ${{ env.CONAN_USER_HOME }}
+          ~/.cache/pip
+          ${{ env.HOME }}/.cache/vcpkg/archives
+          ${{ env.XDG_CACHE_HOME }}/vcpkg/archives
+          ${{ env.LOCALAPPDATA }}\vcpkg\archives
+          ${{ env.APPDATA }}\vcpkg\archives
+        key: ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}-${{ inputs.generator }}-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ inputs.compiler }}-${{ inputs.build_type }}
