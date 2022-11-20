@@ -13,9 +13,11 @@ env:
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
   CLANG_TIDY_VERSION: "14.0.0"
+  EM_CACHE_FOLDER: "emsdk-cache"
+  EM_VERSION: "3.1.24"
 
 jobs:
-  Test:
+  Tests:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -23,46 +25,21 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - macos-12
         compiler:
           - llvm-14.0.0
-          - gcc-12
         generator:
           - "Ninja Multi-Config"
         build_type:
           - Release
           - Debug
 
-        exclude:
-          - os: macos-12
-            compiler: gcc-12
-          - os: ubuntu-22.04
-            compiler: llvm-14.0.0
-
         include:
-          - compiler: gcc-12
-            gcov_executable: gcov
+          #- compiler: gcc-12
+          #  gcov_executable: gcov
           - compiler: llvm-14.0.0
             gcov_executable: "llvm-cov gcov"
 
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Debug
-
-          - os: windows-2022
-            compiler: msvc
-            generator: "Visual Studio 17 2022"
-            build_type: Release
-
     steps:
-      - name: Check for llvm version mismatches
-        if: ${{ contains(matrix.compiler, 'llvm') && !contains(matrix.compiler, env.CLANG_TIDY_VERSION) }}
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('There is a mismatch between configured llvm compiler and clang-tidy version chosen')
-
       - uses: actions/checkout@v3
 
       - name: Setup cache
@@ -83,7 +60,7 @@ jobs:
           conan: true
           vcpkg: false
           ccache: true
-          clangtidy: ${{ env.CLANG_TIDY_VERSION }}
+          clangtidy: 14.0.0
           cppcheck: true
           gcovr: true
           opencppcoverage: true
@@ -120,3 +97,52 @@ jobs:
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
           files: ${{github.workspaces}}/build/coverage.xml
+
+  Emscripten:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - ubuntu-22.04
+        compiler:
+          - llvm-14.0.0
+        generator:
+          - "Ninja Multi-Config"
+        build_type:
+          - Release
+          - Debug
+
+        include:
+          #- compiler: gcc-12
+          #  gcov_executable: gcov
+          - compiler: llvm-14.0.0
+            gcov_executable: "llvm-cov gcov"
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup cache
+        id: cache-system-libraries
+        uses: actions/cache@v2
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{ runner.os }}
+
+      - uses: mymindstorm/setup-emsdk@v11
+        with:
+          version: ${{env.EM_VERSION}}
+          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+
+      - name: Cleanup conan system packages
+        run: |
+          conan remove -f '*/system'
+
+      - name: Configure CMake
+        run: |
+          emcmake cmake -B ${{github.workspace}}/build -S ${{github.workspace}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DDOXYGEN_ENABLED:BOOL=OFF
+
+      - name: Build
+        run: |
+          cmake --build ${{github.workspace}}/build --config ${{matrix.build_type}}
