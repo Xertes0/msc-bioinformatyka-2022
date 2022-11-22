@@ -77,6 +77,25 @@ jobs:
         run: |
           cmake -B ${{github.workspace}}/build-native -S ${{github.workspace}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DDOXYGEN_ENABLED:BOOL=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
+      - name: Run cpplinter
+        if: matrix.run_cpplinter == 'On'
+        uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.CPPLINTER_PAT }}
+        with:
+          style: ''
+          tidy-checks: ''
+          version: '14'
+          files-changed-only: true
+          database: ${{github.workspace}}/build-native
+          file-annotations: true
+
+      - name: Check linter results
+        continue-on-error: true
+        if: steps.linter.outputs.checks-failed > 0
+        run: exit 1
+
       - name: Build
         run: |
           cmake --build ${{github.workspace}}/build-native --config ${{matrix.build_type}}
@@ -102,44 +121,44 @@ jobs:
           name: ${{ runner.os }}-coverage
           files: ${{github.workspaces}}/build-native/coverage.xml
 
-      - name: Setup emsdk
-        uses: mymindstorm/setup-emsdk@v11
-        with:
-          version: ${{env.EM_VERSION}}
-          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}-${{matrix.os}}=${{matrix.compiler}}-${{matrix.build_type}}
+      #- name: Setup emsdk
+      #  uses: mymindstorm/setup-emsdk@v11
+      #  with:
+      #    version: ${{env.EM_VERSION}}
+      #    actions-cache-folder: ${{env.EM_CACHE_FOLDER}}-${{matrix.os}}=${{matrix.compiler}}-${{matrix.build_type}}
 
-      - name: Configure CMake with emsdk
-        run: |
-          emcmake cmake -B ${{github.workspace}}/build-emsdk -S ${{github.workspace}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
+      #- name: Configure CMake with emsdk
+      #  run: |
+      #    emcmake cmake -B ${{github.workspace}}/build-emsdk -S ${{github.workspace}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
-      - name: Run cpplinter
-        if: matrix.run_cpplinter == 'On'
-        uses: cpp-linter/cpp-linter-action@v2
-        id: linter
-        env:
-          GITHUB_TOKEN: ${{ secrets.CPPLINTER_PAT }}
-        with:
-          style: ''
-          tidy-checks: ''
-          version: '14'
-          files-changed-only: true
-          database: ${{github.workspace}}/build-emsdk
-          file-annotations: true
+      #- name: Run cpplinter
+      #  if: matrix.run_cpplinter == 'On'
+      #  uses: cpp-linter/cpp-linter-action@v2
+      #  id: linter
+      #  env:
+      #    GITHUB_TOKEN: ${{ secrets.CPPLINTER_PAT }}
+      #  with:
+      #    style: ''
+      #    tidy-checks: ''
+      #    version: '14'
+      #    files-changed-only: true
+      #    database: ${{github.workspace}}/build-emsdk
+      #    file-annotations: true
 
-      - name: Check linter results
-        continue-on-error: true
-        if: steps.linter.outputs.checks-failed > 0
-        run: exit 1
+      #- name: Check linter results
+      #  continue-on-error: true
+      #  if: steps.linter.outputs.checks-failed > 0
+      #  run: exit 1
 
-      - name: Build with emsdk
-        env:
-          CC: ""
-          CXX: ""
-          CPATH: ""
-          LIBRARY_PATH: ""
-          CPPFLAGS: ""
-          LDFLAGS: ""
-          DYLD_LIBRARY_PATH: ""
-          LD_LIBRARY_PATH: ""
-        run: |
-          cmake --build ${{github.workspace}}/build-emsdk --config ${{matrix.build_type}}
+      #- name: Build with emsdk
+      #  env:
+      #    CC: ""
+      #    CXX: ""
+      #    CPATH: ""
+      #    LIBRARY_PATH: ""
+      #    CPPFLAGS: ""
+      #    LDFLAGS: ""
+      #    DYLD_LIBRARY_PATH: ""
+      #    LD_LIBRARY_PATH: ""
+      #  run: |
+      #    cmake --build ${{github.workspace}}/build-emsdk --config ${{matrix.build_type}}
