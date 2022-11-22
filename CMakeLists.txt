@@ -41,6 +41,8 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
         -sMODULARIZE=1
         -sEXPORT_ES6=1
     )
+
+    add_subdirectory(web)
 endif()
 
 if(CONAN_ENABLED)

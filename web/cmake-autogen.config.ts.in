@@ -1,0 +1,11 @@
+import path from 'path'
+
+export default class CxxConfig {
+    static readonly aliases = [
+        { find: "@cxx", replacement: path.resolve("@CMAKE_BINARY_DIR@")}
+    ];
+
+    static readonly fsAllow = [
+        "@CMAKE_BINARY_DIR@/",
+    ];
+}

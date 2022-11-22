@@ -1,3 +1,5 @@
+cmake-autogen.config.ts
+
 # Logs
 logs
 *.log
