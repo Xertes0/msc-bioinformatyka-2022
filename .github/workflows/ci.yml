@@ -1,4 +1,4 @@
-name: 'ci'
+name: 'CI'
 
 on:
   push:
@@ -17,7 +17,29 @@ env:
   EM_VERSION: "3.1.24"
 
 jobs:
-  Tests:
+  Check_For_Changes:
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: read
+    outputs:
+      cxx: ${{ steps.filter.outputs.cxx }}
+      web: ${{ steps.filter.outputs.web }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            cxx:
+              - "${{ github.workspace }}/biolib/**"
+              - "${{ github.workspace }}/tests/**"
+              - "${{ github.workspace }}/cmake/**"
+              - "${{ github.workspace }}/CMakeLists.txt"
+            web:
+              - "${{ github.workspace }}/web/**"
+
+  Test_CXX:
+    needs: Check_For_Changes
+    if: ${{ needs.changes.outputs.cxx == 'true' }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -119,7 +141,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: ${{ runner.os }}
           name: ${{ runner.os }}-coverage
-          files: ${{github.workspaces}}/build-native/coverage.xml
+          files: ${{ github.workspaces }}/build-native/coverage.xml
 
       #- name: Setup emsdk
       #  uses: mymindstorm/setup-emsdk@v11
