@@ -25,6 +25,8 @@ jobs:
       cxx: ${{ steps.filter.outputs.cxx }}
       web: ${{ steps.filter.outputs.web }}
     steps:
+      - uses: actions/checkout@v3
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
