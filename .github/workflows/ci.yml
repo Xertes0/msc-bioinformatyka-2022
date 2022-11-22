@@ -25,6 +25,10 @@ jobs:
       cxx: ${{ steps.filter.outputs.cxx }}
       web: ${{ steps.filter.outputs.web }}
     steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHECKOUT_PAT }}
+
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -67,6 +71,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHECKOUT_PAT }}
 
       - name: Setup cache
         uses: ./.github/actions/setup_cache
