@@ -1,7 +1,7 @@
-#include <string_view>
-#include <ostream>
 #include <cmath>
 #include <numeric>
+#include <ostream>
+#include <string_view>
 
 double
 to_radians(double a)
@@ -16,6 +16,7 @@ bond_type
     wedged,
     dashed,
     // wavy,
+    double_bond,
 };
 
 namespace svg
@@ -42,6 +43,24 @@ draw_context
                     x_ + (std::cos(to_radians(rot_))*length_),
                     y_ + (std::sin(to_radians(rot_))*length_)
                 );
+                break;
+            }
+
+            case bond_type::double_bond:
+            {
+                auto draw = [&](double move_dir) {
+                    auto offset_x = (std::cos(to_radians(rot_ + (90.0 * move_dir))));
+                    auto offset_y = (std::sin(to_radians(rot_ + (90.0 * move_dir))));
+                    std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n",
+                        x_ + offset_x,
+                        y_ + offset_y,
+                        x_ + (std::cos(to_radians(rot_))*length_) + offset_x,
+                        y_ + (std::sin(to_radians(rot_))*length_) + offset_y
+                );};
+
+                draw(-1.0);
+                draw( 1.0);
+
                 break;
             }
 
@@ -110,7 +129,7 @@ draw_c()
         .bond(-90)
         .split([](auto ctx) {
             ctx
-                .bond(-45);
+                .bond(-45, bond_type::double_bond);
         })
         .bond(90);
 
