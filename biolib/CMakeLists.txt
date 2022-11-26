@@ -23,3 +23,8 @@ if(DOXYGEN_ENABLED)
     set(DOXYGEN_JAVADOC_AUTOBRIEF YES)
     doxygen_add_docs(biolib_docs ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
+
+# dev
+if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    add_executable(svg ${CMAKE_CURRENT_SOURCE_DIR}/src/visualize.cc)
+endif()
