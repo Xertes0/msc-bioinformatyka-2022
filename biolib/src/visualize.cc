@@ -66,7 +66,7 @@ draw_context
                 break;
             }
 
-            case bond_type::wedged:
+            case bond_type::dashed:
             {
 
                 auto old_xa = x_ + (std::cos(to_radians(rot_-90))*(length_*0.1));
@@ -75,7 +75,7 @@ draw_context
                 auto old_xb = x_ + (std::cos(to_radians(rot_+90))*(length_*0.1));
                 auto old_yb = y_ + (std::sin(to_radians(rot_+90))*(length_*0.1));
 
-                std::printf("<polygon points='%f %f, %f %f, %f %f' fill='url(#bond-wedged)' />\n",
+                std::printf("<polygon points='%f %f, %f %f, %f %f' fill='url(#bond-dashed)' />\n",
                     old_xa, old_ya,
                     old_xb, old_yb,
                     x_ + (std::cos(to_radians(rot_+rot))*length_),
@@ -121,7 +121,7 @@ draw_c()
     ctx
         .text("H", -3.5, -12.0)
         .text("N", -3.5, 0)
-        .bond(0, bond_type::wedged)
+        .bond(0, bond_type::dashed)
         .split([](auto ctx) {
             ctx
                 .bond(45)
@@ -137,20 +137,13 @@ draw_c()
         .bond(90)
         .text("N", -3.5, 11.0)
         .text("H", -3.5, 23.0);
-
-    //root2_x = root_x;
-    //root2_y = root_y;
-    //uu(root2_x, root2_y, lengths);
-
-    //fd(root_x, root_y, length);
-    //ctx.line(90);
 }
 
 int main()
 {
     std::printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");
     std::printf("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
-    std::printf("<defs><pattern id='bond-wedged' height='10%%' width='10%%'><line x1='0' x2='0' y1='0' y2='10' stroke-width='1' stroke='black'></line></pattern></defs>\n");
+    std::printf("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' x2='0' y1='0' y2='10' stroke-width='1' stroke='black'></line></pattern></defs>\n");
 
     draw_c();
 
