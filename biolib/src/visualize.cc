@@ -1,3 +1,5 @@
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "cppcoreguidelines-avoid-magic-numbers"
 #include <cmath>
 #include <numeric>
 #include <ostream>
@@ -92,12 +94,9 @@ draw_context
     }
 
     auto&
-    line_u(double rot)
+    text(char const* str, double offset_x, double offset_y)
     {
-        rot_ += rot;
-        x_ += (std::cos(to_radians(rot_))*length_);
-        y_ += (std::sin(to_radians(rot_))*length_);
-
+        std::printf("<text x='%f' y='%f'>%s</text>\n", x_ + offset_x, y_ + offset_y, str);
         return *this;
     }
 
@@ -120,18 +119,24 @@ draw_c()
     ctx.y_ = 50;
 
     ctx
+        .text("H", -3.5, -12.0)
+        .text("N", -3.5, 0)
         .bond(0, bond_type::wedged)
         .split([](auto ctx) {
             ctx
                 .bond(45)
-                .bond(-45);
+                .bond(-45)
+                .text("SH", 0, 11);
         })
         .bond(-90)
         .split([](auto ctx) {
             ctx
-                .bond(-45, bond_type::double_bond);
+                .bond(-45, bond_type::double_bond)
+                .text("O", -3.5, -1);
         })
-        .bond(90);
+        .bond(90)
+        .text("N", -3.5, 11.0)
+        .text("H", -3.5, 23.0);
 
     //root2_x = root_x;
     //root2_y = root_y;
@@ -144,6 +149,7 @@ draw_c()
 int main()
 {
     std::printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");
+    std::printf("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
     std::printf("<defs><pattern id='bond-wedged' height='10%%' width='10%%'><line x1='0' x2='0' y1='0' y2='10' stroke-width='1' stroke='black'></line></pattern></defs>\n");
 
     draw_c();
@@ -152,3 +158,5 @@ int main()
 
     return 0;
 }
+
+#pragma clang diagnostic pop
