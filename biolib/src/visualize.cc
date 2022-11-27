@@ -96,6 +96,12 @@ draw_bond(draw_ctx& ctx, bond_type bond, double rot_a, double rot_b = std::numer
     ctx.flip = !ctx.flip;
 }
 
+void
+draw_text()
+{
+
+}
+
 template<bond_type BondType>
 struct
 sc_bond_descriptor
@@ -107,8 +113,7 @@ sc_bond_descriptor
         if(flip) {
             draw_bond(ctx, BondType, 90, -45 + 80);
         } else {
-            //draw_bond(ctx, BondType, -45, 80);
-            throw std::runtime_error{"asdf"};
+            draw_bond(ctx, BondType, 360 - 90, 360 - (-45 + 80));
         }
     }
 };
@@ -284,6 +289,7 @@ int main()
 
     //draw_c();
     draw_ctx ctx{};
+    cysteine::draw(ctx);
     cysteine::draw(ctx);
 
     std::printf("</svg>\n");
