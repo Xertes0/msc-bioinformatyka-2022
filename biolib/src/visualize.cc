@@ -33,8 +33,8 @@ struct
 draw_context
 {
     bool flip{false};
-    double x{50};
-    double y{50};
+    double x{75};
+    double y{75};
 };
 
 void
@@ -199,7 +199,7 @@ side_chain_descriptor
     void
     draw(draw_context& ctx)
     {
-        auto flip = ctx.flip;
+        [[maybe_unused]] auto flip = ctx.flip;
         ctx.flip = false;
         (Args::draw(ctx, flip), ...);
     }
@@ -236,8 +236,14 @@ amino_acid_descriptor
     }
 };
 
-using glycine = amino_acid_descriptor<bond_type::plain, side_chain_descriptor<>>;
-using alanine = amino_acid_descriptor<bond_type::plain, side_chain_descriptor<sc_bond_descriptor<bond_type::wedged>>>;
+using alanine =
+    amino_acid_descriptor<
+        bond_type::plain,
+        side_chain_descriptor<
+            sc_bond_descriptor<bond_type::wedged>
+        >
+    >;
+
 using cysteine =
     amino_acid_descriptor<
         bond_type::dashed,
@@ -248,18 +254,36 @@ using cysteine =
         >
     >;
 
+using glycine =
+    amino_acid_descriptor<
+        bond_type::plain,
+        side_chain_descriptor<>
+    >;
+
 int main()
 {
     std::printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");
     std::printf("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
     std::printf("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
 
-    //draw_c();
     draw_context ctx{};
+
+    text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(ctx);
+    std::printf("<text text-anchor='left' dominant-baseline='middle' x='%f' y='%f' style='font-size:6px;'>2</text>",
+        ctx.x,
+        ctx.y + SINGLE_CHAR_OFFSET_Y*2.5
+    );
+    text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(ctx);
+
     cysteine::draw(ctx);
     cysteine::draw(ctx);
     alanine::draw(ctx);
     alanine::draw(ctx);
+    glycine::draw(ctx);
+    glycine::draw(ctx);
+
+    text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(ctx);
+    text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(ctx);
 
     std::printf("</svg>\n");
 
