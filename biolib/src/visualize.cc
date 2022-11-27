@@ -11,6 +11,9 @@ to_radians(double a)
     return (a/180.0)*std::numbers::pi_v<double>;
 }
 
+static constexpr int SINGLE_CHAR_OFFSET_X = 4;
+static constexpr int SINGLE_CHAR_OFFSET_Y = 8;
+
 enum class
 bond_type
 {
@@ -35,9 +38,8 @@ draw_context
 };
 
 void
-draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::numeric_limits<double>::max())
+draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::numeric_limits<double>::max(), bool reverse = false)
 {
-    //ctx.rot += rot_a * (ctx.flip?-1:1) + (ctx.flip?90-rot_a:0);
     double rot{};
     if(rot_b != std::numeric_limits<double>::max()) {
         rot = (ctx.flip?rot_b:rot_a);
@@ -51,18 +53,33 @@ draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::n
             ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
         );
     } else if(bond == bond_type::dashed || bond == bond_type::wedged) {
-        auto old_xa = ctx.x + (std::cos(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
-        auto old_ya = ctx.y + (std::sin(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+        double x1,x2,x3,y1,y2,y3; // NOLINT(readability-isolate-declaration,cppcoreguidelines-init-variables,readability-identifier-length)
 
-        auto old_xb = ctx.x + (std::cos(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
-        auto old_yb = ctx.y + (std::sin(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+        if(reverse) {
+            x1 = ctx.x;
+            y1 = ctx.y;
+
+            x2 = ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH) + (std::cos(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+            y2 = ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH) + (std::sin(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+
+            x3 = ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH) + (std::cos(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+            y3 = ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH) + (std::sin(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+        } else {
+            x1 = ctx.x + (std::cos(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+            y1 = ctx.y + (std::sin(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+
+            x2 = ctx.x + (std::cos(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+            y2 = ctx.y + (std::sin(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+
+            x3 = ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH);
+            y3 = ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH);
+        }
 
         std::printf("<polygon points='%f %f, %f %f, %f %f' fill='%s' />\n",
-            old_xa, old_ya,
-            old_xb, old_yb,
-            ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
-            ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH),
-            bond==bond_type::dashed?"url(#bond-dashed)":"black"
+            x1, y1,
+            x2, y2,
+            x3, y3,
+            bond == bond_type::dashed ? "url(#bond-dashed)" : "black"
         );
     } else if(bond == bond_type::double_bond) {
         auto draw = [&](double move_dir) {
@@ -86,11 +103,68 @@ draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::n
     ctx.flip = !ctx.flip;
 }
 
-void
-draw_text()
+template<char A, char B>
+struct
+text_vert
 {
+    static
+    void
+    draw(draw_context& ctx, bool flip = false)
+    {
+        ctx.x += SINGLE_CHAR_OFFSET_X;
+        ctx.y -= (flip?0:SINGLE_CHAR_OFFSET_Y*2);
+        std::printf("<text text-anchor='middle' x='%f' y='%f'><tspan dy='0.5em'>%c</tspan><tspan x='%f' dy='1em'>%c</tspan></text>",
+            ctx.x,
+            ctx.y,
+            flip?B:A,
+            ctx.x,
+            flip?A:B
+        );
+        ctx.x += SINGLE_CHAR_OFFSET_X;
+        ctx.y += (flip?0:SINGLE_CHAR_OFFSET_Y*2);
+    }
+};
 
-}
+template<char A, int OffsetX, int OffsetY>
+struct
+text_single
+{
+    static
+    void
+    draw(draw_context& ctx, bool dir = false)
+    {
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
+        std::printf("<text text-anchor='middle' dominant-baseline='middle' x='%f' y='%f'>%c</text>",
+            ctx.x,
+            ctx.y,
+            A
+        );
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
+    }
+};
+
+template<char A, char B, int OffsetX, int OffsetY>
+struct
+text_hor
+{
+    static
+    void
+    draw(draw_context& ctx, bool dir = false)
+    {
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
+        std::printf("<text text-anchor='middle' dominant-baseline='middle' x='%f' y='%f'>%c%c</text>",
+            ctx.x,
+            ctx.y,
+            A,
+            B
+        );
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
+    }
+};
 
 template<bond_type BondType>
 struct
@@ -110,9 +184,9 @@ sc_bond_descriptor
         }
 
         if(flip) {
-            draw_bond(ctx, bond, 90, -45 + 80);
+            draw_bond(ctx, bond, 90, -45 + 80, true);
         } else {
-            draw_bond(ctx, bond, 360 - 90, 360 - (-45 + 80));
+            draw_bond(ctx, bond, 360 - 90, 360 - (-45 + 80), true);
         }
     }
 };
@@ -139,14 +213,25 @@ amino_acid_descriptor
     void
     draw(draw_context& ctx)
     {
-        draw_bond(ctx, FirstBond, 80);
-        //draw_bond(ctx, bond_type::plain, -45 + 90);
+        text_vert<'H', 'N'>::draw(ctx, ctx.flip);
+
+        auto first_bond = FirstBond;
+        if(ctx.flip) {
+            if(first_bond == bond_type::wedged) {
+                first_bond = bond_type::dashed;
+            } else if(first_bond == bond_type::dashed) {
+                first_bond = bond_type::wedged;
+            }
+        }
+
+        draw_bond(ctx, first_bond, 80);
         auto side_chain = draw_context{ctx};
         draw_bond(ctx, bond_type::plain, 80);
         auto dbond = draw_context{ctx};
         draw_bond(ctx, bond_type::plain, 80);
 
         draw_bond(dbond, bond_type::double_bond, -45);
+        text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(dbond, ctx.flip);
         SideChainDesc::draw(side_chain);
     }
 };
@@ -158,7 +243,8 @@ using cysteine =
         bond_type::dashed,
         side_chain_descriptor<
             sc_bond_descriptor<bond_type::plain>,
-            sc_bond_descriptor<bond_type::plain>
+            sc_bond_descriptor<bond_type::plain>,
+            text_hor<'S', 'H', SINGLE_CHAR_OFFSET_X*2, 0>
         >
     >;
 
