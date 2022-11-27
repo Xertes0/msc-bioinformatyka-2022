@@ -45,50 +45,40 @@ draw_bond(draw_ctx& ctx, bond_type bond, double rot_a, double rot_b = std::numer
         rot = (-45 + rot_a) * (ctx.flip ? -1 : 1);
     }
 
-    switch(bond) {
-        case bond_type::plain: {
-            std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n", ctx.x, ctx.y,
-                ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
-                ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
-            );
-            break;
-        }
+    if(bond == bond_type::plain) {
+        std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n", ctx.x, ctx.y,
+            ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
+            ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
+        );
+    } else if(bond == bond_type::dashed || bond == bond_type::wedged) {
+        auto old_xa = ctx.x + (std::cos(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+        auto old_ya = ctx.y + (std::sin(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
 
-        case bond_type::dashed: {
-            auto old_xa = ctx.x + (std::cos(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
-            auto old_ya = ctx.y + (std::sin(to_radians(rot - 90)) * (BOND_LENGTH * 0.1));
+        auto old_xb = ctx.x + (std::cos(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+        auto old_yb = ctx.y + (std::sin(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
 
-            auto old_xb = ctx.x + (std::cos(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
-            auto old_yb = ctx.y + (std::sin(to_radians(rot + 90)) * (BOND_LENGTH * 0.1));
+        std::printf("<polygon points='%f %f, %f %f, %f %f' fill='%s' />\n",
+            old_xa, old_ya,
+            old_xb, old_yb,
+            ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
+            ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH),
+            bond==bond_type::dashed?"url(#bond-dashed)":"black"
+        );
+    } else if(bond == bond_type::double_bond) {
+        auto draw = [&](double move_dir) {
+            auto offset_x = (std::cos(to_radians(rot + (90.0 * move_dir))));
+            auto offset_y = (std::sin(to_radians(rot + (90.0 * move_dir))));
+            std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n",
+                ctx.x + offset_x,
+                ctx.y + offset_y,
+                ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x,
+                ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y
+            );};
 
-            std::printf("<polygon points='%f %f, %f %f, %f %f' fill='url(#bond-dashed)' />\n",
-                old_xa, old_ya,
-                old_xb, old_yb,
-                ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
-                ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
-            );
-            break;
-        }
-
-        case bond_type::double_bond:
-        {
-            auto draw = [&](double move_dir) {
-                auto offset_x = (std::cos(to_radians(rot + (90.0 * move_dir))));
-                auto offset_y = (std::sin(to_radians(rot + (90.0 * move_dir))));
-                std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n",
-                    ctx.x + offset_x,
-                    ctx.y + offset_y,
-                    ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x,
-                    ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y
-                );};
-
-            draw(-1.0);
-            draw( 1.0);
-
-            break;
-        }
-
-        default: throw std::runtime_error{"bond not implemented"};
+        draw(-1.0);
+        draw( 1.0);
+    } else {
+        throw std::runtime_error{"bond not implemented"};
     }
 
     ctx.x += (std::cos(to_radians(rot))*BOND_LENGTH);
@@ -110,10 +100,19 @@ sc_bond_descriptor
     void
     draw(draw_ctx& ctx, bool flip)
     {
+        auto bond = BondType;
         if(flip) {
-            draw_bond(ctx, BondType, 90, -45 + 80);
+            if(bond == bond_type::wedged) {
+                bond = bond_type::dashed;
+            } else if(bond == bond_type::dashed) {
+                bond = bond_type::wedged;
+            }
+        }
+
+        if(flip) {
+            draw_bond(ctx, bond, 90, -45 + 80);
         } else {
-            draw_bond(ctx, BondType, 360 - 90, 360 - (-45 + 80));
+            draw_bond(ctx, bond, 360 - 90, 360 - (-45 + 80));
         }
     }
 };
@@ -285,12 +284,14 @@ int main()
 {
     std::printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");
     std::printf("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
-    std::printf("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' x2='0' y1='0' y2='10' stroke-width='1' stroke='black'></line></pattern></defs>\n");
+    std::printf("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
 
     //draw_c();
     draw_ctx ctx{};
     cysteine::draw(ctx);
     cysteine::draw(ctx);
+    alanine::draw(ctx);
+    alanine::draw(ctx);
 
     std::printf("</svg>\n");
 
