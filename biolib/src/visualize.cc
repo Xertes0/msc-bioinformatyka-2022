@@ -1,16 +1,54 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-avoid-magic-numbers"
+
+#include <array>
+#include <cassert>
 #include <cmath>
 #include <numeric>
 #include <ostream>
 #include <string_view>
 
+#include <fmt/format.h>
+
 constexpr
 double
 to_radians(double degrees)
 {
-    return (degrees/180.0)*std::numbers::pi_v<double>;
+    return (degrees / 180.0) * std::numbers::pi_v<double>;
 }
+
+constexpr
+void
+format_f(std::string& str, double val)
+{
+    int nat = static_cast<int>(val);
+    int fra = static_cast<int>((val - nat) * 1'000'000);
+    std::string buf{"."};
+
+    while(nat != 0) {
+        buf.push_back(static_cast<char>(48 + (nat % 10)));
+        nat /= 10;
+    }
+    if(buf.ends_with('.')) {
+        buf.push_back('0');
+    }
+    str.append(std::string{buf.rbegin(), buf.rend()});
+
+    buf.clear();
+
+    while(fra != 0) {
+        buf.push_back(static_cast<char>(48 + (fra % 10)));
+        fra /= 10;
+    }
+    if(buf.empty()) {
+        str.push_back('0');
+    } else {
+        str.append(std::string{buf.rbegin(), buf.rend()});
+    }
+}
+
+static constexpr std::size_t BUFFER_SIZE = 1024*5;
+using buffer_t = std::array<char, BUFFER_SIZE>;
 
 static constexpr int SINGLE_CHAR_OFFSET_X = 4;
 static constexpr int SINGLE_CHAR_OFFSET_Y = 8;
@@ -27,16 +65,20 @@ bond_type
 
 static constexpr int BOND_LENGTH = 25;
 
+static constexpr double DRAW_CTX_OFFSET_X = 75;
+static constexpr double DRAW_CTX_OFFSET_Y = 75;
+
 struct
 draw_context
 {
     bool flip{false};
-    double x{75};
-    double y{75};
+    double x{DRAW_CTX_OFFSET_X};
+    double y{DRAW_CTX_OFFSET_Y};
 };
 
+consteval
 void
-draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::numeric_limits<double>::max(), bool reverse = false)
+draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::numeric_limits<double>::max(), bool reverse = false)
 {
     double rot{};
     if(rot_b != std::numeric_limits<double>::max()) {
@@ -46,10 +88,19 @@ draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::n
     }
 
     if(bond == bond_type::plain) {
-        std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n", ctx.x, ctx.y,
-            ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
-            ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
-        );
+        str.append("<line x1='");
+        format_f(str, ctx.x);
+        str.append("' y1='");
+        format_f(str, ctx.y);
+        str.append("' x2='");
+        format_f(str, ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH));
+        str.append("' y2='");
+        format_f(str, ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH));
+        str.append("' stroke='black' />\n");
+        //str.append(fmt::format("<line x1='{}' y1='{}' x2='{}' y2='{}' stroke='black' />\n", ctx.x, ctx.y,
+        //    ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
+        //    ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
+        //));
     } else if(bond == bond_type::dashed || bond == bond_type::wedged) {
         double x1,x2,x3,y1,y2,y3; // NOLINT(readability-isolate-declaration,cppcoreguidelines-init-variables,readability-identifier-length)
 
@@ -73,22 +124,47 @@ draw_bond(draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::n
             y3 = ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH);
         }
 
-        std::printf("<polygon points='%f %f, %f %f, %f %f' fill='%s' />\n",
-            x1, y1,
-            x2, y2,
-            x3, y3,
-            bond == bond_type::dashed ? "url(#bond-dashed)" : "black"
-        );
+        str.append("<polygon points='");
+        format_f(str, x1);
+        str.append(" ");
+        format_f(str, y1);
+        str.append(", ");
+        format_f(str, x2);
+        str.append(" ");
+        format_f(str, y2);
+        str.append(", ");
+        format_f(str, x3);
+        str.append(" ");
+        format_f(str, y3);
+        str.append("' fill='");
+        str.append(bond == bond_type::dashed ? "url(#bond-dashed)" : "black");
+        str.append("' />\n");
+        //str.append(fmt::format("<polygon points='{} {}, {} {}, {} {}' fill='{}' />\n",
+        //    x1, y1,
+        //    x2, y2,
+        //    x3, y3,
+        //    bond == bond_type::dashed ? "url(#bond-dashed)" : "black"
+        //));
     } else if(bond == bond_type::double_bond) {
-        auto draw = [&](double move_dir) {
+        auto draw = [&] (double move_dir) consteval {
             auto offset_x = (std::cos(to_radians(rot + (90.0 * move_dir))));
             auto offset_y = (std::sin(to_radians(rot + (90.0 * move_dir))));
-            std::printf("<line x1='%f' y1='%f' x2='%f' y2='%f' stroke='black' />\n",
-                ctx.x + offset_x,
-                ctx.y + offset_y,
-                ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x,
-                ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y
-            );};
+            str.append("<line x1='");
+            format_f(str, ctx.x + offset_x);
+            str.append("' y1='");
+            format_f(str, ctx.y + offset_y);
+            str.append("' x2='");
+            format_f(str, ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH) + offset_x);
+            str.append("' y2='");
+            format_f(str, ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH) + offset_y);
+            str.append("' stroke='black' />\n");
+            //str.append(fmt::format("<line x1='{}' y1='{}' x2='{}' y2='{}' stroke='black' />\n",
+            //    ctx.x + offset_x,
+            //    ctx.y + offset_y,
+            //    ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x,
+            //    ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y
+            //));
+        };
 
         draw(-1.0);
         draw( 1.0);
@@ -106,18 +182,30 @@ struct
 text_vert
 {
     static
+    consteval
     void
-    draw(draw_context& ctx, bool flip = false)
+    draw(std::string& str, draw_context& ctx, bool flip = false)
     {
         ctx.x += SINGLE_CHAR_OFFSET_X;
         ctx.y -= (flip?0:SINGLE_CHAR_OFFSET_Y*2);
-        std::printf("<text text-anchor='middle' x='%f' y='%f'><tspan dy='0.5em'>%c</tspan><tspan x='%f' dy='1em'>%c</tspan></text>",
-            ctx.x,
-            ctx.y,
-            flip?B:A,
-            ctx.x,
-            flip?A:B
-        );
+        str.append("<text text-anchor='middle' x='");
+        format_f(str, ctx.x);
+        str.append("' y='");
+        format_f(str, ctx.y);
+        str.append("'><tspan dy='0.5em'>");
+        str.push_back(flip?B:A);
+        str.append("</tspan><tspan x='");
+        format_f(str, ctx.x);
+        str.append("' dy='1em'>");
+        str.push_back(flip?A:B);
+        str.append("</tspan></text>");
+        //str.append(fmt::format("<text text-anchor='middle' x='{}' y='{}'><tspan dy='0.5em'>{}</tspan><tspan x='{}' dy='1em'>{}</tspan></text>",
+        //    ctx.x,
+        //    ctx.y,
+        //    flip?B:A,
+        //    ctx.x,
+        //    flip?A:B
+        //));
         ctx.x += SINGLE_CHAR_OFFSET_X;
         ctx.y += (flip?0:SINGLE_CHAR_OFFSET_Y*2);
     }
@@ -128,16 +216,24 @@ struct
 text_single
 {
     static
+    consteval
     void
-    draw(draw_context& ctx, bool dir = false)
+    draw(std::string& str, draw_context& ctx, bool dir = false)
     {
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        std::printf("<text text-anchor='middle' dominant-baseline='middle' x='%f' y='%f'>%c</text>",
-            ctx.x,
-            ctx.y,
-            A
-        );
+        str.append("<text text-anchor='middle' dominant-baseline='middle' x='");
+        format_f(str, ctx.x);
+        str.append("' y='");
+        format_f(str, ctx.y);
+        str.append("'>");
+        str.push_back(A);
+        str.append("</text>");
+        //str.append(fmt::format("<text text-anchor='middle' dominant-baseline='middle' x='{}' y='{}'>{}</text>",
+        //    ctx.x,
+        //    ctx.y,
+        //    A
+        //));
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
     }
@@ -148,17 +244,26 @@ struct
 text_hor
 {
     static
+    consteval
     void
-    draw(draw_context& ctx, bool dir = false)
+    draw(std::string& str, draw_context& ctx, bool dir = false)
     {
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        std::printf("<text text-anchor='middle' dominant-baseline='middle' x='%f' y='%f'>%c%c</text>",
-            ctx.x,
-            ctx.y,
-            A,
-            B
-        );
+        str.append("<text text-anchor='middle' dominant-baseline='middle' x='");
+        format_f(str, ctx.x);
+        str.append("' y='");
+        format_f(str, ctx.y);
+        str.append("'>");
+        str.push_back(A);
+        str.push_back(B);
+        str.append("</text>");
+        //str.append(fmt::format("<text text-anchor='middle' dominant-baseline='middle' x='{}' y='{}'>{}{}</text>",
+        //    ctx.x,
+        //    ctx.y,
+        //    A,
+        //    B
+        //));
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
     }
@@ -169,8 +274,9 @@ struct
 basic_side_chain_bond
 {
     static
+    consteval
     void
-    draw(draw_context& ctx, bool flip)
+    draw(std::string& str, draw_context& ctx, bool flip)
     {
         auto bond = BondType;
         if(flip) {
@@ -182,9 +288,9 @@ basic_side_chain_bond
         }
 
         if(flip) {
-            draw_bond(ctx, bond, 90, -45 + 80, true);
+            draw_bond(str, ctx, bond, 90, -45 + 80, true);
         } else {
-            draw_bond(ctx, bond, 360 - 90, 360 - (-45 + 80), true);
+            draw_bond(str, ctx, bond, 360 - 90, 360 - (-45 + 80), true);
         }
     }
 };
@@ -194,24 +300,30 @@ struct
 basic_side_chain
 {
     static
+    consteval
     void
-    draw(draw_context& ctx)
+    draw(std::string& str, draw_context& ctx)
     {
         [[maybe_unused]] auto flip = ctx.flip;
         ctx.flip = false;
-        (Args::draw(ctx, flip), ...);
+        (Args::draw(str, ctx, flip), ...);
     }
 };
 
-template<bond_type FirstBond, class SideChainDesc>
+template<class SvgId, bond_type FirstBond, class SideChainDesc>
 struct
 basic_amino_acid
 {
     static
+    consteval
     void
-    draw(draw_context& ctx)
+    draw(std::string& str, draw_context& ctx)
     {
-        text_vert<'H', 'N'>::draw(ctx, ctx.flip);
+        str.append("<symbol id='aa_cache-");
+        str.push_back(static_cast<char>(48 + SvgId::value));
+        str.append(ctx.flip?"f":"");
+        str.append("'>\n");
+        text_vert<'H', 'N'>::draw(str, ctx, ctx.flip);
 
         auto first_bond = FirstBond;
         if(ctx.flip) {
@@ -222,28 +334,34 @@ basic_amino_acid
             }
         }
 
-        draw_bond(ctx, first_bond, 80);
+        draw_bond(str, ctx, first_bond, 80);
         auto side_chain = draw_context{ctx};
-        draw_bond(ctx, bond_type::plain, 80);
+        draw_bond(str, ctx, bond_type::plain, 80);
         auto dbond = draw_context{ctx};
-        draw_bond(ctx, bond_type::plain, 80);
+        draw_bond(str, ctx, bond_type::plain, 80);
 
-        draw_bond(dbond, bond_type::double_bond, -45);
-        text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(dbond, ctx.flip);
-        SideChainDesc::draw(side_chain);
+        draw_bond(str, dbond, bond_type::double_bond, -45);
+        text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(str, dbond, ctx.flip);
+        SideChainDesc::draw(str, side_chain);
+
+        str.append("</symbol>\n");
     }
 };
 
+struct alaine_svg_id { static constexpr int value{0}; };
 using alanine =
     basic_amino_acid<
+        alaine_svg_id,
         bond_type::plain,
         basic_side_chain<
             basic_side_chain_bond<bond_type::wedged>
         >
     >;
 
+struct cysteine_svg_id { static constexpr int value{1}; };
 using cysteine =
     basic_amino_acid<
+        cysteine_svg_id,
         bond_type::dashed,
         basic_side_chain<
             basic_side_chain_bond<bond_type::plain>,
@@ -252,11 +370,70 @@ using cysteine =
         >
     >;
 
+struct glycine_svg_id { static constexpr int value{2}; };
 using glycine =
     basic_amino_acid<
+        glycine_svg_id,
         bond_type::plain,
         basic_side_chain<>
     >;
+
+template<class AminoAcid, bool Flip>
+consteval
+buffer_t
+cache_amino_acid()
+{
+    std::string str{};
+    draw_context ctx{};
+    ctx.flip = Flip;
+    AminoAcid::draw(str, ctx);
+
+    assert(str.length() <= BUFFER_SIZE);
+    buffer_t buffer{};
+    std::copy(str.begin(), str.end(), buffer.data());
+
+    return buffer;
+}
+
+#define UTIL_CACHE(NAME) \
+    cache_amino_acid<NAME, false>(), \
+    cache_amino_acid<NAME, true>(),
+
+std::array<buffer_t, 6> AMINO_ACID_CACHE
+{
+    UTIL_CACHE(alanine)
+    UTIL_CACHE(cysteine)
+    UTIL_CACHE(glycine)
+};
+
+#undef UTIL_CACHE
+
+void
+draw(draw_context& ctx, std::size_t index)
+{
+    std::printf("<use href='#aa_cache-%li%s' x='%f' y='%f' />",
+        index,
+        ctx.flip?"f":"",
+        ctx.x - DRAW_CTX_OFFSET_X,
+        ctx.y - DRAW_CTX_OFFSET_Y
+    );
+
+    ctx.x += (std::cos(to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2); // single char offset appears to be a half char offset
+    ctx.y += (std::sin(to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);
+    ctx.flip = !ctx.flip;
+}
+
+constexpr
+std::size_t
+ctoaacai(char value)
+{
+    switch(value) {
+        case 'A': return 0;
+        case 'C': return 1;
+        case 'G': return 2;
+        default: throw std::runtime_error{"Bad ctoaacai value"};
+    }
+}
 
 int main()
 {
@@ -266,22 +443,35 @@ int main()
 
     draw_context ctx{};
 
-    text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(ctx);
-    std::printf("<text text-anchor='left' dominant-baseline='middle' x='%f' y='%f' style='font-size:6px;'>2</text>",
-        ctx.x,
-        ctx.y + SINGLE_CHAR_OFFSET_Y*2.5
-    );
-    text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(ctx);
+    for(auto const& val : AMINO_ACID_CACHE) {
+        std::printf("%s", val.data());
+    }
 
-    cysteine::draw(ctx);
-    cysteine::draw(ctx);
-    alanine::draw(ctx);
-    alanine::draw(ctx);
-    glycine::draw(ctx);
-    glycine::draw(ctx);
+    draw(ctx, ctoaacai('C'));
+    draw(ctx, ctoaacai('C'));
+    draw(ctx, ctoaacai('A'));
+    draw(ctx, ctoaacai('G'));
+    draw(ctx, ctoaacai('G'));
+    draw(ctx, ctoaacai('A'));
 
-    text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(ctx);
-    text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(ctx);
+    //draw_context ctx{};
+
+    //text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(ctx);
+    //std::printf("<text text-anchor='left' dominant-baseline='middle' x='%f' y='%f' style='font-size:6px;'>2</text>",
+    //    ctx.x,
+    //    ctx.y + SINGLE_CHAR_OFFSET_Y*2.5
+    //);
+    //text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(ctx);
+
+    //cysteine::draw(ctx);
+    //cysteine::draw(ctx);
+    //alanine::draw(ctx);
+    //alanine::draw(ctx);
+    //glycine::draw(ctx);
+    //glycine::draw(ctx);
+
+    //text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(ctx);
+    //text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(ctx);
 
     std::printf("</svg>\n");
 
