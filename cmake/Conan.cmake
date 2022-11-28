@@ -13,14 +13,22 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
+set(TESTS_REQUIRES)
 if(TESTS_ENABLED)
-    set(TESTS_REQUIRES catch2/3.2.0)
+    list(APPEND TESTS_REQUIRES catch2/3.2.0)
+endif()
+
+set(CONAN_ADD_OPTIONS)
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    list(APPEND CONAN_ADD_OPTIONS fmt:header_only=True)
 endif()
 
 conan_cmake_configure(
     REQUIRES range-v3/0.12.0
+             fmt/9.1.0
              ${TESTS_REQUIRES}
     GENERATORS cmake_find_package cmake_paths
+    OPTIONS ${CONAN_ADD_OPTIONS}
 )
 
 conan_cmake_autodetect(conan_settings)
