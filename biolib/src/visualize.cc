@@ -7,6 +7,7 @@
 #include <numeric>
 #include <ostream>
 #include <string_view>
+#include <sstream>
 
 #include <fmt/format.h>
 
@@ -76,7 +77,7 @@ draw_context
     double y{DRAW_CTX_OFFSET_Y};
 };
 
-consteval
+constexpr
 void
 draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, double rot_b = std::numeric_limits<double>::max(), bool reverse = false)
 {
@@ -146,7 +147,7 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
         //    bond == bond_type::dashed ? "url(#bond-dashed)" : "black"
         //));
     } else if(bond == bond_type::double_bond) {
-        auto draw = [&] (double move_dir) consteval {
+        auto draw = [&] (double move_dir) constexpr {
             auto offset_x = (std::cos(to_radians(rot + (90.0 * move_dir))));
             auto offset_y = (std::sin(to_radians(rot + (90.0 * move_dir))));
             str.append("<line x1='");
@@ -182,7 +183,7 @@ struct
 text_vert
 {
     static
-    consteval
+    constexpr
     void
     draw(std::string& str, draw_context& ctx, bool flip = false)
     {
@@ -216,7 +217,7 @@ struct
 text_single
 {
     static
-    consteval
+    constexpr
     void
     draw(std::string& str, draw_context& ctx, bool dir = false)
     {
@@ -244,7 +245,7 @@ struct
 text_hor
 {
     static
-    consteval
+    constexpr
     void
     draw(std::string& str, draw_context& ctx, bool dir = false)
     {
@@ -274,7 +275,7 @@ struct
 basic_side_chain_bond
 {
     static
-    consteval
+    constexpr
     void
     draw(std::string& str, draw_context& ctx, bool flip)
     {
@@ -300,7 +301,7 @@ struct
 basic_side_chain
 {
     static
-    consteval
+    constexpr
     void
     draw(std::string& str, draw_context& ctx)
     {
@@ -315,7 +316,7 @@ struct
 basic_amino_acid
 {
     static
-    consteval
+    constexpr
     void
     draw(std::string& str, draw_context& ctx)
     {
@@ -378,45 +379,61 @@ using glycine =
         basic_side_chain<>
     >;
 
-template<class AminoAcid, bool Flip>
 consteval
-buffer_t
-cache_amino_acid()
+std::tuple<buffer_t, std::size_t>
+cache_header()
 {
     std::string str{};
+
+    str.append("<svg xmlns='http://www.w3.org/2000/svg'>\n");
+    str.append("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
+    str.append("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
+
+    auto append = [&]<class AminoAcid>([[maybe_unused]] AminoAcid) consteval {
+        draw_context ctx{};
+        AminoAcid::draw(str, ctx);
+        str.push_back('\n');
+
+        ctx = draw_context{};
+        ctx.flip = true;
+        AminoAcid::draw(str, ctx);
+        str.push_back('\n');
+    };
+
+    append(alanine{});
+    append(cysteine{});
+    append(glycine{});
+
     draw_context ctx{};
-    ctx.flip = Flip;
-    AminoAcid::draw(str, ctx);
+    ctx.x -= SINGLE_CHAR_OFFSET_X*4;
+    ctx.y += SINGLE_CHAR_OFFSET_Y*2;
+    text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(str, ctx);
+    str.append("<text text-anchor='left' dominant-baseline='middle' x='");
+    format_f(str, ctx.x);
+    str.append("' y='");
+    format_f(str, ctx.y + SINGLE_CHAR_OFFSET_Y*2.5);
+    str.append("' style='font-size:6px;'>2</text>");
+    text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
-    assert(str.length() <= BUFFER_SIZE);
-    buffer_t buffer{};
-    std::copy(str.begin(), str.end(), buffer.data());
+    buffer_t buf{};
+    //assert(buf.size() <= str.length());
+    std::copy(str.begin(), str.end(), buf.data());
 
-    return buffer;
+    return {buf, str.length()};
 }
 
-#define UTIL_CACHE(NAME) \
-    cache_amino_acid<NAME, false>(), \
-    cache_amino_acid<NAME, true>(),
-
-std::array<buffer_t, 6> AMINO_ACID_CACHE
-{
-    UTIL_CACHE(alanine)
-    UTIL_CACHE(cysteine)
-    UTIL_CACHE(glycine)
-};
-
-#undef UTIL_CACHE
-
 void
-draw(draw_context& ctx, std::size_t index)
+draw(std::stringstream& sstream, draw_context& ctx, std::size_t index)
 {
-    std::printf("<use href='#aa_cache-%li%s' x='%f' y='%f' />",
-        index,
-        ctx.flip?"f":"",
-        ctx.x - DRAW_CTX_OFFSET_X,
-        ctx.y - DRAW_CTX_OFFSET_Y
-    );
+    sstream <<
+        "<use href='#aa_cache-" <<
+        index <<
+        (ctx.flip?"f":"") <<
+        "' x='" <<
+        ctx.x - DRAW_CTX_OFFSET_X <<
+        "' y='" <<
+        ctx.y - DRAW_CTX_OFFSET_Y <<
+        "' />\n";
 
     ctx.x += (std::cos(to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2); // single char offset appears to be a half char offset
     ctx.y += (std::sin(to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);
@@ -437,43 +454,29 @@ ctoaacai(char value)
 
 int main()
 {
-    std::printf("<svg xmlns='http://www.w3.org/2000/svg'>\n");
-    std::printf("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
-    std::printf("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
+    auto [header_arr, header_length] = cache_header();
+    std::stringstream sstream{};
+    std::copy(header_arr.begin(), header_arr.begin()+header_length, std::ostream_iterator<char>(sstream));
 
     draw_context ctx{};
 
-    for(auto const& val : AMINO_ACID_CACHE) {
-        std::printf("%s", val.data());
-    }
+    //std::string buf{};
 
-    draw(ctx, ctoaacai('C'));
-    draw(ctx, ctoaacai('C'));
-    draw(ctx, ctoaacai('A'));
-    draw(ctx, ctoaacai('G'));
-    draw(ctx, ctoaacai('G'));
-    draw(ctx, ctoaacai('A'));
+    draw(sstream, ctx, ctoaacai('C'));
+    draw(sstream, ctx, ctoaacai('C'));
+    draw(sstream, ctx, ctoaacai('A'));
+    draw(sstream, ctx, ctoaacai('G'));
+    draw(sstream, ctx, ctoaacai('G'));
+    draw(sstream, ctx, ctoaacai('A'));
 
-    //draw_context ctx{};
+    auto str = sstream.str();
+    text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(str, ctx);
+    text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
-    //text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(ctx);
-    //std::printf("<text text-anchor='left' dominant-baseline='middle' x='%f' y='%f' style='font-size:6px;'>2</text>",
-    //    ctx.x,
-    //    ctx.y + SINGLE_CHAR_OFFSET_Y*2.5
-    //);
-    //text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(ctx);
+    //sstream << "</svg>\n";
+    str.append("</svg>\n");
 
-    //cysteine::draw(ctx);
-    //cysteine::draw(ctx);
-    //alanine::draw(ctx);
-    //alanine::draw(ctx);
-    //glycine::draw(ctx);
-    //glycine::draw(ctx);
-
-    //text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(ctx);
-    //text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(ctx);
-
-    std::printf("</svg>\n");
+    std::printf("%s\n", str.c_str());
 
     return 0;
 }
