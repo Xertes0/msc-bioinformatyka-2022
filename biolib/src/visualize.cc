@@ -5,10 +5,11 @@
 #include <ostream>
 #include <string_view>
 
+constexpr
 double
-to_radians(double a)
+to_radians(double degrees)
 {
-    return (a/180.0)*std::numbers::pi_v<double>;
+    return (degrees/180.0)*std::numbers::pi_v<double>;
 }
 
 static constexpr int SINGLE_CHAR_OFFSET_X = 4;
@@ -24,9 +25,6 @@ bond_type
     double_bond,
 };
 
-// First bond (plain or wedged:dashed)
-// Side chain
-// Always has double bond Oxygen
 static constexpr int BOND_LENGTH = 25;
 
 struct
@@ -168,7 +166,7 @@ text_hor
 
 template<bond_type BondType>
 struct
-sc_bond_descriptor
+basic_side_chain_bond
 {
     static
     void
@@ -193,7 +191,7 @@ sc_bond_descriptor
 
 template<class... Args>
 struct
-side_chain_descriptor
+basic_side_chain
 {
     static
     void
@@ -207,7 +205,7 @@ side_chain_descriptor
 
 template<bond_type FirstBond, class SideChainDesc>
 struct
-amino_acid_descriptor
+basic_amino_acid
 {
     static
     void
@@ -237,27 +235,27 @@ amino_acid_descriptor
 };
 
 using alanine =
-    amino_acid_descriptor<
+    basic_amino_acid<
         bond_type::plain,
-        side_chain_descriptor<
-            sc_bond_descriptor<bond_type::wedged>
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::wedged>
         >
     >;
 
 using cysteine =
-    amino_acid_descriptor<
+    basic_amino_acid<
         bond_type::dashed,
-        side_chain_descriptor<
-            sc_bond_descriptor<bond_type::plain>,
-            sc_bond_descriptor<bond_type::plain>,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
             text_hor<'S', 'H', SINGLE_CHAR_OFFSET_X*2, 0>
         >
     >;
 
 using glycine =
-    amino_acid_descriptor<
+    basic_amino_acid<
         bond_type::plain,
-        side_chain_descriptor<>
+        basic_side_chain<>
     >;
 
 int main()
