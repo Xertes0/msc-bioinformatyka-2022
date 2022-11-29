@@ -760,6 +760,47 @@ using serine =
         >
     >;
 
+using threonine =
+    basic_amino_acid<
+        'T',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_a<bond_type::plain>
+                >,
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_b<bond_type::plain>,
+                    basic_text<
+                        text_placement_down_right,
+                        basic_text_span<
+                            text_style_normal,
+                            basic_text_rep<'O', 'H'>
+                        >
+                    >
+                >
+            >
+        >
+    >;
+
+using valine =
+    basic_amino_acid<
+        'V',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_a<bond_type::plain>
+                >,
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_b<bond_type::plain>
+                >
+            >
+        >
+    >;
+
 consteval
 std::tuple<buffer_t, std::size_t>
 cache_header()
@@ -790,7 +831,9 @@ cache_header()
     //append(leucine{});
     //append(lysine{});
     //append(methionine{});
-    append(serine{});
+    //append(serine{});
+    //append(threonine{});
+    append(valine{});
 
     draw_context ctx{};
     ctx.x -= SINGLE_CHAR_OFFSET_X*3.2;
@@ -848,6 +891,10 @@ int main()
 
     draw_context ctx{};
 
+    draw(sstream, ctx, 'V');
+    draw(sstream, ctx, 'V');
+    draw(sstream, ctx, 'T');
+    draw(sstream, ctx, 'T');
     draw(sstream, ctx, 'S');
     draw(sstream, ctx, 'S');
     draw(sstream, ctx, 'M');
