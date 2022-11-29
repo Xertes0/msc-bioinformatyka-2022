@@ -85,7 +85,7 @@ format(std::string& str, Args... args)
     (format(str, args), ...);
 }
 
-static constexpr std::size_t BUFFER_SIZE = 1024*18;
+static constexpr std::size_t BUFFER_SIZE = 1024*50;
 using buffer_t = std::array<char, BUFFER_SIZE>;
 
 static constexpr int SINGLE_CHAR_OFFSET_X = 4;
@@ -118,7 +118,7 @@ static constexpr double TEXT_MARGIN = 2;
 
 template<char... Args>
 struct
-text_rep
+basic_text_rep
 {
     static
     constexpr
@@ -382,11 +382,11 @@ basic_amino_acid
                 text_placement_right,
                 basic_text_span<
                     text_style_normal,
-                    text_rep<'N'>
+                    basic_text_rep<'N'>
                 >,
                 basic_text_span<
                     text_style_below,
-                    text_rep<'H'>
+                    basic_text_rep<'H'>
                 >
             >::draw(str, ctx, ctx.flip);
         } else {
@@ -394,11 +394,11 @@ basic_amino_acid
                 text_placement_right,
                 basic_text_span<
                     text_style_normal,
-                    text_rep<'N'>
+                    basic_text_rep<'N'>
                 >,
                 basic_text_span<
                     text_style_above,
-                    text_rep<'H'>
+                    basic_text_rep<'H'>
                 >
             >::draw(str, ctx, ctx.flip);
         }
@@ -425,7 +425,7 @@ basic_amino_acid
             text_placement_down,
             basic_text_span<
                 text_style_normal,
-                text_rep<'O'>
+                basic_text_rep<'O'>
             >
         >::draw(str, dbond, !dbond.flip);
         SideChainDesc::draw(str, side_chain);
@@ -447,6 +447,18 @@ basic_side_chain_split
         draw_context bctx{ctx};
         A::draw(str, ctx);
         B::draw(str, bctx);
+    }
+};
+
+struct
+flip_flip
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool flip)
+    {
+        ctx.flip = !ctx.flip;
     }
 };
 
@@ -483,15 +495,15 @@ using aspariqine =
                     basic_side_chain_split_bond_hard_a<bond_type::double_bond>,
                     basic_text<
                         text_placement_down,
-                        basic_text_span<text_style_normal, text_rep<'O'>>
+                        basic_text_span<text_style_normal, basic_text_rep<'O'>>
                     >
                 >,
                 basic_side_chain<
                         basic_side_chain_split_bond_hard_b<bond_type::plain>,
                     basic_text<
                         text_placement_right,
-                        basic_text_span<text_style_normal, text_rep<'N', 'H'>>,
-                        basic_text_span<text_style_small_straight, text_rep<'2'>>
+                        basic_text_span<text_style_normal, basic_text_rep<'N', 'H'>>,
+                        basic_text_span<text_style_small_straight, basic_text_rep<'2'>>
                     >
                 >
             >
@@ -512,7 +524,7 @@ using aspartate =
                         text_placement_down,
                         basic_text_span<
                             text_style_normal,
-                            text_rep<'O'>
+                            basic_text_rep<'O'>
                         >
                     >
                 >,
@@ -522,11 +534,11 @@ using aspartate =
                         text_placement_right,
                         basic_text_span<
                             text_style_normal,
-                            text_rep<'O'>
+                            basic_text_rep<'O'>
                         >,
                         basic_text_span<
                             text_style_high_nm,
-                            text_rep<'-'>
+                            basic_text_rep<'-'>
                         >
                     >
                 >
@@ -545,7 +557,7 @@ using cysteine =
                 text_placement_down_right,
                 basic_text_span<
                     text_style_normal,
-                    text_rep<'S', 'H'>
+                    basic_text_rep<'S', 'H'>
                 >
             >
         >
@@ -566,7 +578,7 @@ using glutamine =
                         text_placement_down_left,
                         basic_text_span<
                             text_style_normal,
-                            text_rep<'O'>
+                            basic_text_rep<'O'>
                         >
                     >
                 >,
@@ -576,11 +588,11 @@ using glutamine =
                         text_placement_down_right,
                         basic_text_span<
                             text_style_normal,
-                            text_rep<'N', 'H'>
+                            basic_text_rep<'N', 'H'>
                         >,
                         basic_text_span<
                             text_style_small_angle,
-                            text_rep<'2'>
+                            basic_text_rep<'2'>
                         >
                     >
                 >
@@ -603,7 +615,7 @@ using glutamate =
                         text_placement_down_left,
                         basic_text_span<
                             text_style_normal,
-                            text_rep<'O'>
+                            basic_text_rep<'O'>
                         >
                     >
                 >,
@@ -613,11 +625,11 @@ using glutamate =
                         text_placement_down_right,
                         basic_text_span<
                             text_style_normal,
-                            text_rep<'O'>
+                            basic_text_rep<'O'>
                         >,
                         basic_text_span<
                             text_style_high_nm,
-                            text_rep<'-'>
+                            basic_text_rep<'-'>
                         >
                     >
                 >
@@ -630,6 +642,43 @@ using glycine =
         'G',
         bond_type::plain,
         basic_side_chain<>
+    >;
+
+using isoleucine =
+    basic_amino_acid<
+        'I',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_a<bond_type::wedged> // wedged on purpose
+                >,
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_b<bond_type::plain>,
+                    flip_flip,
+                    basic_side_chain_bond<bond_type::plain>
+                >
+            >
+        >
+    >;
+
+using leucine =
+    basic_amino_acid<
+        'L',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_split_bond_hard_a<bond_type::plain>
+                >,
+                basic_side_chain<
+                    basic_side_chain_split_bond_hard_b<bond_type::plain>
+                >
+            >
+        >
     >;
 
 consteval
@@ -651,13 +700,15 @@ cache_header()
         AminoAcid::draw(str, ctx);
     };
 
-    append(alanine{});
-    append(aspariqine{});
-    append(aspartate{});
-    append(cysteine{});
-    append(glycine{});
-    append(glutamate{});
-    append(glutamine{});
+    //append(alanine{});
+    //append(aspariqine{});
+    //append(aspartate{});
+    //append(cysteine{});
+    //append(glycine{});
+    //append(glutamate{});
+    //append(glutamine{});
+    //append(isoleucine{});
+    append(leucine{});
 
     draw_context ctx{};
     ctx.x -= SINGLE_CHAR_OFFSET_X*3.2;
@@ -666,11 +717,11 @@ cache_header()
         text_placement_right,
         basic_text_span<
             text_style_normal,
-            text_rep<'H'>
+            basic_text_rep<'H'>
         >,
         basic_text_span<
             text_style_small_straight,
-            text_rep<'2'>
+            basic_text_rep<'2'>
         >
     >::draw(str, ctx, false);
 
@@ -679,7 +730,7 @@ cache_header()
         text_placement_right,
         basic_text_span<
             text_style_normal,
-            text_rep<'+'>
+            basic_text_rep<'+'>
         >
     >::draw(str, ctx, false);
 
@@ -715,6 +766,10 @@ int main()
 
     draw_context ctx{};
 
+    draw(sstream, ctx, 'L');
+    draw(sstream, ctx, 'L');
+    draw(sstream, ctx, 'I');
+    draw(sstream, ctx, 'I');
     draw(sstream, ctx, 'D');
     draw(sstream, ctx, 'D');
     draw(sstream, ctx, 'N');
@@ -736,11 +791,11 @@ int main()
         text_placement_right,
         basic_text_span<
             text_style_normal,
-            text_rep<'O'>
+            basic_text_rep<'O'>
         >,
         basic_text_span<
             text_style_high_nm,
-            text_rep<'-'>
+            basic_text_rep<'-'>
         >
     >::draw(str, ctx, false);
 
