@@ -19,13 +19,13 @@ if(TESTS_ENABLED)
 endif()
 
 set(CONAN_ADD_OPTIONS)
-if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    list(APPEND CONAN_ADD_OPTIONS fmt:header_only=True)
-endif()
+#if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+#    list(APPEND CONAN_ADD_OPTIONS fmt:header_only=True)
+#endif()
 
 conan_cmake_configure(
     REQUIRES range-v3/0.12.0
-             fmt/9.1.0
+             #fmt/9.1.0
              ${TESTS_REQUIRES}
     GENERATORS cmake_find_package cmake_paths
     OPTIONS ${CONAN_ADD_OPTIONS}

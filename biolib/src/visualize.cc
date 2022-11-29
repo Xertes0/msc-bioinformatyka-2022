@@ -4,12 +4,12 @@
 #include <array>
 #include <cassert>
 #include <cmath>
+#include <iterator>
 #include <numeric>
 #include <ostream>
-#include <string_view>
 #include <sstream>
-
-#include <fmt/format.h>
+#include <string_view>
+#include <tuple>
 
 constexpr
 double
@@ -20,7 +20,7 @@ to_radians(double degrees)
 
 constexpr
 void
-format_f(std::string& str, double val)
+format(std::string& str, double val)
 {
     int nat = static_cast<int>(val);
     int fra = static_cast<int>((val - nat) * 1'000'000);
@@ -46,6 +46,36 @@ format_f(std::string& str, double val)
     } else {
         str.append(std::string{buf.rbegin(), buf.rend()});
     }
+}
+
+constexpr
+void
+format(std::string& str, char val)
+{
+    str.push_back(val);
+}
+
+template<std::size_t N>
+constexpr
+void
+format(std::string& str, char const (&val)[N]) // NOLINT(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+{
+    str.append(val);
+}
+
+constexpr
+void
+format(std::string& str, char const* val)
+{
+    str.append(val);
+}
+
+template<class... Args>
+constexpr
+void
+format(std::string& str, Args... args)
+{
+    (format(str, args), ...);
 }
 
 static constexpr std::size_t BUFFER_SIZE = 1024*5;
@@ -89,19 +119,8 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
     }
 
     if(bond == bond_type::plain) {
-        str.append("<line x1='");
-        format_f(str, ctx.x);
-        str.append("' y1='");
-        format_f(str, ctx.y);
-        str.append("' x2='");
-        format_f(str, ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH));
-        str.append("' y2='");
-        format_f(str, ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH));
-        str.append("' stroke='black' />\n");
-        //str.append(fmt::format("<line x1='{}' y1='{}' x2='{}' y2='{}' stroke='black' />\n", ctx.x, ctx.y,
-        //    ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH),
-        //    ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH)
-        //));
+        format(str,
+            "<line x1='", ctx.x, "' y1='", ctx.y, "' x2='", ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH), "' y2='", ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH), "' stroke='black' />\n");
     } else if(bond == bond_type::dashed || bond == bond_type::wedged) {
         double x1,x2,x3,y1,y2,y3; // NOLINT(readability-isolate-declaration,cppcoreguidelines-init-variables,readability-identifier-length)
 
@@ -125,46 +144,13 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
             y3 = ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH);
         }
 
-        str.append("<polygon points='");
-        format_f(str, x1);
-        str.append(" ");
-        format_f(str, y1);
-        str.append(", ");
-        format_f(str, x2);
-        str.append(" ");
-        format_f(str, y2);
-        str.append(", ");
-        format_f(str, x3);
-        str.append(" ");
-        format_f(str, y3);
-        str.append("' fill='");
-        str.append(bond == bond_type::dashed ? "url(#bond-dashed)" : "black");
-        str.append("' />\n");
-        //str.append(fmt::format("<polygon points='{} {}, {} {}, {} {}' fill='{}' />\n",
-        //    x1, y1,
-        //    x2, y2,
-        //    x3, y3,
-        //    bond == bond_type::dashed ? "url(#bond-dashed)" : "black"
-        //));
+        format(str, "<polygon points='", x1, " ", y1, ", ", x2, " ", y2, ", ", x3, " ", y3, "' fill='", bond == bond_type::dashed ? "url(#bond-dashed)" : "black", "' />\n");
     } else if(bond == bond_type::double_bond) {
         auto draw = [&] (double move_dir) constexpr {
             auto offset_x = (std::cos(to_radians(rot + (90.0 * move_dir))));
             auto offset_y = (std::sin(to_radians(rot + (90.0 * move_dir))));
-            str.append("<line x1='");
-            format_f(str, ctx.x + offset_x);
-            str.append("' y1='");
-            format_f(str, ctx.y + offset_y);
-            str.append("' x2='");
-            format_f(str, ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH) + offset_x);
-            str.append("' y2='");
-            format_f(str, ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH) + offset_y);
-            str.append("' stroke='black' />\n");
-            //str.append(fmt::format("<line x1='{}' y1='{}' x2='{}' y2='{}' stroke='black' />\n",
-            //    ctx.x + offset_x,
-            //    ctx.y + offset_y,
-            //    ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x,
-            //    ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y
-            //));
+
+            format(str, "<line x1='", ctx.x + offset_x, "' y1='", ctx.y + offset_y, "' x2='", ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x, "' y2='", ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y, "' stroke='black' />\n");
         };
 
         draw(-1.0);
@@ -189,24 +175,7 @@ text_vert
     {
         ctx.x += SINGLE_CHAR_OFFSET_X;
         ctx.y -= (flip?0:SINGLE_CHAR_OFFSET_Y*2);
-        str.append("<text text-anchor='middle' x='");
-        format_f(str, ctx.x);
-        str.append("' y='");
-        format_f(str, ctx.y);
-        str.append("'><tspan dy='0.5em'>");
-        str.push_back(flip?B:A);
-        str.append("</tspan><tspan x='");
-        format_f(str, ctx.x);
-        str.append("' dy='1em'>");
-        str.push_back(flip?A:B);
-        str.append("</tspan></text>");
-        //str.append(fmt::format("<text text-anchor='middle' x='{}' y='{}'><tspan dy='0.5em'>{}</tspan><tspan x='{}' dy='1em'>{}</tspan></text>",
-        //    ctx.x,
-        //    ctx.y,
-        //    flip?B:A,
-        //    ctx.x,
-        //    flip?A:B
-        //));
+        format(str, "<text text-anchor='middle' x='", ctx.x, "' y='", ctx.y, "'><tspan dy='0.5em'>", flip?B:A, "</tspan><tspan x='", ctx.x, "' dy='1em'>", flip?A:B, "</tspan></text>");
         ctx.x += SINGLE_CHAR_OFFSET_X;
         ctx.y += (flip?0:SINGLE_CHAR_OFFSET_Y*2);
     }
@@ -223,18 +192,7 @@ text_single
     {
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        str.append("<text text-anchor='middle' dominant-baseline='middle' x='");
-        format_f(str, ctx.x);
-        str.append("' y='");
-        format_f(str, ctx.y);
-        str.append("'>");
-        str.push_back(A);
-        str.append("</text>");
-        //str.append(fmt::format("<text text-anchor='middle' dominant-baseline='middle' x='{}' y='{}'>{}</text>",
-        //    ctx.x,
-        //    ctx.y,
-        //    A
-        //));
+        format(str, "<text text-anchor='middle' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, "</text>");
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
     }
@@ -251,20 +209,7 @@ text_hor
     {
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        str.append("<text text-anchor='middle' dominant-baseline='middle' x='");
-        format_f(str, ctx.x);
-        str.append("' y='");
-        format_f(str, ctx.y);
-        str.append("'>");
-        str.push_back(A);
-        str.push_back(B);
-        str.append("</text>");
-        //str.append(fmt::format("<text text-anchor='middle' dominant-baseline='middle' x='{}' y='{}'>{}{}</text>",
-        //    ctx.x,
-        //    ctx.y,
-        //    A,
-        //    B
-        //));
+        format(str, "<text text-anchor='middle' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, B, "</text>");
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
     }
@@ -320,10 +265,7 @@ basic_amino_acid
     void
     draw(std::string& str, draw_context& ctx)
     {
-        str.append("<symbol id='aa_cache-");
-        str.push_back(static_cast<char>(48 + SvgId::value));
-        str.append(ctx.flip?"f":"");
-        str.append("'>\n");
+        format(str, "<symbol id='aa_cache-", static_cast<char>(48 + SvgId::value), ctx.flip?"f":"", "'>\n");
         text_vert<'H', 'N'>::draw(str, ctx, ctx.flip);
 
         auto first_bond = FirstBond;
@@ -345,7 +287,7 @@ basic_amino_acid
         text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(str, dbond, ctx.flip);
         SideChainDesc::draw(str, side_chain);
 
-        str.append("</symbol>\n");
+        format(str, "</symbol>\n");
     }
 };
 
@@ -408,11 +350,7 @@ cache_header()
     ctx.x -= SINGLE_CHAR_OFFSET_X*4;
     ctx.y += SINGLE_CHAR_OFFSET_Y*2;
     text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(str, ctx);
-    str.append("<text text-anchor='left' dominant-baseline='middle' x='");
-    format_f(str, ctx.x);
-    str.append("' y='");
-    format_f(str, ctx.y + SINGLE_CHAR_OFFSET_Y*2.5);
-    str.append("' style='font-size:6px;'>2</text>");
+    format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y + SINGLE_CHAR_OFFSET_Y*2.5, "' style='font-size:6px;'>2</text>");
     text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
     buffer_t buf{};
