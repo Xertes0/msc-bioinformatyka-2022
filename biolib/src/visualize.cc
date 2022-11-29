@@ -387,7 +387,7 @@ cache_header()
 
     str.append("<svg xmlns='http://www.w3.org/2000/svg'>\n");
     str.append("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
-    str.append("<defs><pattern id='bond-dashed' height='10%%' width='10%%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
+    str.append("<defs><pattern id='bond-dashed' height='10%' width='10%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
 
     auto append = [&]<class AminoAcid>([[maybe_unused]] AminoAcid) consteval {
         draw_context ctx{};
