@@ -85,7 +85,7 @@ format(std::string& str, Args... args)
     (format(str, args), ...);
 }
 
-static constexpr std::size_t BUFFER_SIZE = 1024*15;
+static constexpr std::size_t BUFFER_SIZE = 1024*18;
 using buffer_t = std::array<char, BUFFER_SIZE>;
 
 static constexpr int SINGLE_CHAR_OFFSET_X = 4;
@@ -281,7 +281,7 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
 
     if(bond == bond_type::plain) {
         format(str,
-            "<line x1='", ctx.x, "' y1='", ctx.y, "' x2='", ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH), "' y2='", ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH), "' stroke='black' />\n");
+            "<line x1='", ctx.x, "' y1='", ctx.y, "' x2='", ctx.x + (std::cos(to_radians(rot)) * BOND_LENGTH), "' y2='", ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH), "' stroke='black' />");
     } else if(bond == bond_type::dashed || bond == bond_type::wedged) {
         double x1,x2,x3,y1,y2,y3; // NOLINT(readability-isolate-declaration,cppcoreguidelines-init-variables,readability-identifier-length)
 
@@ -305,13 +305,13 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
             y3 = ctx.y + (std::sin(to_radians(rot)) * BOND_LENGTH);
         }
 
-        format(str, "<polygon points='", x1, " ", y1, ", ", x2, " ", y2, ", ", x3, " ", y3, "' fill='", bond == bond_type::dashed ? "url(#bond-dashed)" : "black", "' />\n");
+        format(str, "<polygon points='", x1, " ", y1, ", ", x2, " ", y2, ", ", x3, " ", y3, "' fill='", bond == bond_type::dashed ? "url(#bond-dashed)" : "black", "' />");
     } else if(bond == bond_type::double_bond) {
         auto draw = [&] (double move_dir) constexpr {
             auto offset_x = (std::cos(to_radians(rot + (90.0 * move_dir))));
             auto offset_y = (std::sin(to_radians(rot + (90.0 * move_dir))));
 
-            format(str, "<line x1='", ctx.x + offset_x, "' y1='", ctx.y + offset_y, "' x2='", ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x, "' y2='", ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y, "' stroke='black' />\n");
+            format(str, "<line x1='", ctx.x + offset_x, "' y1='", ctx.y + offset_y, "' x2='", ctx.x + (std::cos(to_radians(rot))*BOND_LENGTH) + offset_x, "' y2='", ctx.y + (std::sin(to_radians(rot))*BOND_LENGTH) + offset_y, "' stroke='black' />");
         };
 
         draw(-1.0);
@@ -366,7 +366,7 @@ basic_side_chain
     }
 };
 
-template<class SvgId, bond_type FirstBond, class SideChainDesc>
+template<char OneLetterId, bond_type FirstBond, class SideChainDesc>
 struct
 basic_amino_acid
 {
@@ -375,7 +375,7 @@ basic_amino_acid
     void
     draw(std::string& str, draw_context& ctx)
     {
-        format(str, "<symbol id='aa_cache-", static_cast<char>(48 + SvgId::value), ctx.flip?"f":"", "'>\n");
+        format(str, "<symbol id='aa_cache-", OneLetterId, ctx.flip?"f":"", "'>");
 
         if(ctx.flip) {
             basic_text<
@@ -430,7 +430,7 @@ basic_amino_acid
         >::draw(str, dbond, !dbond.flip);
         SideChainDesc::draw(str, side_chain);
 
-        format(str, "</symbol>\n");
+        format(str, "</symbol>");
     }
 };
 
@@ -450,34 +450,44 @@ basic_side_chain_split
     }
 };
 
-struct alaine_svg_id { static constexpr int value{0}; };
+template<bond_type BondType>
+using basic_side_chain_split_bond_soft_a = basic_side_chain_bond<BondType, 135>;
+
+template<bond_type BondType>
+using basic_side_chain_split_bond_soft_b = basic_side_chain_bond<BondType, 45>;
+
+template<bond_type BondType>
+using basic_side_chain_split_bond_hard_a = basic_side_chain_bond<BondType, 90>;
+
+template<bond_type BondType>
+using basic_side_chain_split_bond_hard_b = basic_side_chain_bond<BondType, 0>;
+
 using alanine =
     basic_amino_acid<
-        alaine_svg_id,
+        'A',
         bond_type::plain,
         basic_side_chain<
             basic_side_chain_bond<bond_type::wedged>
         >
     >;
 
-struct aspariqine_svg_id { static constexpr int value{4}; };
 using aspariqine =
     basic_amino_acid<
-        aspariqine_svg_id,
+        'N',
         bond_type::dashed,
         basic_side_chain<
             basic_side_chain_bond<bond_type::plain>,
             basic_side_chain_bond<bond_type::plain>,
             basic_side_chain_split<
                 basic_side_chain<
-                    basic_side_chain_bond<bond_type::double_bond, 90>,
+                    basic_side_chain_split_bond_hard_a<bond_type::double_bond>,
                     basic_text<
                         text_placement_down,
                         basic_text_span<text_style_normal, text_rep<'O'>>
                     >
                 >,
                 basic_side_chain<
-                    basic_side_chain_bond<bond_type::plain, 0>,
+                        basic_side_chain_split_bond_hard_b<bond_type::plain>,
                     basic_text<
                         text_placement_right,
                         basic_text_span<text_style_normal, text_rep<'N', 'H'>>,
@@ -488,17 +498,16 @@ using aspariqine =
         >
     >;
 
-struct aspartate_svg_id { static constexpr int value{5}; };
 using aspartate =
     basic_amino_acid<
-        aspartate_svg_id,
+        'D',
         bond_type::dashed,
         basic_side_chain<
             basic_side_chain_bond<bond_type::plain>,
             basic_side_chain_bond<bond_type::plain>,
             basic_side_chain_split<
                 basic_side_chain<
-                    basic_side_chain_bond<bond_type::double_bond, 90>,
+                    basic_side_chain_split_bond_hard_a<bond_type::double_bond>,
                     basic_text<
                         text_placement_down,
                         basic_text_span<
@@ -508,7 +517,7 @@ using aspartate =
                     >
                 >,
                 basic_side_chain<
-                    basic_side_chain_bond<bond_type::plain, 0>,
+                    basic_side_chain_split_bond_hard_b<bond_type::plain>,
                     basic_text<
                         text_placement_right,
                         basic_text_span<
@@ -525,10 +534,9 @@ using aspartate =
         >
     >;
 
-struct cysteine_svg_id { static constexpr int value{1}; };
 using cysteine =
     basic_amino_acid<
-        cysteine_svg_id,
+        'C',
         bond_type::dashed,
         basic_side_chain<
             basic_side_chain_bond<bond_type::plain>,
@@ -543,18 +551,9 @@ using cysteine =
         >
     >;
 
-struct glycine_svg_id { static constexpr int value{2}; };
-using glycine =
-    basic_amino_acid<
-        glycine_svg_id,
-        bond_type::plain,
-        basic_side_chain<>
-    >;
-
-struct glutamine_svg_id { static constexpr int value{3}; };
 using glutamine =
     basic_amino_acid<
-        glutamine_svg_id,
+        'Q',
         bond_type::dashed,
         basic_side_chain<
             basic_side_chain_bond<bond_type::plain>,
@@ -562,7 +561,7 @@ using glutamine =
             basic_side_chain_bond<bond_type::plain>,
             basic_side_chain_split<
                 basic_side_chain<
-                    basic_side_chain_bond<bond_type::double_bond, 135>,
+                    basic_side_chain_split_bond_soft_a<bond_type::double_bond>,
                     basic_text<
                         text_placement_down_left,
                         basic_text_span<
@@ -572,7 +571,7 @@ using glutamine =
                     >
                 >,
                 basic_side_chain<
-                    basic_side_chain_bond<bond_type::plain, 45>,
+                    basic_side_chain_split_bond_soft_b<bond_type::plain>,
                     basic_text<
                         text_placement_down_right,
                         basic_text_span<
@@ -589,25 +588,67 @@ using glutamine =
         >
     >;
 
+using glutamate =
+    basic_amino_acid<
+        'E',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_a<bond_type::double_bond>,
+                    basic_text<
+                        text_placement_down_left,
+                        basic_text_span<
+                            text_style_normal,
+                            text_rep<'O'>
+                        >
+                    >
+                >,
+                basic_side_chain<
+                    basic_side_chain_split_bond_soft_b<bond_type::plain>,
+                    basic_text<
+                        text_placement_down_right,
+                        basic_text_span<
+                            text_style_normal,
+                            text_rep<'O'>
+                        >,
+                        basic_text_span<
+                            text_style_high_nm,
+                            text_rep<'-'>
+                        >
+                    >
+                >
+            >
+        >
+    >;
+
+using glycine =
+    basic_amino_acid<
+        'G',
+        bond_type::plain,
+        basic_side_chain<>
+    >;
+
 consteval
 std::tuple<buffer_t, std::size_t>
 cache_header()
 {
     std::string str{};
 
-    str.append("<svg xmlns='http://www.w3.org/2000/svg'>\n");
-    str.append("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>\n");
-    str.append("<defs><pattern id='bond-dashed' height='10%' width='10%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>\n");
+    str.append("<svg xmlns='http://www.w3.org/2000/svg'>");
+    str.append("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>");
+    str.append("<defs><pattern id='bond-dashed' height='10%' width='10%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>");
 
     auto append = [&]<class AminoAcid>([[maybe_unused]] AminoAcid) consteval {
         draw_context ctx{};
         AminoAcid::draw(str, ctx);
-        str.push_back('\n');
 
         ctx = draw_context{};
         ctx.flip = true;
         AminoAcid::draw(str, ctx);
-        str.push_back('\n');
     };
 
     append(alanine{});
@@ -615,6 +656,7 @@ cache_header()
     append(aspartate{});
     append(cysteine{});
     append(glycine{});
+    append(glutamate{});
     append(glutamine{});
 
     draw_context ctx{};
@@ -648,36 +690,21 @@ cache_header()
 }
 
 void
-draw(std::stringstream& sstream, draw_context& ctx, std::size_t index)
+draw(std::stringstream& sstream, draw_context& ctx, char one_letter_id)
 {
     sstream <<
         "<use href='#aa_cache-" <<
-        index <<
+        one_letter_id <<
         (ctx.flip?"f":"") <<
         "' x='" <<
         ctx.x - DRAW_CTX_OFFSET_X + (TEXT_MARGIN*2) <<
         "' y='" <<
         ctx.y - DRAW_CTX_OFFSET_Y <<
-        "' />\n";
+        "' />";
 
     ctx.x += (std::cos(to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2) + (TEXT_MARGIN*2); // single char offset appears to be a half char offset
     ctx.y += (std::sin(to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);
     ctx.flip = !ctx.flip;
-}
-
-constexpr
-std::size_t
-ctoaacai(char value)
-{
-    switch(value) {
-        case 'A': return 0;
-        case 'C': return 1;
-        case 'G': return 2;
-        case 'Q': return 3;
-        case 'N': return 4;
-        case 'D': return 5;
-        default: throw std::runtime_error{"Bad ctoaacai value"};
-    }
 }
 
 int main()
@@ -688,20 +715,20 @@ int main()
 
     draw_context ctx{};
 
-    //std::string buf{};
-
-    draw(sstream, ctx, ctoaacai('D'));
-    draw(sstream, ctx, ctoaacai('D'));
-    draw(sstream, ctx, ctoaacai('N'));
-    draw(sstream, ctx, ctoaacai('N'));
-    draw(sstream, ctx, ctoaacai('Q'));
-    draw(sstream, ctx, ctoaacai('Q'));
-    draw(sstream, ctx, ctoaacai('C'));
-    draw(sstream, ctx, ctoaacai('C'));
-    draw(sstream, ctx, ctoaacai('A'));
-    draw(sstream, ctx, ctoaacai('G'));
-    draw(sstream, ctx, ctoaacai('G'));
-    draw(sstream, ctx, ctoaacai('A'));
+    draw(sstream, ctx, 'D');
+    draw(sstream, ctx, 'D');
+    draw(sstream, ctx, 'N');
+    draw(sstream, ctx, 'N');
+    draw(sstream, ctx, 'Q');
+    draw(sstream, ctx, 'Q');
+    draw(sstream, ctx, 'C');
+    draw(sstream, ctx, 'C');
+    draw(sstream, ctx, 'A');
+    draw(sstream, ctx, 'G');
+    draw(sstream, ctx, 'G');
+    draw(sstream, ctx, 'A');
+    draw(sstream, ctx, 'E');
+    draw(sstream, ctx, 'E');
 
     auto str = sstream.str();
     fixed_offset<static_cast<int>(TEXT_MARGIN*2), 0>::draw(str, ctx, false);
@@ -716,10 +743,7 @@ int main()
             text_rep<'-'>
         >
     >::draw(str, ctx, false);
-    //text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(str, ctx);
-    //text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
-    //sstream << "</svg>\n";
     str.append("</svg>\n");
 
     std::printf("%s\n", str.c_str());
