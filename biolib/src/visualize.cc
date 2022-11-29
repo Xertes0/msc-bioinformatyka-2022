@@ -70,6 +70,13 @@ format(std::string& str, char const* val)
     str.append(val);
 }
 
+constexpr
+void
+format(std::string& str, std::string_view val)
+{
+    str.append(val);
+}
+
 template<class... Args>
 constexpr
 void
@@ -105,6 +112,144 @@ draw_context
     bool flip{false};
     double x{DRAW_CTX_OFFSET_X};
     double y{DRAW_CTX_OFFSET_Y};
+};
+
+static constexpr double TEXT_MARGIN = 2;
+
+template<char... Args>
+struct
+text_rep
+{
+    static
+    constexpr
+    void
+    append(std::string& str)
+    {
+        (str.push_back(Args), ...);
+    }
+};
+
+struct
+text_style_normal
+{
+    static
+    constexpr
+    std::string_view value{};
+};
+
+struct
+text_style_small
+{
+    static
+    constexpr
+    std::string_view value{"style='font-size:6px;' dy='1em'"};
+};
+
+struct
+text_style_below
+{
+    static
+    constexpr
+    std::string_view value{"dx='-0.6em' dy='1em'"};
+};
+
+struct
+text_style_above
+{
+    static
+    constexpr
+    std::string_view value{"dx='-0.6em' dy='-1em'"};
+};
+
+template<class TextStyle, class TextRep>
+struct
+basic_text_span
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool flip)
+    {
+        format(str, "<tspan ", TextStyle::value, ">");
+        TextRep::append(str);
+        format(str, "</tspan>");
+    }
+};
+
+template<bool Right>
+struct
+basic_text_placement_straight
+{
+    static
+    constexpr
+    void
+    append(std::string& str, draw_context& ctx, bool flip)
+    {
+        format(str,
+               "text-anchor='",
+               (Right?"start":"middle"),
+               "' dominant-baseline='",
+               (Right?"mathematical":(flip?"hanging":"text-top")),
+               "' x='", ctx.x + (Right?TEXT_MARGIN: 0),
+               "' y='", ctx.y + ((Right?0:TEXT_MARGIN) * (flip?1:-1)),
+               "'");
+    }
+};
+
+template<bool Right>
+struct
+basic_text_placement_angle
+{
+    static
+    constexpr
+    void
+    append(std::string& str, draw_context& ctx, bool flip)
+    {
+        format(str,
+               "text-anchor='",
+               (Right?"start":"end"),
+               "' dominant-baseline='",
+               (flip?"hanging":"text-top"),
+               "' x='", ctx.x + (Right?TEXT_MARGIN: 0),
+               "' y='", ctx.y + ((Right?0:TEXT_MARGIN) * (flip?1:-1)),
+               "'");
+    }
+};
+
+using text_placement_right = basic_text_placement_straight<true>;
+using text_placement_down  = basic_text_placement_straight<false>;
+using text_placement_down_right = basic_text_placement_angle<true>;
+using text_placement_down_left  = basic_text_placement_angle<false>;
+
+template<class TextPlacement, class... Content>
+struct
+basic_text
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool flip)
+    {
+        format(str, "<text ");
+        TextPlacement::append(str, ctx, flip);
+        format(str, ">");
+        (Content::draw(str, ctx, flip), ...);
+        format(str, "</text>");
+    }
+};
+
+template<int OffsetX, int OffsetY>//, class Suffix = text_rep<'p', 'x'>>
+struct
+fixed_offset
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool flip)
+    {
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (flip?1:-1);
+    }
 };
 
 constexpr
@@ -164,93 +309,6 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
     ctx.flip = !ctx.flip;
 }
 
-template<char A, char B, int AddY = 0>
-struct
-text_vert
-{
-    static
-    constexpr
-    void
-    draw(std::string& str, draw_context& ctx, bool flip = false)
-    {
-        ctx.x += SINGLE_CHAR_OFFSET_X;
-        ctx.y -= AddY * (flip?-1:1);
-        ctx.y -= (flip?0:SINGLE_CHAR_OFFSET_Y*2);
-        format(str, "<text text-anchor='middle' x='", ctx.x, "' y='", ctx.y, "'><tspan dy='0.5em'>", flip?B:A, "</tspan><tspan x='", ctx.x, "' dy='1em'>", flip?A:B, "</tspan></text>");
-        ctx.x += SINGLE_CHAR_OFFSET_X;
-        ctx.y += (flip?0:SINGLE_CHAR_OFFSET_Y*2);
-        ctx.y += AddY * (flip?-1:1);
-    }
-};
-
-template<char A, int OffsetX, int OffsetY>
-struct
-text_single
-{
-    static
-    constexpr
-    void
-    draw(std::string& str, draw_context& ctx, bool dir = false)
-    {
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        format(str, "<text text-anchor='middle' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, "</text>");
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-    }
-};
-
-template<char A, char B, int OffsetX, int OffsetY>
-struct
-text_single_with_smol
-{
-    static
-    constexpr
-    void
-    draw(std::string& str, draw_context& ctx, bool dir = false)
-    {
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'><tspan>", A, "</tspan><tspan dy='-0.5em'>", B, "</tspan></text>");
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-    }
-};
-
-template<char A, int OffsetX, int OffsetY>
-struct
-text_single_smol
-{
-    static
-    constexpr
-    void
-    draw(std::string& str, draw_context& ctx, bool dir = false)
-    {
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?6.2:0);
-        format(str, "<text style='font-size:6px;' text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, "</text>");
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?6.2:0);
-    }
-};
-
-template<char A, char B, int OffsetX, int OffsetY>
-struct
-text_hor
-{
-    static
-    constexpr
-    void
-    draw(std::string& str, draw_context& ctx, bool dir = false)
-    {
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-        format(str, "<text text-anchor='middle' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, B, "</text>");
-        ctx.x += OffsetX;
-        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
-    }
-};
-
 template<bond_type BondType, int AngleA = 90, int AngleB = 35>
 struct
 basic_side_chain_bond
@@ -302,7 +360,34 @@ basic_amino_acid
     draw(std::string& str, draw_context& ctx)
     {
         format(str, "<symbol id='aa_cache-", static_cast<char>(48 + SvgId::value), ctx.flip?"f":"", "'>\n");
-        text_vert<'H', 'N'>::draw(str, ctx, ctx.flip);
+
+        if(ctx.flip) {
+            basic_text<
+                text_placement_right,
+                basic_text_span<
+                    text_style_normal,
+                    text_rep<'N'>
+                >,
+                basic_text_span<
+                    text_style_below,
+                    text_rep<'H'>
+                >
+            >::draw(str, ctx, ctx.flip);
+        } else {
+            basic_text<
+                text_placement_right,
+                basic_text_span<
+                    text_style_normal,
+                    text_rep<'N'>
+                >,
+                basic_text_span<
+                    text_style_above,
+                    text_rep<'H'>
+                >
+            >::draw(str, ctx, ctx.flip);
+        }
+
+        fixed_offset<static_cast<int>(TEXT_MARGIN*2) + (SINGLE_CHAR_OFFSET_X*2), 0>::draw(str, ctx, ctx.flip);
 
         auto first_bond = FirstBond;
         if(ctx.flip) {
@@ -320,7 +405,7 @@ basic_amino_acid
         draw_bond(str, ctx, bond_type::plain, 80);
 
         draw_bond(str, dbond, bond_type::double_bond, -45);
-        text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(str, dbond, ctx.flip);
+        //text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(str, dbond, ctx.flip);
         SideChainDesc::draw(str, side_chain);
 
         format(str, "</symbol>\n");
@@ -352,15 +437,15 @@ basic_side_chain_split
     }
 };
 
-struct alaine_svg_id { static constexpr int value{0}; };
-using alanine =
-    basic_amino_acid<
-        alaine_svg_id,
-        bond_type::plain,
-        basic_side_chain<
-            basic_side_chain_bond<bond_type::wedged>
-        >
-    >;
+//struct alaine_svg_id { static constexpr int value{0}; };
+//using alanine =
+//    basic_amino_acid<
+//        alaine_svg_id,
+//        bond_type::plain,
+//        basic_side_chain<
+//            basic_side_chain_bond<bond_type::wedged>
+//        >
+//    >;
 
 struct aspariqine_svg_id { static constexpr int value{4}; };
 using aspariqine =
@@ -373,57 +458,63 @@ using aspariqine =
             basic_side_chain_split<
                 basic_side_chain<
                     basic_side_chain_bond<bond_type::double_bond, 90>,
-                    text_single<'O', 0, (-(SINGLE_CHAR_OFFSET_Y)*2)/3>
+                    basic_text<
+                        text_placement_down,
+                        basic_text_span<text_style_normal, text_rep<'O'>>
+                    >
                 >,
                 basic_side_chain<
                     basic_side_chain_bond<bond_type::plain, 0>,
-                    text_hor<'N', 'H', SINGLE_CHAR_OFFSET_X*2, 0>,
-                    text_single_smol<'2', 0, SINGLE_CHAR_OFFSET_Y/2>
+                    basic_text<
+                        text_placement_right,
+                        basic_text_span<text_style_normal, text_rep<'N', 'H'>>,
+                        basic_text_span<text_style_small, text_rep<'2'>>
+                    >
                 >
             >
         >
     >;
 
-struct aspartate_svg_id { static constexpr int value{5}; };
-using aspartate =
-    basic_amino_acid<
-        aspartate_svg_id,
-        bond_type::dashed,
-        basic_side_chain<
-            basic_side_chain_bond<bond_type::plain>,
-            basic_side_chain_bond<bond_type::plain>,
-            basic_side_chain_split<
-                basic_side_chain<
-                    basic_side_chain_bond<bond_type::double_bond, 90>,
-                    text_single<'O', 0, (-(SINGLE_CHAR_OFFSET_Y)*2)/3>
-                >,
-                basic_side_chain<
-                    basic_side_chain_bond<bond_type::plain, 0>,
-                    text_single_with_smol<'O', '-', 0, 0>
-                >
-            >
-        >
-    >;
-
-struct cysteine_svg_id { static constexpr int value{1}; };
-using cysteine =
-    basic_amino_acid<
-        cysteine_svg_id,
-        bond_type::dashed,
-        basic_side_chain<
-            basic_side_chain_bond<bond_type::plain>,
-            basic_side_chain_bond<bond_type::plain>,
-            text_hor<'S', 'H', SINGLE_CHAR_OFFSET_X*2, 0>
-        >
-    >;
-
-struct glycine_svg_id { static constexpr int value{2}; };
-using glycine =
-    basic_amino_acid<
-        glycine_svg_id,
-        bond_type::plain,
-        basic_side_chain<>
-    >;
+//struct aspartate_svg_id { static constexpr int value{5}; };
+//using aspartate =
+//    basic_amino_acid<
+//        aspartate_svg_id,
+//        bond_type::dashed,
+//        basic_side_chain<
+//            basic_side_chain_bond<bond_type::plain>,
+//            basic_side_chain_bond<bond_type::plain>,
+//            basic_side_chain_split<
+//                basic_side_chain<
+//                    basic_side_chain_bond<bond_type::double_bond, 90>,
+//                    text_single<'O', 0, (-(SINGLE_CHAR_OFFSET_Y)*2)/3>
+//                >,
+//                basic_side_chain<
+//                    basic_side_chain_bond<bond_type::plain, 0>,
+//                    text_single_with_smol<'O', '-', 0, 0>
+//                >
+//            >
+//        >
+//    >;
+//
+//struct cysteine_svg_id { static constexpr int value{1}; };
+//using cysteine =
+//    basic_amino_acid<
+//        cysteine_svg_id,
+//        bond_type::dashed,
+//        basic_side_chain<
+//            basic_side_chain_bond<bond_type::plain>,
+//            basic_side_chain_bond<bond_type::plain>,
+//            text_hor<'S', 'H', SINGLE_CHAR_OFFSET_X*2, 0>
+//        >
+//    >;
+//
+//struct glycine_svg_id { static constexpr int value{2}; };
+//using glycine =
+//    basic_amino_acid<
+//        glycine_svg_id,
+//        bond_type::plain,
+//        basic_side_chain<>
+//    >;
 
 struct glutamine_svg_id { static constexpr int value{3}; };
 using glutamine =
@@ -437,12 +528,29 @@ using glutamine =
             basic_side_chain_split<
                 basic_side_chain<
                     basic_side_chain_bond<bond_type::double_bond, 135>,
-                    text_single<'O', -SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y)/2>
+                    basic_text<
+                        text_placement_down_left,
+                        basic_text_span<
+                            text_style_normal,
+                            text_rep<'O'>
+                        >
+                    >
                 >,
                 basic_side_chain<
                     basic_side_chain_bond<bond_type::plain, 45>,
-                    text_hor<'N', 'H', SINGLE_CHAR_OFFSET_X*2, -(SINGLE_CHAR_OFFSET_Y)/2>,
-                    text_single_smol<'2', 0, SINGLE_CHAR_OFFSET_Y>
+                    basic_text<
+                        text_placement_down_right,
+                        basic_text_span<
+                            text_style_normal,
+                            text_rep<'N', 'H'>
+                        >,
+                        basic_text_span<
+                            text_style_small,
+                            text_rep<'2'>
+                        >
+                    >
+                    //text_hor<'N', 'H', SINGLE_CHAR_OFFSET_X*2, -(SINGLE_CHAR_OFFSET_Y)/2>,
+                    //text_single_smol<'2', 0, SINGLE_CHAR_OFFSET_Y>
                 >
             >
         >
@@ -469,19 +577,19 @@ cache_header()
         str.push_back('\n');
     };
 
-    append(alanine{});
+    //append(alanine{});
     append(aspariqine{});
-    append(aspartate{});
-    append(cysteine{});
-    append(glycine{});
+    //append(aspartate{});
+    //append(cysteine{});
+    //append(glycine{});
     append(glutamine{});
 
-    draw_context ctx{};
-    ctx.x -= SINGLE_CHAR_OFFSET_X*4;
-    ctx.y += SINGLE_CHAR_OFFSET_Y*2;
-    text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(str, ctx);
-    format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y + SINGLE_CHAR_OFFSET_Y*2.5, "' style='font-size:6px;'>2</text>");
-    text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
+    //draw_context ctx{};
+    //ctx.x -= SINGLE_CHAR_OFFSET_X*4;
+    //ctx.y += SINGLE_CHAR_OFFSET_Y*2;
+    //text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(str, ctx);
+    //format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y + SINGLE_CHAR_OFFSET_Y*2.5, "' style='font-size:6px;'>2</text>");
+    //text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
     buffer_t buf{};
     //assert(buf.size() <= str.length());
@@ -498,12 +606,12 @@ draw(std::stringstream& sstream, draw_context& ctx, std::size_t index)
         index <<
         (ctx.flip?"f":"") <<
         "' x='" <<
-        ctx.x - DRAW_CTX_OFFSET_X <<
+        ctx.x - DRAW_CTX_OFFSET_X + (TEXT_MARGIN*2) <<
         "' y='" <<
         ctx.y - DRAW_CTX_OFFSET_Y <<
         "' />\n";
 
-    ctx.x += (std::cos(to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2); // single char offset appears to be a half char offset
+    ctx.x += (std::cos(to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2) + (TEXT_MARGIN*2); // single char offset appears to be a half char offset
     ctx.y += (std::sin(to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);
     ctx.flip = !ctx.flip;
 }
@@ -533,22 +641,22 @@ int main()
 
     //std::string buf{};
 
-    draw(sstream, ctx, ctoaacai('D'));
-    draw(sstream, ctx, ctoaacai('D'));
+    //draw(sstream, ctx, ctoaacai('D'));
+    //draw(sstream, ctx, ctoaacai('D'));
     draw(sstream, ctx, ctoaacai('N'));
     draw(sstream, ctx, ctoaacai('N'));
     draw(sstream, ctx, ctoaacai('Q'));
     draw(sstream, ctx, ctoaacai('Q'));
-    draw(sstream, ctx, ctoaacai('C'));
-    draw(sstream, ctx, ctoaacai('C'));
-    draw(sstream, ctx, ctoaacai('A'));
-    draw(sstream, ctx, ctoaacai('G'));
-    draw(sstream, ctx, ctoaacai('G'));
-    draw(sstream, ctx, ctoaacai('A'));
+    //draw(sstream, ctx, ctoaacai('C'));
+    //draw(sstream, ctx, ctoaacai('C'));
+    //draw(sstream, ctx, ctoaacai('A'));
+    //draw(sstream, ctx, ctoaacai('G'));
+    //draw(sstream, ctx, ctoaacai('G'));
+    //draw(sstream, ctx, ctoaacai('A'));
 
     auto str = sstream.str();
-    text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(str, ctx);
-    text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
+    //text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(str, ctx);
+    //text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
     //sstream << "</svg>\n";
     str.append("</svg>\n");
