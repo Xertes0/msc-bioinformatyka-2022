@@ -820,19 +820,19 @@ cache_header()
         AminoAcid::draw(str, ctx);
     };
 
-    //append(alanine{});
-    //append(aspariqine{});
-    //append(aspartate{});
-    //append(cysteine{});
-    //append(glycine{});
-    //append(glutamate{});
-    //append(glutamine{});
-    //append(isoleucine{});
-    //append(leucine{});
-    //append(lysine{});
-    //append(methionine{});
-    //append(serine{});
-    //append(threonine{});
+    append(alanine{});
+    append(aspariqine{});
+    append(aspartate{});
+    append(cysteine{});
+    append(glycine{});
+    append(glutamate{});
+    append(glutamine{});
+    append(isoleucine{});
+    append(leucine{});
+    append(lysine{});
+    append(methionine{});
+    append(serine{});
+    append(threonine{});
     append(valine{});
 
     draw_context ctx{};
@@ -893,10 +893,14 @@ int main()
 
     draw(sstream, ctx, 'V');
     draw(sstream, ctx, 'V');
+    // Y
+    // W
     draw(sstream, ctx, 'T');
     draw(sstream, ctx, 'T');
     draw(sstream, ctx, 'S');
     draw(sstream, ctx, 'S');
+    // P
+    // F
     draw(sstream, ctx, 'M');
     draw(sstream, ctx, 'M');
     draw(sstream, ctx, 'K');
@@ -905,20 +909,22 @@ int main()
     draw(sstream, ctx, 'L');
     draw(sstream, ctx, 'I');
     draw(sstream, ctx, 'I');
-    draw(sstream, ctx, 'D');
-    draw(sstream, ctx, 'D');
-    draw(sstream, ctx, 'N');
-    draw(sstream, ctx, 'N');
+    // H
+    draw(sstream, ctx, 'G');
+    draw(sstream, ctx, 'G');
+    draw(sstream, ctx, 'E');
+    draw(sstream, ctx, 'E');
     draw(sstream, ctx, 'Q');
     draw(sstream, ctx, 'Q');
     draw(sstream, ctx, 'C');
     draw(sstream, ctx, 'C');
+    draw(sstream, ctx, 'D');
+    draw(sstream, ctx, 'D');
+    draw(sstream, ctx, 'N');
+    draw(sstream, ctx, 'N');
+    // R
     draw(sstream, ctx, 'A');
-    draw(sstream, ctx, 'G');
-    draw(sstream, ctx, 'G');
     draw(sstream, ctx, 'A');
-    draw(sstream, ctx, 'E');
-    draw(sstream, ctx, 'E');
 
     auto str = sstream.str();
     fixed_offset<static_cast<int>(TEXT_MARGIN*2), 0>::draw(str, ctx, false);
