@@ -78,7 +78,7 @@ format(std::string& str, Args... args)
     (format(str, args), ...);
 }
 
-static constexpr std::size_t BUFFER_SIZE = 1024*8;
+static constexpr std::size_t BUFFER_SIZE = 1024*15;
 using buffer_t = std::array<char, BUFFER_SIZE>;
 
 static constexpr int SINGLE_CHAR_OFFSET_X = 4;
@@ -164,7 +164,7 @@ draw_bond(std::string& str, draw_context& ctx, bond_type bond, double rot_a, dou
     ctx.flip = !ctx.flip;
 }
 
-template<char A, char B>
+template<char A, char B, int AddY = 0>
 struct
 text_vert
 {
@@ -174,10 +174,12 @@ text_vert
     draw(std::string& str, draw_context& ctx, bool flip = false)
     {
         ctx.x += SINGLE_CHAR_OFFSET_X;
+        ctx.y -= AddY * (flip?-1:1);
         ctx.y -= (flip?0:SINGLE_CHAR_OFFSET_Y*2);
         format(str, "<text text-anchor='middle' x='", ctx.x, "' y='", ctx.y, "'><tspan dy='0.5em'>", flip?B:A, "</tspan><tspan x='", ctx.x, "' dy='1em'>", flip?A:B, "</tspan></text>");
         ctx.x += SINGLE_CHAR_OFFSET_X;
         ctx.y += (flip?0:SINGLE_CHAR_OFFSET_Y*2);
+        ctx.y += AddY * (flip?-1:1);
     }
 };
 
@@ -193,6 +195,23 @@ text_single
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
         format(str, "<text text-anchor='middle' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, "</text>");
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
+    }
+};
+
+template<char A, char B, int OffsetX, int OffsetY>
+struct
+text_single_with_smol
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool dir = false)
+    {
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
+        format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'><tspan>", A, "</tspan><tspan dy='-0.5em'>", B, "</tspan></text>");
         ctx.x += OffsetX;
         ctx.y += OffsetY * (dir?-1:1) + (dir?2:0);
     }
@@ -343,6 +362,49 @@ using alanine =
         >
     >;
 
+struct aspariqine_svg_id { static constexpr int value{4}; };
+using aspariqine =
+    basic_amino_acid<
+        aspariqine_svg_id,
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::double_bond, 90>,
+                    text_single<'O', 0, (-(SINGLE_CHAR_OFFSET_Y)*2)/3>
+                >,
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::plain, 0>,
+                    text_hor<'N', 'H', SINGLE_CHAR_OFFSET_X*2, 0>,
+                    text_single_smol<'2', 0, SINGLE_CHAR_OFFSET_Y/2>
+                >
+            >
+        >
+    >;
+
+struct aspartate_svg_id { static constexpr int value{5}; };
+using aspartate =
+    basic_amino_acid<
+        aspartate_svg_id,
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::double_bond, 90>,
+                    text_single<'O', 0, (-(SINGLE_CHAR_OFFSET_Y)*2)/3>
+                >,
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::plain, 0>,
+                    text_single_with_smol<'O', '-', 0, 0>
+                >
+            >
+        >
+    >;
+
 struct cysteine_svg_id { static constexpr int value{1}; };
 using cysteine =
     basic_amino_acid<
@@ -408,6 +470,8 @@ cache_header()
     };
 
     append(alanine{});
+    append(aspariqine{});
+    append(aspartate{});
     append(cysteine{});
     append(glycine{});
     append(glutamine{});
@@ -453,6 +517,8 @@ ctoaacai(char value)
         case 'C': return 1;
         case 'G': return 2;
         case 'Q': return 3;
+        case 'N': return 4;
+        case 'D': return 5;
         default: throw std::runtime_error{"Bad ctoaacai value"};
     }
 }
@@ -467,6 +533,10 @@ int main()
 
     //std::string buf{};
 
+    draw(sstream, ctx, ctoaacai('D'));
+    draw(sstream, ctx, ctoaacai('D'));
+    draw(sstream, ctx, ctoaacai('N'));
+    draw(sstream, ctx, ctoaacai('N'));
     draw(sstream, ctx, ctoaacai('Q'));
     draw(sstream, ctx, ctoaacai('Q'));
     draw(sstream, ctx, ctoaacai('C'));
