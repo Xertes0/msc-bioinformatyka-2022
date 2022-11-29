@@ -421,21 +421,18 @@ basic_amino_acid
         draw_bond(str, ctx, bond_type::plain, 80);
 
         draw_bond(str, dbond, bond_type::double_bond, -45);
-        //text_single<'O', 0, SINGLE_CHAR_OFFSET_Y>::draw(str, dbond, ctx.flip);
+        basic_text<
+            text_placement_down,
+            basic_text_span<
+                text_style_normal,
+                text_rep<'O'>
+            >
+        >::draw(str, dbond, !dbond.flip);
         SideChainDesc::draw(str, side_chain);
 
         format(str, "</symbol>\n");
     }
 };
-
-//template<class... Args>
-//struct
-//basic_side_chain_split_component
-//{
-//    [[maybe_unused]] auto flip = ctx.flip;
-//    ctx.flip = false;
-//    (Args::draw(str, ctx, flip), ...);
-//};
 
 template<class A, class B>
 struct
@@ -453,15 +450,15 @@ basic_side_chain_split
     }
 };
 
-//struct alaine_svg_id { static constexpr int value{0}; };
-//using alanine =
-//    basic_amino_acid<
-//        alaine_svg_id,
-//        bond_type::plain,
-//        basic_side_chain<
-//            basic_side_chain_bond<bond_type::wedged>
-//        >
-//    >;
+struct alaine_svg_id { static constexpr int value{0}; };
+using alanine =
+    basic_amino_acid<
+        alaine_svg_id,
+        bond_type::plain,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::wedged>
+        >
+    >;
 
 struct aspariqine_svg_id { static constexpr int value{4}; };
 using aspariqine =
@@ -491,46 +488,68 @@ using aspariqine =
         >
     >;
 
-//struct aspartate_svg_id { static constexpr int value{5}; };
-//using aspartate =
-//    basic_amino_acid<
-//        aspartate_svg_id,
-//        bond_type::dashed,
-//        basic_side_chain<
-//            basic_side_chain_bond<bond_type::plain>,
-//            basic_side_chain_bond<bond_type::plain>,
-//            basic_side_chain_split<
-//                basic_side_chain<
-//                    basic_side_chain_bond<bond_type::double_bond, 90>,
-//                    text_single<'O', 0, (-(SINGLE_CHAR_OFFSET_Y)*2)/3>
-//                >,
-//                basic_side_chain<
-//                    basic_side_chain_bond<bond_type::plain, 0>,
-//                    text_single_with_smol<'O', '-', 0, 0>
-//                >
-//            >
-//        >
-//    >;
-//
-//struct cysteine_svg_id { static constexpr int value{1}; };
-//using cysteine =
-//    basic_amino_acid<
-//        cysteine_svg_id,
-//        bond_type::dashed,
-//        basic_side_chain<
-//            basic_side_chain_bond<bond_type::plain>,
-//            basic_side_chain_bond<bond_type::plain>,
-//            text_hor<'S', 'H', SINGLE_CHAR_OFFSET_X*2, 0>
-//        >
-//    >;
-//
-//struct glycine_svg_id { static constexpr int value{2}; };
-//using glycine =
-//    basic_amino_acid<
-//        glycine_svg_id,
-//        bond_type::plain,
-//        basic_side_chain<>
-//    >;
+struct aspartate_svg_id { static constexpr int value{5}; };
+using aspartate =
+    basic_amino_acid<
+        aspartate_svg_id,
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::double_bond, 90>,
+                    basic_text<
+                        text_placement_down,
+                        basic_text_span<
+                            text_style_normal,
+                            text_rep<'O'>
+                        >
+                    >
+                >,
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::plain, 0>,
+                    basic_text<
+                        text_placement_right,
+                        basic_text_span<
+                            text_style_normal,
+                            text_rep<'O'>
+                        >,
+                        basic_text_span<
+                            text_style_high_nm,
+                            text_rep<'-'>
+                        >
+                    >
+                >
+            >
+        >
+    >;
+
+struct cysteine_svg_id { static constexpr int value{1}; };
+using cysteine =
+    basic_amino_acid<
+        cysteine_svg_id,
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_text<
+                text_placement_down_right,
+                basic_text_span<
+                    text_style_normal,
+                    text_rep<'S', 'H'>
+                >
+            >
+        >
+    >;
+
+struct glycine_svg_id { static constexpr int value{2}; };
+using glycine =
+    basic_amino_acid<
+        glycine_svg_id,
+        bond_type::plain,
+        basic_side_chain<>
+    >;
 
 struct glutamine_svg_id { static constexpr int value{3}; };
 using glutamine =
@@ -565,8 +584,6 @@ using glutamine =
                             text_rep<'2'>
                         >
                     >
-                    //text_hor<'N', 'H', SINGLE_CHAR_OFFSET_X*2, -(SINGLE_CHAR_OFFSET_Y)/2>,
-                    //text_single_smol<'2', 0, SINGLE_CHAR_OFFSET_Y>
                 >
             >
         >
@@ -593,11 +610,11 @@ cache_header()
         str.push_back('\n');
     };
 
-    //append(alanine{});
+    append(alanine{});
     append(aspariqine{});
-    //append(aspartate{});
-    //append(cysteine{});
-    //append(glycine{});
+    append(aspartate{});
+    append(cysteine{});
+    append(glycine{});
     append(glutamine{});
 
     draw_context ctx{};
@@ -623,12 +640,8 @@ cache_header()
             text_rep<'+'>
         >
     >::draw(str, ctx, false);
-    //text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(str, ctx);
-    //format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y + SINGLE_CHAR_OFFSET_Y*2.5, "' style='font-size:6px;'>2</text>");
-    //text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
     buffer_t buf{};
-    //assert(buf.size() <= str.length());
     std::copy(str.begin(), str.end(), buf.data());
 
     return {buf, str.length()};
@@ -677,18 +690,18 @@ int main()
 
     //std::string buf{};
 
-    //draw(sstream, ctx, ctoaacai('D'));
-    //draw(sstream, ctx, ctoaacai('D'));
+    draw(sstream, ctx, ctoaacai('D'));
+    draw(sstream, ctx, ctoaacai('D'));
     draw(sstream, ctx, ctoaacai('N'));
     draw(sstream, ctx, ctoaacai('N'));
     draw(sstream, ctx, ctoaacai('Q'));
     draw(sstream, ctx, ctoaacai('Q'));
-    //draw(sstream, ctx, ctoaacai('C'));
-    //draw(sstream, ctx, ctoaacai('C'));
-    //draw(sstream, ctx, ctoaacai('A'));
-    //draw(sstream, ctx, ctoaacai('G'));
-    //draw(sstream, ctx, ctoaacai('G'));
-    //draw(sstream, ctx, ctoaacai('A'));
+    draw(sstream, ctx, ctoaacai('C'));
+    draw(sstream, ctx, ctoaacai('C'));
+    draw(sstream, ctx, ctoaacai('A'));
+    draw(sstream, ctx, ctoaacai('G'));
+    draw(sstream, ctx, ctoaacai('G'));
+    draw(sstream, ctx, ctoaacai('A'));
 
     auto str = sstream.str();
     fixed_offset<static_cast<int>(TEXT_MARGIN*2), 0>::draw(str, ctx, false);
