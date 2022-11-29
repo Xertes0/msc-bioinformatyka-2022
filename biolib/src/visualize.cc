@@ -103,8 +103,8 @@ bond_type
 
 static constexpr int BOND_LENGTH = 25;
 
-static constexpr double DRAW_CTX_OFFSET_X = 125;
-static constexpr double DRAW_CTX_OFFSET_Y = 125;
+static constexpr double DRAW_CTX_OFFSET_X = 75;
+static constexpr double DRAW_CTX_OFFSET_Y = 150;
 
 struct
 draw_context
@@ -138,15 +138,7 @@ text_style_normal
 };
 
 struct
-text_style_small_straight
-{
-    static
-    constexpr
-    std::string_view value{"style='font-size:6px;' dy='1em'"};
-};
-
-struct
-text_style_small_angle
+text_style_small
 {
     static
     constexpr
@@ -169,6 +161,19 @@ text_style_high_nm
     std::string_view value{"dy='-0.6em'"};
 };
 
+template<class Style>
+struct
+flip_style;
+
+template<>
+struct
+flip_style<text_style_high_nm>
+{
+    static
+    constexpr
+    std::string_view value{"dy='0.6em'"};
+};
+
 struct
 text_style_above
 {
@@ -177,7 +182,16 @@ text_style_above
     std::string_view value{"dx='-0.6em' dy='-1em'"};
 };
 
-template<class TextStyle, class TextRep>
+struct
+noop
+{
+    static
+    constexpr
+    std::string_view
+    value{};
+};
+
+template<class TextStyle, class TextRep, class Aditional = noop>
 struct
 basic_text_span
 {
@@ -186,7 +200,7 @@ basic_text_span
     void
     draw(std::string& str, draw_context& ctx, bool flip)
     {
-        format(str, "<tspan ", TextStyle::value, ">");
+        format(str, "<tspan ", TextStyle::value, " ", Aditional::value, ">");
         TextRep::append(str);
         format(str, "</tspan>");
     }
@@ -503,7 +517,7 @@ using aspariqine =
                     basic_text<
                         text_placement_right,
                         basic_text_span<text_style_normal, basic_text_rep<'N', 'H'>>,
-                        basic_text_span<text_style_small_straight, basic_text_rep<'2'>>
+                        basic_text_span<text_style_small, basic_text_rep<'2'>>
                     >
                 >
             >
@@ -591,7 +605,7 @@ using glutamine =
                             basic_text_rep<'N', 'H'>
                         >,
                         basic_text_span<
-                            text_style_small_angle,
+                            text_style_small,
                             basic_text_rep<'2'>
                         >
                     >
@@ -681,6 +695,35 @@ using leucine =
         >
     >;
 
+using lysine =
+    basic_amino_acid<
+        'K',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_text<
+                text_placement_down,
+                basic_text_span<
+                    text_style_high_nm,
+                    basic_text_rep<'+'>
+                >,
+                basic_text_span<
+                    text_style_normal,
+                    basic_text_rep<'N', 'H'>,
+                    flip_style<text_style_high_nm>
+                >,
+                basic_text_span<
+                    text_style_small,
+                    basic_text_rep<'3'>
+                >
+            >
+        >
+    >;
+
 consteval
 std::tuple<buffer_t, std::size_t>
 cache_header()
@@ -708,7 +751,8 @@ cache_header()
     //append(glutamate{});
     //append(glutamine{});
     //append(isoleucine{});
-    append(leucine{});
+    //append(leucine{});
+    append(lysine{});
 
     draw_context ctx{};
     ctx.x -= SINGLE_CHAR_OFFSET_X*3.2;
@@ -720,7 +764,7 @@ cache_header()
             basic_text_rep<'H'>
         >,
         basic_text_span<
-            text_style_small_straight,
+            text_style_small,
             basic_text_rep<'2'>
         >
     >::draw(str, ctx, false);
@@ -766,6 +810,8 @@ int main()
 
     draw_context ctx{};
 
+    draw(sstream, ctx, 'K');
+    draw(sstream, ctx, 'K');
     draw(sstream, ctx, 'L');
     draw(sstream, ctx, 'L');
     draw(sstream, ctx, 'I');
