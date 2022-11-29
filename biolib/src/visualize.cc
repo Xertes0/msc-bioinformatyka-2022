@@ -138,11 +138,19 @@ text_style_normal
 };
 
 struct
-text_style_small
+text_style_small_straight
 {
     static
     constexpr
     std::string_view value{"style='font-size:6px;' dy='1em'"};
+};
+
+struct
+text_style_small_angle
+{
+    static
+    constexpr
+    std::string_view value{"style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'"};
 };
 
 struct
@@ -151,6 +159,14 @@ text_style_below
     static
     constexpr
     std::string_view value{"dx='-0.6em' dy='1em'"};
+};
+
+struct
+text_style_high_nm
+{
+    static
+    constexpr
+    std::string_view value{"dy='-0.6em'"};
 };
 
 struct
@@ -468,7 +484,7 @@ using aspariqine =
                     basic_text<
                         text_placement_right,
                         basic_text_span<text_style_normal, text_rep<'N', 'H'>>,
-                        basic_text_span<text_style_small, text_rep<'2'>>
+                        basic_text_span<text_style_small_straight, text_rep<'2'>>
                     >
                 >
             >
@@ -545,7 +561,7 @@ using glutamine =
                             text_rep<'N', 'H'>
                         >,
                         basic_text_span<
-                            text_style_small,
+                            text_style_small_angle,
                             text_rep<'2'>
                         >
                     >
@@ -584,9 +600,29 @@ cache_header()
     //append(glycine{});
     append(glutamine{});
 
-    //draw_context ctx{};
-    //ctx.x -= SINGLE_CHAR_OFFSET_X*4;
-    //ctx.y += SINGLE_CHAR_OFFSET_Y*2;
+    draw_context ctx{};
+    ctx.x -= SINGLE_CHAR_OFFSET_X*3.2;
+
+    basic_text<
+        text_placement_right,
+        basic_text_span<
+            text_style_normal,
+            text_rep<'H'>
+        >,
+        basic_text_span<
+            text_style_small_straight,
+            text_rep<'2'>
+        >
+    >::draw(str, ctx, false);
+
+    fixed_offset<SINGLE_CHAR_OFFSET_X*2, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx, false);
+    basic_text<
+        text_placement_right,
+        basic_text_span<
+            text_style_normal,
+            text_rep<'+'>
+        >
+    >::draw(str, ctx, false);
     //text_single<'H', SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y*2)>::draw(str, ctx);
     //format(str, "<text text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y + SINGLE_CHAR_OFFSET_Y*2.5, "' style='font-size:6px;'>2</text>");
     //text_single<'+', SINGLE_CHAR_OFFSET_X, SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
@@ -655,6 +691,18 @@ int main()
     //draw(sstream, ctx, ctoaacai('A'));
 
     auto str = sstream.str();
+    fixed_offset<static_cast<int>(TEXT_MARGIN*2), 0>::draw(str, ctx, false);
+    basic_text<
+        text_placement_right,
+        basic_text_span<
+            text_style_normal,
+            text_rep<'O'>
+        >,
+        basic_text_span<
+            text_style_high_nm,
+            text_rep<'-'>
+        >
+    >::draw(str, ctx, false);
     //text_single<'O', SINGLE_CHAR_OFFSET_X, 0>::draw(str, ctx);
     //text_single<'-', SINGLE_CHAR_OFFSET_X, -SINGLE_CHAR_OFFSET_Y>::draw(str, ctx);
 
