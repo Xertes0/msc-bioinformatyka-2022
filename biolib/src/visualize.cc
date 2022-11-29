@@ -78,7 +78,7 @@ format(std::string& str, Args... args)
     (format(str, args), ...);
 }
 
-static constexpr std::size_t BUFFER_SIZE = 1024*5;
+static constexpr std::size_t BUFFER_SIZE = 1024*8;
 using buffer_t = std::array<char, BUFFER_SIZE>;
 
 static constexpr int SINGLE_CHAR_OFFSET_X = 4;
@@ -96,8 +96,8 @@ bond_type
 
 static constexpr int BOND_LENGTH = 25;
 
-static constexpr double DRAW_CTX_OFFSET_X = 75;
-static constexpr double DRAW_CTX_OFFSET_Y = 75;
+static constexpr double DRAW_CTX_OFFSET_X = 125;
+static constexpr double DRAW_CTX_OFFSET_Y = 125;
 
 struct
 draw_context
@@ -198,6 +198,23 @@ text_single
     }
 };
 
+template<char A, int OffsetX, int OffsetY>
+struct
+text_single_smol
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool dir = false)
+    {
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?6.2:0);
+        format(str, "<text style='font-size:6px;' text-anchor='left' dominant-baseline='middle' x='", ctx.x, "' y='", ctx.y, "'>", A, "</text>");
+        ctx.x += OffsetX;
+        ctx.y += OffsetY * (dir?-1:1) + (dir?6.2:0);
+    }
+};
+
 template<char A, char B, int OffsetX, int OffsetY>
 struct
 text_hor
@@ -215,7 +232,7 @@ text_hor
     }
 };
 
-template<bond_type BondType>
+template<bond_type BondType, int AngleA = 90, int AngleB = 35>
 struct
 basic_side_chain_bond
 {
@@ -234,9 +251,9 @@ basic_side_chain_bond
         }
 
         if(flip) {
-            draw_bond(str, ctx, bond, 90, -45 + 80, true);
+            draw_bond(str, ctx, bond, AngleA, AngleB, true);
         } else {
-            draw_bond(str, ctx, bond, 360 - 90, 360 - (-45 + 80), true);
+            draw_bond(str, ctx, bond, 360 - AngleA, 360 - AngleB, true);
         }
     }
 };
@@ -291,6 +308,31 @@ basic_amino_acid
     }
 };
 
+//template<class... Args>
+//struct
+//basic_side_chain_split_component
+//{
+//    [[maybe_unused]] auto flip = ctx.flip;
+//    ctx.flip = false;
+//    (Args::draw(str, ctx, flip), ...);
+//};
+
+template<class A, class B>
+struct
+basic_side_chain_split
+{
+    static
+    constexpr
+    void
+    draw(std::string& str, draw_context& ctx, bool flip)
+    {
+        ctx.flip = flip;
+        draw_context bctx{ctx};
+        A::draw(str, ctx);
+        B::draw(str, bctx);
+    }
+};
+
 struct alaine_svg_id { static constexpr int value{0}; };
 using alanine =
     basic_amino_acid<
@@ -321,6 +363,29 @@ using glycine =
         basic_side_chain<>
     >;
 
+struct glutamine_svg_id { static constexpr int value{3}; };
+using glutamine =
+    basic_amino_acid<
+        glutamine_svg_id,
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_split<
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::double_bond, 135>,
+                    text_single<'O', -SINGLE_CHAR_OFFSET_X, -(SINGLE_CHAR_OFFSET_Y)/2>
+                >,
+                basic_side_chain<
+                    basic_side_chain_bond<bond_type::plain, 45>,
+                    text_hor<'N', 'H', SINGLE_CHAR_OFFSET_X*2, -(SINGLE_CHAR_OFFSET_Y)/2>,
+                    text_single_smol<'2', 0, SINGLE_CHAR_OFFSET_Y>
+                >
+            >
+        >
+    >;
+
 consteval
 std::tuple<buffer_t, std::size_t>
 cache_header()
@@ -345,6 +410,7 @@ cache_header()
     append(alanine{});
     append(cysteine{});
     append(glycine{});
+    append(glutamine{});
 
     draw_context ctx{};
     ctx.x -= SINGLE_CHAR_OFFSET_X*4;
@@ -386,6 +452,7 @@ ctoaacai(char value)
         case 'A': return 0;
         case 'C': return 1;
         case 'G': return 2;
+        case 'Q': return 3;
         default: throw std::runtime_error{"Bad ctoaacai value"};
     }
 }
@@ -400,6 +467,8 @@ int main()
 
     //std::string buf{};
 
+    draw(sstream, ctx, ctoaacai('Q'));
+    draw(sstream, ctx, ctoaacai('Q'));
     draw(sstream, ctx, ctoaacai('C'));
     draw(sstream, ctx, ctoaacai('C'));
     draw(sstream, ctx, ctoaacai('A'));
