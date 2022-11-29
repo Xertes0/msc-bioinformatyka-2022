@@ -724,6 +724,25 @@ using lysine =
         >
     >;
 
+using methionine =
+    basic_amino_acid<
+        'M',
+        bond_type::dashed,
+        basic_side_chain<
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_side_chain_bond<bond_type::plain>,
+            basic_text<
+                text_placement_down_left,
+                basic_text_span<
+                    text_style_normal,
+                    basic_text_rep<'S'>
+                >
+            >,
+            basic_side_chain_bond<bond_type::plain>
+        >
+    >;
+
 consteval
 std::tuple<buffer_t, std::size_t>
 cache_header()
@@ -752,7 +771,8 @@ cache_header()
     //append(glutamine{});
     //append(isoleucine{});
     //append(leucine{});
-    append(lysine{});
+    //append(lysine{});
+    append(methionine{});
 
     draw_context ctx{};
     ctx.x -= SINGLE_CHAR_OFFSET_X*3.2;
@@ -810,6 +830,8 @@ int main()
 
     draw_context ctx{};
 
+    draw(sstream, ctx, 'M');
+    draw(sstream, ctx, 'M');
     draw(sstream, ctx, 'K');
     draw(sstream, ctx, 'K');
     draw(sstream, ctx, 'L');
