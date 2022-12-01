@@ -12,7 +12,7 @@ env:
   CONAN_SYSREQUIRES_MODE: enabled
   CONAN_USER_HOME: "${{ github.workspace }}/conan-cache"
   CONAN_USER_HOME_SHORT: "${{ github.workspace }}/conan-cache/short"
-  CLANG_TIDY_VERSION: "14.0.0"
+  CLANG_TIDY_VERSION: "16.0.0"
   EM_CACHE_FOLDER: "emsdk-cache"
   EM_VERSION: "3.1.24"
 
@@ -52,7 +52,7 @@ jobs:
         os:
           - ubuntu-22.04
         compiler:
-          - llvm-14.0.0
+          - llvm-16.0.0
         generator:
           - "Ninja Multi-Config"
         build_type:
@@ -62,10 +62,10 @@ jobs:
         include:
           #- compiler: gcc-12
           #  gcov_executable: gcov
-          - compiler: llvm-14.0.0
+          - compiler: llvm-16.0.0
             gcov_executable: "llvm-cov gcov"
           - run_cpplinter: On
-            compiler: llvm-14.0.0
+            compiler: llvm-16.0.0
             os: ubuntu-22.04
             build_type: Debug
 
@@ -92,7 +92,7 @@ jobs:
           conan: true
           vcpkg: false
           ccache: true
-          clangtidy: 14.0.0
+          clangtidy: 16.0.0
           cppcheck: true
           gcovr: true
           opencppcoverage: true
