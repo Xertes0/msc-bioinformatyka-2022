@@ -12,7 +12,7 @@ project(msc-bioinformatyka-2022)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED 23)
 
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
+if(LTO_ENABLED AND CMAKE_BUILD_TYPE STREQUAL "Release")
     include(CheckIPOSupported)
     check_ipo_supported(RESULT LTO_SUPPORTED)
 
@@ -62,6 +62,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     if(EMSCRIPTEN_EVAL_CTORS)
         add_link_options(
             -sEVAL_CTORS
+                lto, eval_ctors
         )
     endif()
 
