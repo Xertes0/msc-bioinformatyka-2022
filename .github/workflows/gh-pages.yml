@@ -42,7 +42,7 @@ jobs:
           key: ${{ github.job }}
 
       - name: Configure CMake
-        run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF
+        run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF -DLTO_ENABLED:BOOL=${{ github.ref == 'refs/heads/master' && 'ON' || 'OFF' }} -DEMSCRIPTEN_EVAL_CTORS:BOOL=${{ github.ref == 'refs/heads/master' && 'ON' || 'OFF' }}
 
       - name: Build wasm
         run: cmake --build ${{ github.workspace }}/build-emsdk --parallel $(($(nproc)+1))
