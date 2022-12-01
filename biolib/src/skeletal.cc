@@ -55,8 +55,7 @@ namespace bio
 {
 
 std::string
-//draw_skeletal(std::span<char> sequence)
-draw_skeletal(std::string sequence)
+draw_skeletal(std::string const& sequence)
 {
     auto [header_arr, header_length] = bio::skeletal::cache_header();
 

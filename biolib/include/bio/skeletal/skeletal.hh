@@ -1,18 +1,14 @@
 #pragma once
 
 #include <string>
-#include <span>
 
 namespace bio
 {
 
-//[[nodiscard]]
-//std::string
-//draw_skeletal(std::span<char> sequence);
-
 [[nodiscard]]
 std::string
-draw_skeletal(std::string sequence);
+//draw_skeletal(std::span<char> sequence);
+draw_skeletal(std::string const& sequence);
 
 } // namespace bio
 
