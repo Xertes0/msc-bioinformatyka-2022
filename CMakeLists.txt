@@ -3,11 +3,16 @@ cmake_minimum_required(VERSION 3.8)
 option(TESTS_ENABLED "Build unit tests" ON)
 option(DOXYGEN_ENABLED "Build doxygen documentation" ON)
 option(CONAN_ENABLED "Use conan package manager" ON)
+option(COTIRE_ENABLED "Use cotire" ON)
 
 project(msc-bioinformatyka-2022)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED 23)
+
+if(COTIRE_ENABLED)
+    include(cmake/Cotire.cmake)
+endif()
 
 if(DOXYGEN_ENABLED)
     find_package(Doxygen REQUIRED)
