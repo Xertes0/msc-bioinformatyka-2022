@@ -37,6 +37,7 @@ jobs:
         with:
           path: 'emsdk-cache'
           key:  'emsdk-cache'
+          restore-keys: 'emsdk-cache'
 
       - name: Setup emsdk
         uses: mymindstorm/setup-emsdk@v11
