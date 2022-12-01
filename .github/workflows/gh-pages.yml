@@ -34,7 +34,7 @@ jobs:
           actions-cache-folder: 'emsdk-cache'
 
       - name: Setup conan
-        uses: turtlebrowser/get-conan@1
+        uses: turtlebrowser/get-conan@1.1
 
       - name: Configure CMake
         run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF
