@@ -23,11 +23,15 @@ function App() {
 
     function svgSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        // @ts-ignore
         let str = event.target[0].value;
         if(str == "") { return; }
+        // @ts-ignore
         document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(str) + "</svg>";
         let svg = document.getElementById("aa_svg");
+        // @ts-ignore
         let bbox: SVGRect = svg.getBBox();
+        // @ts-ignore
         svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
     }
 
