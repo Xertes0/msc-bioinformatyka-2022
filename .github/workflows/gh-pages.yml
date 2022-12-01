@@ -23,8 +23,16 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Setup cache
+      - name: Setup cache lto
         uses: actions/cache@v3
+        if: ${{ github.ref == 'refs/heads/master' }}
+        with:
+          path: 'emsdk-cache'
+          key:  'emsdk-cache-lto'
+
+      - name: Setup cache no lto
+        uses: actions/cache@v3
+        if: ${{ github.ref != 'refs/heads/master' }}
         with:
           path: 'emsdk-cache'
           key:  'emsdk-cache'
