@@ -5,10 +5,6 @@ else()
     add_library(bio)
 endif()
 
-if(COTIRE_ENABLED)
-    cotire(bio)
-endif()
-
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_options(bio PUBLIC -fconstexpr-steps=10485760)
 
@@ -33,6 +29,10 @@ target_link_libraries(
     gcem::gcem
 )
 
+if(COTIRE_ENABLED)
+    cotire(bio)
+endif()
+
 if(DOXYGEN_ENABLED)
     set(DOXYGEN_GENERATE_HTML YES)
     set(DOXYGEN_GENERATE_MAN YES)
@@ -43,4 +43,8 @@ endif()
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     add_executable(skeletal ${CMAKE_CURRENT_SOURCE_DIR}/src/skeletal_main.cc)
     target_link_libraries(skeletal PRIVATE bio)
+
+    if(COTIRE_ENABLED)
+        cotire(skeletal)
+    endif()
 endif()
