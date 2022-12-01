@@ -42,6 +42,15 @@ jobs:
       - name: Build wasm
         run: cmake --build ${{ github.workspace }}/build-emsdk
 
+      - name: Install yarn
+        uses: bahmutov/npm-install@v1
+        with:
+          working-directory: web
+
+      - name: Build web
+        working-directory: ./web
+        run: yarn build
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         if: ${{ github.ref == 'refs/heads/master' }}
