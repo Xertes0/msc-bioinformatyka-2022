@@ -7,9 +7,9 @@ import BioModule from '@cxx/biolib/bio.mjs';
 
 function App() {
     const [bioModule, setBioModule] = useState({
-        bio_test() {
-            return Number();
-        }
+        //bio_test() {
+        //    return Number();
+        //},
     });
     const [bioModuleLoaded, setBioModuleLoaded] = useState(false);
 
@@ -21,27 +21,37 @@ function App() {
         })
     }, []);
 
+    function svgSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        // @ts-ignore
+        let str = event.target[0].value;
+        if(str == "") { return; }
+        // @ts-ignore
+        document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(str) + "</svg>";
+        let svg = document.getElementById("aa_svg");
+        // @ts-ignore
+        let bbox: SVGRect = svg.getBBox();
+        // @ts-ignore
+        svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
+    }
+
     return (
         <div className="App">
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src="/vite.svg" className="logo" alt="Vite logo"/>
-                </a>
-                <a href="https://reactjs.org" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
+            <h1>Draw a skeletal formula</h1>
+            {
+                bioModuleLoaded ?
+                <div className="card">
+                    <form onSubmit={svgSubmit}>
+                        <label>
+                            Sequence<br></br>
+                            <input type="text"></input>
+                        </label>
+                    </form>
+                </div>
+                    : ""
+            }
+            <div className="card" id="svgDiv" style={{width:"60vw", margin:"auto", backgroundColor:"white"}}>
             </div>
-            <h1>Vite + React</h1>
-            <div className="card">
-                <p>
-                    {
-                        bioModuleLoaded ? bioModule.bio_test() : 'Mada mada desu'
-                    }
-                </p>
-            </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
         </div>
     )
 }

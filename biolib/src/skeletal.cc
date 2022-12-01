@@ -47,8 +47,6 @@ draw_end(std::string& str, draw_context& ctx)
                     basic_text_rep<'-'>
             >
     >::draw(str, ctx, false);
-
-    str.append("</svg>\n");
 }
 
 } // namespace bio::skeletal
@@ -57,7 +55,8 @@ namespace bio
 {
 
 std::string
-draw_skeletal(std::span<char> sequence)
+//draw_skeletal(std::span<char> sequence)
+draw_skeletal(std::string sequence)
 {
     auto [header_arr, header_length] = bio::skeletal::cache_header();
 

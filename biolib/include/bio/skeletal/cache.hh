@@ -20,7 +20,6 @@ cache_header()
 {
     std::string str{};
 
-    str.append("<svg xmlns='http://www.w3.org/2000/svg'>");
     str.append("<style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>");
     str.append("<defs><pattern id='bond-dashed' height='10%' width='10%'><line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line></pattern></defs>");
 
