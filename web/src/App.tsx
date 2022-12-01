@@ -50,7 +50,7 @@ function App() {
                 </div>
                     : ""
             }
-            <div className="card" id="svgDiv" style={{width:"75vw", margin:"auto", backgroundColor:"white"}}>
+            <div className="card" id="svgDiv" style={{width:"60vw", margin:"auto", backgroundColor:"white"}}>
             </div>
         </div>
     )
