@@ -36,11 +36,16 @@ jobs:
       - name: Setup conan
         uses: turtlebrowser/get-conan@main
 
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ github.job }}
+
       - name: Configure CMake
-        run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF
+        run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF
 
       - name: Build wasm
-        run: cmake --build ${{ github.workspace }}/build-emsdk
+        run: cmake --build ${{ github.workspace }}/build-emsdk --parallel $(($(nproc)+1))
 
       - name: Install yarn
         uses: bahmutov/npm-install@v1
