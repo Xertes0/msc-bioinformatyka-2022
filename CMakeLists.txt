@@ -6,8 +6,8 @@ option(CONAN_ENABLED "Use conan package manager" ON)
 
 project(msc-bioinformatyka-2022)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED 20)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED 23)
 
 if(DOXYGEN_ENABLED)
     find_package(Doxygen REQUIRED)
@@ -50,6 +50,7 @@ if(CONAN_ENABLED)
 endif()
 
 find_package(range-v3 REQUIRED)
+find_package(gcem REQUIRED)
 
 add_subdirectory(biolib)
 

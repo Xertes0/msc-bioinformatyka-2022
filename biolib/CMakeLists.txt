@@ -8,6 +8,7 @@ endif()
 target_include_directories(bio PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
+list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/skeletal_main.cc)
 target_sources(bio PRIVATE ${SOURCES})
 
 target_link_options(bio PRIVATE -lembind)
@@ -15,6 +16,7 @@ target_link_options(bio PRIVATE -lembind)
 target_link_libraries(
     bio PRIVATE
     range-v3::range-v3
+    gcem::gcem
 )
 
 if(DOXYGEN_ENABLED)
@@ -24,7 +26,7 @@ if(DOXYGEN_ENABLED)
     doxygen_add_docs(biolib_docs ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
-# dev
 if(NOT CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
-    add_executable(svg ${CMAKE_CURRENT_SOURCE_DIR}/src/visualize.cc)
+    add_executable(skeletal ${CMAKE_CURRENT_SOURCE_DIR}/src/skeletal_main.cc)
+    target_link_libraries(skeletal PRIVATE bio)
 endif()
