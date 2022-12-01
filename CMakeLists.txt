@@ -16,10 +16,11 @@ if(LTO_ENABLED AND CMAKE_BUILD_TYPE STREQUAL "Release")
     include(CheckIPOSupported)
     check_ipo_supported(RESULT LTO_SUPPORTED)
 
-    if(NOT LTO_SUPPORTED)
+    if(LTO_SUPPORTED)
+        set(CMAKE_INTERPROCEDURAL_OPTIMIZATION  TRUE)
+    else()
         message(WARNING "Lto is enabled but not supported")
     endif()
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION  TRUE)
 endif()
 
 if(COTIRE_ENABLED)
@@ -61,8 +62,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 
     if(EMSCRIPTEN_EVAL_CTORS)
         add_link_options(
-            -sEVAL_CTORS
-                lto, eval_ctors
+            -sEVAL_CTORS=2
         )
     endif()
 
