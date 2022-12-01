@@ -34,12 +34,12 @@ jobs:
         with:
           filters: |
             cxx:
-              - "${{ github.workspace }}/biolib/**"
-              - "${{ github.workspace }}/tests/**"
-              - "${{ github.workspace }}/cmake/**"
-              - "${{ github.workspace }}/CMakeLists.txt"
+              - "biolib/**"
+              - "tests/**"
+              - "cmake/**"
+              - "CMakeLists.txt"
             web:
-              - "${{ github.workspace }}/web/**"
+              - "web/**"
 
   Test_CXX:
     needs: Check_For_Changes
