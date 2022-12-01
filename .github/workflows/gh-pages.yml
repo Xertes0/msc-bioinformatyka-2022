@@ -14,6 +14,8 @@ jobs:
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
+    env:
+      CCACHE_SLOPPINESS: 'pch_defines,time_macros'
     steps:
       - uses: actions/checkout@v3
         with:
