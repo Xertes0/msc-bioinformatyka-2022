@@ -52,61 +52,49 @@ jobs:
         os:
           - ubuntu-22.04
         compiler:
-          - llvm-14.0.0
+          - llvm
         generator:
           - "Ninja Multi-Config"
         build_type:
           - Release
           - Debug
 
-        include:
+        #include:
           #- compiler: gcc-12
           #  gcov_executable: gcov
-          - compiler: llvm-14.0.0
-            gcov_executable: "llvm-cov gcov"
-          - run_cpplinter: On
-            compiler: llvm-14.0.0
-            os: ubuntu-22.04
-            build_type: Debug
+          #- compiler: llvm-14.0.0
+          #  gcov_executable: "llvm-cov gcov"
+          #- run_cpplinter: On
+          #  compiler: llvm-14.0.0
+          #  os: ubuntu-22.04
+          #  build_type: Debug
 
     steps:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.CHECKOUT_PAT }}
 
-      - name: Setup cache
-        uses: ./.github/actions/setup_cache
+      - name: Cache LLVM
+        id: cache-llvm
+        uses: actions/cache@v2
         with:
-          compiler: ${{ matrix.compiler }}
-          build_type: ${{ matrix.build_type }}
-          generator: ${{ matrix.generator }}
+          path: |
+            C:/Program Files/LLVM
+            ./llvm
+          key: llvm-16.0
+          # move llvm version to variable?
 
-      - name: Setup cpp
-        uses: aminya/setup-cpp@v1
+      - name: Install LLVM
+        uses: KyleMayes/install-llvm-action@v1
         with:
-          compiler: ${{ matrix.compiler }}
-          vcvarsall: ${{ contains(matrix.os, 'windows' )}}
-
-          cmake: true
-          ninja: true
-          conan: true
-          vcpkg: false
-          ccache: true
-          clangtidy: 14.0.0
-          cppcheck: true
-          gcovr: true
-          opencppcoverage: true
-
-      - name: Cleanup conan system packages
-        run: |
-          conan remove -f '*/system'
+          version: "16.0"
+          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
 
       - name: Configure CMake
         run: |
           cmake -B ${{github.workspace}}/build-native -S ${{github.workspace}} -DCMAKE_BUILD_TYPE:STRING=${{matrix.build_type}} -DDOXYGEN_ENABLED:BOOL=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON
 
       - name: Run cpplinter
-        if: matrix.run_cpplinter == 'On'
         uses: cpp-linter/cpp-linter-action@v2
         id: linter
         env:
@@ -114,7 +102,7 @@ jobs:
         with:
           style: ''
           tidy-checks: ''
-          version: '14'
+          version: ''
           files-changed-only: true
           database: ${{github.workspace}}/build-native
           file-annotations: true
@@ -131,23 +119,22 @@ jobs:
       - name: Test and coverage - Unix
         if: runner.os != 'Windows'
         working-directory: ${{github.workspace}}/build-native
-        run: |
-          ctest -C ${{matrix.build_type}}
-          gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
+        run: ctest -C ${{matrix.build_type}}
+          #gcovr -j ${{env.nproc}} --delete --root ../ --print-summary --xml-pretty --xml coverage.xml . --gcov-executable '${{ matrix.gcov_executable }}'
 
-      - name: Test and coverage - Windows
-        if: runner.os == 'Windows'
-        working-directory: ${{github.workspace}}/build-native
-        run: |
-          OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
+      #- name: Test and coverage - Windows
+      #  if: runner.os == 'Windows'
+      #  working-directory: ${{github.workspace}}/build-native
+      #  run: |
+      #    OpenCppCoverage.exe --export_type cobertura:coverage.xml --cover_children -- ctest -C ${{matrix.build_type}}
 
-      - name: Publish to codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ runner.os }}
-          name: ${{ runner.os }}-coverage
-          files: ${{ github.workspaces }}/build-native/coverage.xml
+      #- name: Publish to codecov
+      #  uses: codecov/codecov-action@v3
+      #  with:
+      #    token: ${{ secrets.CODECOV_TOKEN }}
+      #    flags: ${{ runner.os }}
+      #    name: ${{ runner.os }}-coverage
+      #    files: ${{ github.workspaces }}/build-native/coverage.xml
 
       #- name: Setup emsdk
       #  uses: mymindstorm/setup-emsdk@v11
