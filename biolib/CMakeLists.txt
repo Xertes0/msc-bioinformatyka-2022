@@ -5,6 +5,14 @@ else()
     add_library(bio)
 endif()
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_options(bio PUBLIC -fconstexpr-steps=10485760)
+
+    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+        target_compile_options(bio PUBLIC -fconstexpr-backtrace-limit=0)
+    endif()
+endif()
+
 target_include_directories(bio PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)

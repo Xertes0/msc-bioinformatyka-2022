@@ -1,10 +1,11 @@
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "cppcoreguidelines-avoid-magic-numbers"
 
-#include <cmath>
 #include <iterator>
 #include <span>
 #include <sstream>
+
+#include <gcem.hpp>
 
 #include "bio/skeletal/cache.hh"
 #include "bio/skeletal/draw_context.hh"
@@ -26,8 +27,8 @@ draw(std::stringstream& sstream, draw_context& ctx, char one_letter_id)
         ctx.y - DRAW_CTX_OFFSET_Y <<
         "' />";
 
-    ctx.x += (std::cos(detail::to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2) + (TEXT_MARGIN*2); // single char offset appears to be a half char offset
-    ctx.y += (std::sin(detail::to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);
+    ctx.x += (gcem::cos(detail::to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2) + (TEXT_MARGIN*2); // single char offset appears to be a half char offset
+    ctx.y += (gcem::sin(detail::to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);
     ctx.flip = !ctx.flip;
 }
 

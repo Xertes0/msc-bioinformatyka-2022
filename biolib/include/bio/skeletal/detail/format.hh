@@ -9,7 +9,7 @@ namespace bio::skeletal::detail
 
 constexpr
 void
-format(std::string &str, double val)
+format_s(std::string &str, double val)
 {
     int nat = static_cast<int>(val);
     int fra = static_cast<int>((val - nat) * 1'000'000);
@@ -39,7 +39,7 @@ format(std::string &str, double val)
 
 constexpr
 void
-format(std::string &str, char val)
+format_s(std::string &str, char val)
 {
     str.push_back(val);
 }
@@ -47,7 +47,7 @@ format(std::string &str, char val)
 template<std::size_t N>
 constexpr
 void
-format(std::string &str,
+format_s(std::string &str,
        char const (&val)[N]) // NOLINT(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
 {
     str.append(val);
@@ -55,14 +55,14 @@ format(std::string &str,
 
 constexpr
 void
-format(std::string &str, char const *val)
+format_s(std::string &str, char const *val)
 {
     str.append(val);
 }
 
 constexpr
 void
-format(std::string &str, std::string_view val)
+format_s(std::string &str, std::string_view val)
 {
     str.append(val);
 }
@@ -72,7 +72,7 @@ constexpr
 void
 format(std::string &str, Args... args)
 {
-    (format(str, args), ...);
+    (format_s(str, args), ...);
 }
 
 } // namespace bio::skeletal::detail
