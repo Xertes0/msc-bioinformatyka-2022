@@ -5,7 +5,9 @@ add_executable(
     biolib/translate.cc
 )
 
-cotire(tests)
+if(COTIRE_ENABLED)
+    cotire(tests)
+endif()
 
 target_link_libraries(tests PRIVATE
     Catch2::Catch2WithMain

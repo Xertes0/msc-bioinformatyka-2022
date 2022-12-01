@@ -5,7 +5,9 @@ else()
     add_library(bio)
 endif()
 
-cotire(bio)
+if(COTIRE_ENABLED)
+    cotire(bio)
+endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     target_compile_options(bio PUBLIC -fconstexpr-steps=10485760)
