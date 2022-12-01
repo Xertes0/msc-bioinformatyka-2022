@@ -23,7 +23,9 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc)
 list(REMOVE_ITEM SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/skeletal_main.cc)
 target_sources(bio PRIVATE ${SOURCES})
 
-target_link_options(bio PRIVATE -lembind)
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+    target_link_options(bio PRIVATE -lembind)
+endif()
 
 target_link_libraries(
     bio PRIVATE

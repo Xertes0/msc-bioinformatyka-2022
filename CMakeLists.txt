@@ -1,14 +1,26 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
 
 option(TESTS_ENABLED "Build unit tests" ON)
 option(DOXYGEN_ENABLED "Build doxygen documentation" ON)
 option(CONAN_ENABLED "Use conan package manager" ON)
 option(COTIRE_ENABLED "Use cotire" ON)
+option(LTO_ENABLED "Enable lto for Release builds" OFF)
+option(EMSCRIPTEN_EVAL_CTORS "Enable -sEVAL_CTORS for emscripten" OFF)
 
 project(msc-bioinformatyka-2022)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED 23)
+
+if(LTO_ENABLED AND CMAKE_BUILD_TYPE STREQUAL "Release")
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT LTO_SUPPORTED)
+
+    if(NOT LTO_SUPPORTED)
+        message(WARNING "Lto is enabled but not supported")
+    endif()
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION  TRUE)
+endif()
 
 if(COTIRE_ENABLED)
     include(cmake/Cotire.cmake)
@@ -46,6 +58,13 @@ if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
         -sMODULARIZE=1
         -sEXPORT_ES6=1
     )
+
+    if(EMSCRIPTEN_EVAL_CTORS)
+        add_link_options(
+            -sEVAL_CTORS
+                lto, eval_ctors
+        )
+    endif()
 
     add_subdirectory(web)
 endif()
