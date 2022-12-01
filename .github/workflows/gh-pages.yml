@@ -29,6 +29,7 @@ jobs:
         with:
           path: 'emsdk-cache'
           key:  'emsdk-cache-lto'
+          restore-keys: 'emsdk-cache'
 
       - name: Setup cache no lto
         uses: actions/cache@v3
