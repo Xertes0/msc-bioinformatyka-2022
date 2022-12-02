@@ -11,6 +11,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-22.04
     permissions:
+      pull-requests: read
       contents: write
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
@@ -23,21 +24,24 @@ jobs:
           submodules: true
           fetch-depth: 0
 
-      - name: Setup cache lto
-        uses: actions/cache@v3
-        if: ${{ github.ref == 'refs/heads/master' }}
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
         with:
-          path: 'emsdk-cache'
-          key:  'emsdk-cache-lto'
-          restore-keys: 'emsdk-cache'
+          filters: |
+            cxx:
+              - "biolib/**"
+              - "tests/**"
+              - "cmake/**"
+              - "CMakeLists.txt"
+            web:
+              - "web/**"
 
-      - name: Setup cache no lto
+      - name: Setup cache
         uses: actions/cache@v3
-        if: ${{ github.ref != 'refs/heads/master' }}
         with:
           path: 'emsdk-cache'
           key:  'emsdk-cache'
-          restore-keys: 'emsdk-cache'
 
       - name: Setup emsdk
         uses: mymindstorm/setup-emsdk@v11
@@ -54,17 +58,32 @@ jobs:
           key: ${{ github.job }}
 
       - name: Configure CMake
-        run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF -DLTO_ENABLED:BOOL=${{ github.ref == 'refs/heads/master' && 'ON' || 'OFF' }} -DEMSCRIPTEN_EVAL_CTORS:BOOL=${{ github.ref == 'refs/heads/master' && 'ON' || 'OFF' }}
+        run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF -DLTO_ENABLED:BOOL=OFF -DEMSCRIPTEN_EVAL_CTORS:BOOL=OFF
+
+      - name: Run linter
+        uses: cpp-linter/cpp-linter-action@v2
+        id: linter
+        env:
+          GITHUB_TOKEN: ${{ secrets.CPPLINTER_PAT }}
+        with:
+          style: ''
+          tidy-checks: ''
+          version: '14'
+          files-changed-only: true
+          database: ${{ github.workspace }}/build-emsdk
+          file-annotations: true
 
       - name: Build wasm
         run: cmake --build ${{ github.workspace }}/build-emsdk --parallel $(($(nproc)+1))
 
       - name: Install yarn
+        if: ${{ github.ref == 'refs/heads/master' || steps.changes.outputs.web == 'true' }}
         uses: bahmutov/npm-install@v1
         with:
           working-directory: web
 
       - name: Build web
+        if: ${{ github.ref == 'refs/heads/master' || steps.changes.outputs.web == 'true' }}
         working-directory: ./web
         run: yarn build
 
