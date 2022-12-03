@@ -45,7 +45,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
     add_link_options    (-fsanitize=address,leak,undefined)
 endif()
 
-if (CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+if(CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     message(STATUS "Building for emscripten")
 
     add_compile_definitions(EMSCRIPTEN)
@@ -78,7 +78,7 @@ find_package(gcem REQUIRED)
 
 add_subdirectory(biolib)
 
-if (TESTS_ENABLED)
+if(TESTS_ENABLED)
     enable_testing()
     find_package(Catch2 REQUIRED)
     add_subdirectory(tests)
