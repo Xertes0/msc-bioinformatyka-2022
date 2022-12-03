@@ -67,17 +67,8 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/build-native --parallel $(($(nproc)+1))
 
-      - name: Test and coverage - Unix
+      - name: Test - Unix
         if: runner.os != 'Windows'
         working-directory: ${{ github.workspace }}/build-native
         run: |
           ctest -C "Release"
-          gcovr -j $(($(nproc)+1)) --delete --root ../ --print-summary --xml-pretty --xml ${{ github.workspace }}/build-native/coverage.xml . --gcov-executable 'gcovr'
-
-      - name: Publish to codecov
-        uses: codecov/codecov-action@v3
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          flags: ${{ runner.os }}
-          name: ${{ runner.os }}-coverage
-          files: ${{ github.workspaces }}/build-native/coverage.xml
