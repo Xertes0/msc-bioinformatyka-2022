@@ -28,14 +28,7 @@ jobs:
         uses: dorny/paths-filter@v2
         id: changes
         with:
-          filters: |
-            cxx:
-              - "biolib/**"
-              - "tests/**"
-              - "cmake/**"
-              - "CMakeLists.txt"
-            web:
-              - "web/**"
+          filters: .github/filters.yaml
 
       - name: Setup cache
         uses: actions/cache@v3
@@ -59,19 +52,6 @@ jobs:
 
       - name: Configure CMake
         run: emcmake cmake -B ${{ github.workspace }}/build-emsdk -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=OFF -DLTO_ENABLED:BOOL=OFF -DEMSCRIPTEN_EVAL_CTORS:BOOL=OFF
-
-      - name: Run linter
-        uses: cpp-linter/cpp-linter-action@v2
-        id: linter
-        env:
-          GITHUB_TOKEN: ${{ secrets.CPPLINTER_PAT }}
-        with:
-          style: ''
-          tidy-checks: ''
-          version: '14'
-          files-changed-only: true
-          database: ${{ github.workspace }}/build-emsdk
-          file-annotations: true
 
       - name: Build wasm
         run: cmake --build ${{ github.workspace }}/build-emsdk --parallel $(($(nproc)+1))
