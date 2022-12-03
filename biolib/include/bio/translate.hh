@@ -1,18 +1,27 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <string>
-#include <vector>
 #include <tuple>
+#include <vector>
+
+#ifdef EMSCRIPTEN
 
 #include <emscripten/val.h>
+
+#endif
 
 namespace bio
 {
 
 [[nodiscard]]
 std::array<std::string, 3>
+#ifdef EMSCRIPTEN
 translate(std::string const& sequence, emscripten::val surround_cb);
+#else
+translate(std::string const& sequence, std::function<std::tuple<std::string, std::string>(std::size_t)> surround_cb);
+#endif
 
 } // namespace bio
 

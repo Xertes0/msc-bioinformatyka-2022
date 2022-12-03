@@ -1,5 +1,3 @@
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "cppcoreguidelines-avoid-magic-numbers"
 #pragma once
 
 #include <string>
@@ -7,16 +5,18 @@
 namespace bio::skeletal::detail
 {
 
+static constexpr auto FORMAT_MAX_DOUBLE_DIGITS = 7U;
+
 constexpr
 void
 format_s(std::string &str, double val)
 {
     int nat = static_cast<int>(val);
-    int fra = static_cast<int>((val - nat) * 1'000'000);
+    int fra = static_cast<int>((val - nat) * (1U << FORMAT_MAX_DOUBLE_DIGITS));
     std::string buf{"."};
 
     while(nat != 0) {
-        buf.push_back(static_cast<char>(48 + (nat % 10)));
+        buf.push_back(static_cast<char>('0' + (nat % 10)));
         nat /= 10;
     }
     if(buf.ends_with('.')) {
@@ -27,7 +27,7 @@ format_s(std::string &str, double val)
     buf.clear();
 
     while(fra != 0) {
-        buf.push_back(static_cast<char>(48 + (fra % 10)));
+        buf.push_back(static_cast<char>('0' + (fra % 10)));
         fra /= 10;
     }
     if(buf.empty()) {
@@ -47,8 +47,7 @@ format_s(std::string &str, char val)
 template<std::size_t N>
 constexpr
 void
-format_s(std::string &str,
-       char const (&val)[N]) // NOLINT(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+format_s(std::string &str, char const (&val)[N]) // NOLINT(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
 {
     str.append(val);
 }
@@ -76,4 +75,3 @@ format(std::string &str, Args... args)
 }
 
 } // namespace bio::skeletal::detail
-#pragma clang diagnostic pop
