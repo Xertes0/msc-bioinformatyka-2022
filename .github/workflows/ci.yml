@@ -36,6 +36,15 @@ jobs:
         with:
           token: ${{ secrets.CHECKOUT_PAT }}
 
+      - name: Setup cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.conan
+          key: ${{ runner.os }}-${{ hashFiles('cmake/Conan.cmake') }}
+          restore-keys: ${{ runner.os }}
+
       - name: Setup cpp
         uses: aminya/setup-cpp@v1
         with:
