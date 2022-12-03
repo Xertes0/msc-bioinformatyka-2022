@@ -6,11 +6,19 @@ option(CONAN_ENABLED "Use conan package manager" ON)
 option(COTIRE_ENABLED "Use cotire" ON)
 option(LTO_ENABLED "Enable lto for Release builds" OFF)
 option(EMSCRIPTEN_EVAL_CTORS "Enable -sEVAL_CTORS for emscripten" OFF)
+option(COVERAGE_ENABLED "Enable coverage flags" OFF)
 
 project(msc-bioinformatyka-2022)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED 23)
+
+if(COVERAGE_ENABLED)
+    if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+        message(WARNING "Coverage is enabled but build type is set to Debug")
+    endif()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 --coverage -fprofile-arcs -ftest-coverage")
+endif()
 
 if(LTO_ENABLED AND CMAKE_BUILD_TYPE STREQUAL "Release")
     include(CheckIPOSupported)
