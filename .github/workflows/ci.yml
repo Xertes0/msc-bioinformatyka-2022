@@ -60,7 +60,7 @@ jobs:
           key: ${{ github.job }}
 
       - name: Configure CMake
-        run: cmake -B ${{ github.workspace }}/build-native -S ${{ github.workspace }} -G "Ninja" -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=ON -DLTO_ENABLED:BOOL=OFF -DEMSCRIPTEN_EVAL_CTORS:BOOL=OFF
+        run: cmake -B ${{ github.workspace }}/build-native -S ${{ github.workspace }} -G "Ninja" -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=ON -DLTO_ENABLED:BOOL=OFF -DEMSCRIPTEN_EVAL_CTORS:BOOL=OFF
 
       - name: Run linter
         uses: cpp-linter/cpp-linter-action@v2
