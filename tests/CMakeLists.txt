@@ -3,9 +3,11 @@ add_executable(
 
     biolib/example.cc
     biolib/translate.cc
+    biolib/skeletal/detail.cc
 )
 
-target_link_libraries(tests PRIVATE
+target_link_libraries(
+    tests PRIVATE
     Catch2::Catch2WithMain
     bio
 )
