@@ -58,6 +58,7 @@ translate(std::string const& sequence, emscripten::val surround_cb)
                         }
                     } helper{str};
                     std::tie(helper, close_str) = surround_cb(index++).as<std::array<std::string, 2>>();
+                    str.push_back(amino_acid);
                     open = true;
                 } else {
                     str.push_back(amino_acid);
@@ -67,6 +68,7 @@ translate(std::string const& sequence, emscripten::val surround_cb)
                     str.append(close_str);
                     open = false;
                 }
+                str.push_back('-');
             } else {
                 str.push_back(amino_acid);
             }
