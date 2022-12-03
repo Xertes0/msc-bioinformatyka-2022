@@ -7,7 +7,28 @@ on:
   pull_request:
 
 jobs:
+  changes:
+    name: Check for changes
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: read
+    outputs:
+      cxx: ${{ steps.changes.outputs.cxx }}
+      web: ${{ steps.changes.outputs.web }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHECKOUT_PAT }}
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: .github/filters.yaml
+
   deploy:
+    needs: changes
+    if: ${{ needs.changes.outputs.cxx == 'true' || needs.changes.outputs.web == 'true' }}
     name: Deploy
     runs-on: ubuntu-22.04
     permissions:
@@ -23,12 +44,6 @@ jobs:
           token: ${{ secrets.CHECKOUT_PAT }}
           submodules: true
           fetch-depth: 0
-
-      - name: Check for changes
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: .github/filters.yaml
 
       - name: Setup cache
         uses: actions/cache@v3
@@ -57,13 +72,13 @@ jobs:
         run: cmake --build ${{ github.workspace }}/build-emsdk --parallel $(($(nproc)+1))
 
       - name: Install yarn
-        if: ${{ github.ref == 'refs/heads/master' || steps.changes.outputs.web == 'true' }}
+        if: ${{ github.ref == 'refs/heads/master' || needs.changes.outputs.web == 'true' }}
         uses: bahmutov/npm-install@v1
         with:
           working-directory: web
 
       - name: Build web
-        if: ${{ github.ref == 'refs/heads/master' || steps.changes.outputs.web == 'true' }}
+        if: ${{ github.ref == 'refs/heads/master' || needs.changes.outputs.web == 'true' }}
         working-directory: ./web
         run: yarn build
 
