@@ -31,6 +31,8 @@ jobs:
     needs: changes
     if: ${{ needs.changes.outputs.cxx == 'true' }}
     runs-on: ubuntu-22.04
+    env:
+      CCACHE_SLOPPINESS: 'pch_defines,time_macros'
     steps:
       - uses: actions/checkout@v3
         with:
