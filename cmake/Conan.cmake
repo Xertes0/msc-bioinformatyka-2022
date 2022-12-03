@@ -26,7 +26,6 @@ set(CONAN_ADD_OPTIONS)
 conan_cmake_configure(
     REQUIRES range-v3/0.12.0
              gcem/1.16.0
-             #fmt/9.1.0
              ${TESTS_REQUIRES}
     GENERATORS cmake_find_package cmake_paths
     OPTIONS ${CONAN_ADD_OPTIONS}

@@ -16,7 +16,11 @@ namespace bio
 {
 
 std::array<std::string, 3>
+#ifdef EMSCRIPTEN
 translate(std::string const& sequence, emscripten::val surround_cb)
+#else
+translate(std::string const& sequence, std::function<std::tuple<std::string, std::string>(std::size_t)> surround_cb)
+#endif
 {
     auto const orf = [&surround_cb](auto range){
         auto new_range = range
@@ -42,8 +46,8 @@ translate(std::string const& sequence, emscripten::val surround_cb)
         std::string close_str{};
         str.reserve(new_range.size());
         bool open = false;
-        int index = 0;
-        for(char amino_acid : new_range) {
+        std::size_t index = 0;
+        for(char const amino_acid : new_range) {
             if(amino_acid == 'M') {
                 if(!open) {
                     struct helper
@@ -57,7 +61,11 @@ translate(std::string const& sequence, emscripten::val surround_cb)
                             return *this;
                         }
                     } helper{str};
-                    std::tie(helper, close_str) = surround_cb(index++).as<std::array<std::string, 2>>();
+                    std::tie(helper, close_str) = surround_cb(index++)
+                    #ifdef EMSCRIPTEN
+                            .as<std::array<std::string, 2>>()
+                    #endif
+                    ;
                     str.push_back(amino_acid);
                     open = true;
                 } else {
@@ -83,7 +91,7 @@ translate(std::string const& sequence, emscripten::val surround_cb)
 
     auto prepared = sequence
         // Filter out whitespaces
-        | ranges::views::filter([](auto nucl) { return std::isspace(nucl) == 0; });
+        | ranges::views::filter([](auto const nucl) { return std::isspace(nucl) == 0; });
 
     return std::array<std::string, 3> {
         orf(prepared),
