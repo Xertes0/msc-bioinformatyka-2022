@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  changes:
+    name: Check for changes
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: read
+    outputs:
+      cxx: ${{ steps.changes.outputs.cxx }}
+      web: ${{ steps.changes.outputs.web }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHECKOUT_PAT }}
+
+      - name: Check for changes
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: .github/filters.yaml
+
+  ci:
+    name: CI
+    needs: changes
+    if: ${{ needs.changes.outputs.cxx == 'true' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.CHECKOUT_PAT }}
+
+      - name: Setup cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.conan
+          key: ${{ runner.os }}-${{ hashFiles('cmake/Conan.cmake') }}
+          restore-keys: ${{ runner.os }}
+
+      - name: Setup cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: gcc-12
+          cmake: true
+          ninja: true
+          conan: true
+          gcovr: true
+
+      - name: Setup ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: ${{ github.job }}
+
+      - name: Configure CMake
+        run: cmake -B ${{ github.workspace }}/build-native -S ${{ github.workspace }} -G "Ninja" -DCMAKE_BUILD_TYPE:STRING="Release" -DCMAKE_C_COMPILER_LAUNCHER:STRING="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER:STRING="ccache" -DDOXYGEN_ENABLED:BOOL=OFF -DTESTS_ENABLED:BOOL=ON -DLTO_ENABLED:BOOL=OFF -DEMSCRIPTEN_EVAL_CTORS:BOOL=OFF
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/build-native --parallel $(($(nproc)+1))
+
+      - name: Test and coverage - Unix
+        if: runner.os != 'Windows'
+        working-directory: ${{ github.workspace }}/build-native
+        run: |
+          ctest -C "Release"
+          gcovr -j $(($(nproc)+1)) --delete --root ../ --print-summary --xml-pretty --xml ${{ github.workspace }}/build-native/coverage.xml . --gcov-executable 'gcovr'
+
+      - name: Publish to codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ${{ runner.os }}
+          name: ${{ runner.os }}-coverage
+          files: ${{ github.workspaces }}/build-native/coverage.xml

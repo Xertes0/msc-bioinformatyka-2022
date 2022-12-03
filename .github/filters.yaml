@@ -1,0 +1,7 @@
+cxx:
+  - "biolib/**"
+  - "tests/**"
+  - "cmake/**"
+  - "CMakeLists.txt"
+web:
+  - "web/**"
