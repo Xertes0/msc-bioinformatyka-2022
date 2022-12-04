@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.11)
 
 option(TESTS_ENABLED "Build unit tests" ON)
 option(DOXYGEN_ENABLED "Build doxygen documentation" ON)
@@ -25,10 +25,6 @@ endif()
 
 if(COTIRE_ENABLED)
     include(cmake/Cotire.cmake)
-endif()
-
-if(DOXYGEN_ENABLED)
-    find_package(Doxygen REQUIRED)
 endif()
 
 if(TESTS_ENABLED)
@@ -77,6 +73,13 @@ find_package(range-v3 REQUIRED)
 find_package(gcem REQUIRED)
 
 add_subdirectory(biolib)
+
+if(DOXYGEN_ENABLED)
+    include(cmake/DoxygenAwesome.cmake)
+    find_package(Doxygen REQUIRED)
+
+    add_subdirectory(docs)
+endif()
 
 if(TESTS_ENABLED)
     enable_testing()
