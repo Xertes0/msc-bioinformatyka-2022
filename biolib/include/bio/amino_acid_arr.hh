@@ -11,11 +11,11 @@ namespace bio
 {
 
 /**
- * Returns bio::amino_acid_arr index corresponding to nucleotide's symbol.
+ * Returns <tt>bio::amino_acid_arr</tt> index corresponding to nucleotide's symbol.
  * @param symbol Nucleotide's symbol.
- * @throws Throws std::runtime_error when invalid amino acid character was passed.
+ * @throws Throws <tt>std::runtime_error</tt> when invalid amino acid character was passed.
  * @note Uracil and thymine are treated the same.
- * @see bio::amino_acid_arr
+ * @see <tt>bio::amino_acid_arr</tt>
  */
 std::size_t
 ctoaaai(char symbol)
