@@ -24,8 +24,8 @@ export default function SkeletalFormula() {
         bioModuleLoaded ?
         <div className={"SkeletalFormula"}>
             <h1>Skeletal Formula</h1>
-            <div id="svgDiv">
-                {function() {
+            <div id="svgDiv" style={{height: "45vh", maxWidth: "1000vw", margin: "auto", backgroundColor: "white"}} dangerouslySetInnerHTML={
+                function() {
                     let svg = document.createElement("svg");//"<svg width='100%' height='100%' id='aa_svg'" + " xmlns='http://www.w3.org/2000/svg'></svg>");// + bioModule.bio_draw_skeletal(formula) + "</svg>");
                     svg.setAttribute("width", "100%");
                     svg.setAttribute("height", "100%");
@@ -39,9 +39,9 @@ export default function SkeletalFormula() {
                         // @ts-ignore
                         svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
                     }, 1000);
-                    return svg.outerHTML;
+                    return {__html: svg.outerHTML};
                 }()
-                }
+            }>
             </div>
         </div> : <div>Loading...</div>
     )
