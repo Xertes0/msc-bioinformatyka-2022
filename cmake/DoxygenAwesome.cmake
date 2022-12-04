@@ -1,8 +1,8 @@
-if (NOT EXISTS "${CMAKE_BINARY_DIR}/doxygen-awesome.css")
-    message(STATUS "Downloading doxygen-awesome.css from https://raw.githubusercontent.com/jothepro/doxygen-awesome-css/v2.1.0/doxygen-awesome.css")
-    file(
-            DOWNLOAD "https://raw.githubusercontent.com/jothepro/doxygen-awesome-css/v2.1.0/doxygen-awesome.css"
-            "${CMAKE_BINARY_DIR}/doxygen-awesome.css"
-            TLS_VERIFY ON
-    )
-endif ()
+include(FetchContent)
+
+FetchContent_Declare(
+    doxygen-awesome
+    GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
+    GIT_TAG v2.1.0
+)
+FetchContent_MakeAvailable(doxygen-awesome)
