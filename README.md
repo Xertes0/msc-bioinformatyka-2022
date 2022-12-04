@@ -97,6 +97,12 @@ cmake --build . --parallel $(($(nproc)+1))
 You can optionally build the documentation as html and man pages with `Doxygen`.
 For this use any of the two previous build methods
 but change the `-DDOXYGEN_ENABLED:BOOL=OFF` variable to `ON` when configuring `CMake`.
+Then run:
+```bash
+# Build the doxygen documentation
+cmake --build . --parallel $(($(nproc)+1)) --target docs
+```
+Documentation will be put in `<build_dir>/docs/html` for static html pages and `<build_dir>/docs/man` for man pages.
 
 ## Running the tests
 
