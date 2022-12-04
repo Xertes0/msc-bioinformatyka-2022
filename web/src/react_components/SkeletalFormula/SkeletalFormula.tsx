@@ -20,21 +20,28 @@ export default function SkeletalFormula() {
             setBioModule(res);
         })
     }, []);
-
-    // @ts-ignore
-    document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg'" + " xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(formula) + "</svg>";
-    let svg = document.getElementById("aa_svg");
-    // @ts-ignore
-    let bbox: SVGRect = svg.getBBox();
-    // @ts-ignore
-    svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
     return (
         bioModuleLoaded ?
         <div className={"SkeletalFormula"}>
             <h1>Skeletal Formula</h1>
             <div id="svgDiv">
-                <svg width='100%' height='100%' id='aa_svg'
-                     xmlns='http://www.w3.org/2000/svg'> {bioModule.bio_draw_skeletal(formula)}</svg>
+                {function() {
+                    let svg = document.createElement("svg");//"<svg width='100%' height='100%' id='aa_svg'" + " xmlns='http://www.w3.org/2000/svg'></svg>");// + bioModule.bio_draw_skeletal(formula) + "</svg>");
+                    svg.setAttribute("width", "100%");
+                    svg.setAttribute("height", "100%");
+                    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+                    // @ts-ignore
+                    svg.innerHTML = bioModule.bio_draw_skeletal(formula);
+                    setTimeout(()=>{
+                        // @ts-ignore
+                        let svg = document.getElementsByTagName("svg")[0];
+                        let bbox: SVGRect = svg.getBBox();
+                        // @ts-ignore
+                        svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
+                    }, 1000);
+                    return svg.outerHTML;
+                }()
+                }
             </div>
         </div> : <div>Loading...</div>
     )
