@@ -54,7 +54,6 @@ jobs:
           cmake: true
           ninja: true
           conan: true
-          gcovr: true
 
       - name: Setup ccache
         uses: hendrikmuhs/ccache-action@v1.2
