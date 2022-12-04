@@ -1,5 +1,13 @@
 # MSC Bioinformatyka 2022
 
+## Table of Contents
+ - [About](#about)
+ - [Application features](#application-features)
+ - [GitHub pages](#github-pages)
+ - [Building from source](#building-from-source)
+ - [Building the documentation](#building-the-documentation)
+ - [Running the tests](#running-the-tests)
+
 ## About
 This application is made for Motorola's science cup.
 
