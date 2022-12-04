@@ -25,7 +25,7 @@ draw(std::stringstream& sstream, draw_context& ctx, char one_letter_id)
         ctx.x - DRAW_CTX_OFFSET_X + (TEXT_MARGIN*2) <<
         "' y='" <<
         ctx.y - DRAW_CTX_OFFSET_Y <<
-        "' />";
+        "'></use>";
 
     ctx.x += (gcem::cos(detail::to_radians(-45+80)) * BOND_LENGTH * 3) + (SINGLE_CHAR_OFFSET_X * 2) + (TEXT_MARGIN*2); // single char offset appears to be a half char offset
     ctx.y += (gcem::sin(detail::to_radians(-45+80)) * BOND_LENGTH) * (ctx.flip?-1:1);

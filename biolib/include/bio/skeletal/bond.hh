@@ -41,7 +41,7 @@ draw_bond(std::string &str, draw_context &ctx, bond_type bond, double rot_a,
         detail::format(str,
                        "<line x1='", ctx.x, "' y1='", ctx.y, "' x2='",
                        ctx.x + (gcem::cos(detail::to_radians(rot)) * BOND_LENGTH), "' y2='",
-                       ctx.y + (gcem::sin(detail::to_radians(rot)) * BOND_LENGTH), "' stroke='black' />");
+                       ctx.y + (gcem::sin(detail::to_radians(rot)) * BOND_LENGTH), "' stroke='black'></line>");
     } else if(bond == bond_type::dashed || bond == bond_type::wedged) {
         double x1, x2, x3, y1, y2, y3; // NOLINT(readability-isolate-declaration,cppcoreguidelines-init-variables,readability-identifier-length)
 
@@ -70,7 +70,7 @@ draw_bond(std::string &str, draw_context &ctx, bond_type bond, double rot_a,
         }
 
         detail::format(str, "<polygon points='", x1, " ", y1, ", ", x2, " ", y2, ", ", x3, " ", y3, "' fill='",
-                       bond == bond_type::dashed ? "url(#bond-dashed)" : "black", "' />");
+                       bond == bond_type::dashed ? "url(#bond-dashed)" : "black", "'></polygon>");
     } else if(bond == bond_type::double_bond) {
         auto draw = [&](double move_dir) constexpr {
             auto offset_x = (gcem::cos(detail::to_radians(rot + (90.0 * move_dir))));
@@ -78,7 +78,7 @@ draw_bond(std::string &str, draw_context &ctx, bond_type bond, double rot_a,
 
             detail::format(str, "<line x1='", ctx.x + offset_x, "' y1='", ctx.y + offset_y, "' x2='",
                            ctx.x + (gcem::cos(detail::to_radians(rot)) * BOND_LENGTH) + offset_x, "' y2='",
-                           ctx.y + (gcem::sin(detail::to_radians(rot)) * BOND_LENGTH) + offset_y, "' stroke='black' />");
+                           ctx.y + (gcem::sin(detail::to_radians(rot)) * BOND_LENGTH) + offset_y, "' stroke='black'></line>");
         };
 
         draw(-1.0);
