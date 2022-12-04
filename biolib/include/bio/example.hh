@@ -1,8 +1,17 @@
+/**
+ * @file example.hh
+ * Example file to test embind.
+ */
+
 #pragma once
 
 namespace bio
 {
 
+/**
+ * Test function to test embind.
+ * @return @c int 10.
+ */
 int
 test();
 

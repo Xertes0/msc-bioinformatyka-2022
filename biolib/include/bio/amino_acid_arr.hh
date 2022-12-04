@@ -32,8 +32,13 @@ ctoaaai(char symbol)
 
 /**
  * Amino acid array.
- * See bio::ctoaaai on how to index.
- * @see bio::ctoaaai
+ *
+ * Example usage:
+ * @code
+ * auto amion_acid_id = amino_acid_arr[ctoaaai('C')][ctoaaai('A')][ctoaaai('G')];
+ * @endcode
+ *
+ * @see <tt>bio::ctoaaai(char)</tt>
  */
 static
 constexpr

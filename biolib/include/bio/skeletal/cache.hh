@@ -1,3 +1,8 @@
+/**
+ * @file cache.hh
+ * Cache svg header with amino acids.
+ */
+
 #pragma once
 
 #include <array>
@@ -10,9 +15,25 @@
 namespace bio::skeletal
 {
 
+/**
+ * Size of the buffer returned by <tt>bio::skeletal::cache_header()</tt>.
+ */
 static constexpr std::size_t BUFFER_SIZE = 1024*50;
+
+/**
+ * Buffer returned by <tt>bio::skeletal::cache_header()</tt>.
+ */
 using buffer_t = std::array<char, BUFFER_SIZE>;
 
+/**
+ * Returns compile time evaluated svg header with amino acids.
+ *
+ * @attention The buffer does not contain the <tt><svg></tt> tag.
+ *
+ * @return Tuple with cached buffer, amount of used data.
+ *
+ * @see <tt>bio::skeletal::buffer_t</tt>
+ */
 [[nodiscard]]
 consteval
 std::tuple<buffer_t, std::size_t>

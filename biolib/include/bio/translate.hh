@@ -1,3 +1,8 @@
+/**
+ * @file translate.hh
+ * Translating DNA/RNA sequence.
+ */
+
 #pragma once
 
 #include <array>
@@ -15,6 +20,29 @@
 namespace bio
 {
 
+/**
+ * Translate a DNA/RNA sequence into 3 ORFs.
+ *
+ * Example:
+ * @code
+ *  auto orfs = bio::translate(
+ *          std::string{"AGCAGCAGAGAUGACGAGCAGAGCGAGCUGAAAGAAAAUGGAGCGCUGA"},
+ *          [](std::size_t const index){
+ *              return std::tuple{std::string{"b"} + std::to_string(index), std::to_string(index) + "e"};
+ *          }
+ *  );
+ *
+ *  assert(orfs[0] == "SSRDDEQSELKENGAL");
+ *  assert(orfs[1] == "AAEb0MTSRAS0e-KKb1MER1e-");
+ *  assert(orfs[2] == "QQR-RAERAERKWSA");
+ * @endcode
+ *
+ * @remark This function takes <tt>std::string const&</tt> instead of <tt>std::string_view</tt> because embind dosen't support the later.
+ *
+ * @param sequence DNA/RNA sequence.
+ * @param surround_cb Function returning a tuple <i>(or array when using emscripten)</i> of two strings which will surround a peptide sequence.
+ * @return Array of 3 ORFs.
+ */
 [[nodiscard]]
 std::array<std::string, 3>
 #ifdef EMSCRIPTEN
