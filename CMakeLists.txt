@@ -28,6 +28,7 @@ if(COTIRE_ENABLED)
 endif()
 
 if(DOXYGEN_ENABLED)
+    include(cmake/DoxygenAwesome.cmake)
     find_package(Doxygen REQUIRED)
 endif()
 
