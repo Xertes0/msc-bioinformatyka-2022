@@ -1,5 +1,6 @@
 import {useParams} from "react-router-dom";
-import BioModule from '@cxx/biolib/bio.mjs';
+// @ts-ignore
+import BioModule from "@cxx/biolib/bio.mjs";
 import {useEffect, useState} from "react";
 
 export default function SkeletalFormula() {
@@ -20,9 +21,6 @@ export default function SkeletalFormula() {
         })
     }, []);
 
-    if (!bioModuleLoaded) {
-        return <div>Loading...</div>
-    }
     // @ts-ignore
     document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg'" + " xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(formula) + "</svg>";
     let svg = document.getElementById("aa_svg");
@@ -31,12 +29,13 @@ export default function SkeletalFormula() {
     // @ts-ignore
     svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
     return (
+        bioModuleLoaded ?
         <div className={"SkeletalFormula"}>
             <h1>Skeletal Formula</h1>
             <div id="svgDiv">
                 <svg width='100%' height='100%' id='aa_svg'
                      xmlns='http://www.w3.org/2000/svg'> {bioModule.bio_draw_skeletal(formula)}</svg>
             </div>
-        </div>
+        </div> : <div>Loading...</div>
     )
 }
