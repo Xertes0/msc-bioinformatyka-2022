@@ -42,14 +42,18 @@ function App() {
             return;
         }
         // @ts-ignore
-        document.getElementById("skeletalInput").value = event.target.text;
+        console.log(window.location.href);
         // @ts-ignore
-        document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(event.target.text) + "</svg>";
-        let svg = document.getElementById("aa_svg");
-        // @ts-ignore
-        let bbox: SVGRect = svg.getBBox();
-        // @ts-ignore
-        svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
+        window.open(`${window.location.href}skeletal/${event.target.text}`, "_blank");
+        // // @ts-ignore
+        // document.getElementById("skeletalInput").value = event.target.text;
+        // // @ts-ignore
+        // document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(event.target.text) + "</svg>";
+        // let svg = document.getElementById("aa_svg");
+        // // @ts-ignore
+        // let bbox: SVGRect = svg.getBBox();
+        // // @ts-ignore
+        // svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
