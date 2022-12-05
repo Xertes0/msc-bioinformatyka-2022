@@ -19,23 +19,7 @@ function App() {
             setBioModule(res);
         })
     }, []);
-
-    function svgSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        // @ts-ignore
-        let str = event.target[0].value;
-        if (str == "") {
-            return;
-        }
-        // @ts-ignore
-        document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(str) + "</svg>";
-        let svg = document.getElementById("aa_svg");
-        // @ts-ignore
-        let bbox: SVGRect = svg.getBBox();
-        // @ts-ignore
-        svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
-    }
-
+    
     function orfClick(event: React.MouseEvent<HTMLElement>) {
         // @ts-ignore
         if (event.target.tagName != "A") {
@@ -45,15 +29,6 @@ function App() {
         console.log(window.location.href);
         // @ts-ignore
         window.open(`${window.location.href}skeletal/${event.target.text}`, "_blank");
-        // // @ts-ignore
-        // document.getElementById("skeletalInput").value = event.target.text;
-        // // @ts-ignore
-        // document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(event.target.text) + "</svg>";
-        // let svg = document.getElementById("aa_svg");
-        // // @ts-ignore
-        // let bbox: SVGRect = svg.getBBox();
-        // // @ts-ignore
-        // svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -100,23 +75,6 @@ function App() {
                     </div>
                     <div id="orf2" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
-                </div>
-            </div>
-            <div className="card">
-                <h1>Draw a skeletal formula</h1>
-                {
-                    bioModuleLoaded &&
-                    <div className="card">
-                        <form onSubmit={svgSubmit}>
-                            <label>
-                                Sequence<br></br>
-                                <input id="skeletalInput" type="text"></input>
-                            </label>
-                        </form>
-                    </div>
-                }
-                <div className="card" id="svgDiv"
-                     style={{height: "45vh", maxWidth: "1000vw", margin: "auto", backgroundColor: "white"}}>
                 </div>
             </div>
         </div>
