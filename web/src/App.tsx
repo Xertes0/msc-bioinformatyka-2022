@@ -1,9 +1,8 @@
 import {useEffect, useState} from 'react';
-import reactLogo from './assets/react.svg';
 import './App.css';
 
 // @ts-ignore
-import BioModule from '@cxx/biolib/bio.mjs';
+import BioModule from "@cxx/biolib/bio.mjs";
 
 function App() {
     const [bioModule, setBioModule] = useState({
@@ -20,46 +19,31 @@ function App() {
             setBioModule(res);
         })
     }, []);
-
-    function svgSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        // @ts-ignore
-        let str = event.target[0].value;
-        if(str == "") { return; }
-        // @ts-ignore
-        document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(str) + "</svg>";
-        let svg = document.getElementById("aa_svg");
-        // @ts-ignore
-        let bbox: SVGRect = svg.getBBox();
-        // @ts-ignore
-        svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
-    }
-
+    
     function orfClick(event: React.MouseEvent<HTMLElement>) {
         // @ts-ignore
-        if(event.target.tagName != "A") {
+        if (event.target.tagName != "A") {
             return;
         }
         // @ts-ignore
-        document.getElementById("skeletalInput").value = event.target.text;
+        console.log(window.location.href);
         // @ts-ignore
-        document.getElementById("svgDiv").innerHTML = "<svg width='100%' height='100%' id='aa_svg' xmlns='http://www.w3.org/2000/svg'>" + bioModule.bio_draw_skeletal(event.target.text) + "</svg>";
-        let svg = document.getElementById("aa_svg");
-        // @ts-ignore
-        let bbox: SVGRect = svg.getBBox();
-        // @ts-ignore
-        svg.setAttribute("viewBox", `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height + bbox.y}`)
+        window.open(`${window.location.href}skeletal/${event.target.text}`, "_blank");
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         // @ts-ignore
         let str = event.target[0].value;
-        if(str == "") { return; }
+        if (str == "") {
+            return;
+        }
         // @ts-ignore
         let orfs = bioModule.bio_translate(
             str,
-            (index: Number) => { return [`<a id='proteinSeq${index}'>`, "</a>"]; }
+            (index: Number) => {
+                return [`<a id='proteinSeq${index}'>`, "</a>"];
+            }
         );
         // @ts-ignore
         document.getElementById("orf0").innerHTML = orfs[0];
@@ -74,41 +58,23 @@ function App() {
             <div className="card">
                 <h1>Translate a sequence</h1>
                 {
-                    bioModuleLoaded ?
-                        <div className="card">
-                            <form onSubmit={transSubmit}>
-                                <label>
-                                    Sequence<br></br>
-                                    <input type="text"></input>
-                                </label>
-                            </form>
-                        </div>
-                        : ""
+                    bioModuleLoaded &&
+                    <div className="card">
+                        <form onSubmit={transSubmit}>
+                            <label>
+                                Sequence<br></br>
+                                <input type="text"></input>
+                            </label>
+                        </form>
+                    </div>
                 }
                 <div onClick={orfClick}>
-                    <div id="orf0" className="card" style={{border:"1px solid grey", marginBottom:"2px"}}>
+                    <div id="orf0" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
-                    <div id="orf1" className="card" style={{border:"1px solid grey", marginBottom:"2px"}}>
+                    <div id="orf1" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
-                    <div id="orf2" className="card" style={{border:"1px solid grey", marginBottom:"2px"}}>
+                    <div id="orf2" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
-                </div>
-            </div>
-            <div className="card">
-                <h1>Draw a skeletal formula</h1>
-                {
-                    bioModuleLoaded ?
-                        <div className="card">
-                            <form onSubmit={svgSubmit}>
-                                <label>
-                                    Sequence<br></br>
-                                    <input id="skeletalInput" type="text"></input>
-                                </label>
-                            </form>
-                        </div>
-                        : ""
-                }
-                <div className="card" id="svgDiv" style={{height:"45vh", maxWidth:"1000vw", margin:"auto", backgroundColor:"white"}}>
                 </div>
             </div>
         </div>
