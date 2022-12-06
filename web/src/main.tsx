@@ -1,23 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import App from './App'
 import './index.css'
-import SkeletalFormula from "./react_components/SkeletalFormula/SkeletalFormula";
-
-const router = createBrowserRouter([
-    {
-        path: "/msc-bioinformatyka-2022/",
-        element: <App/>,
-    },
-    {
-        path: "/msc-bioinformatyka-2022/skeletal/:formula",
-        element: <SkeletalFormula/>
-    }
-]);
+import Skeletal from "./Skeletal";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
-        <RouterProvider router={router}/>
+        <BrowserRouter basename={"/msc-bioinformatyka-2022"}>
+            <Routes>
+                <Route path={"/index.html"} element={<App />} />
+                <Route path={"/skeletal.html"} element={<Skeletal />} />
+            </Routes>
+        </BrowserRouter>
     </React.StrictMode>
 )

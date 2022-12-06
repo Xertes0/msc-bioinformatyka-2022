@@ -1,10 +1,12 @@
-import {useParams} from "react-router-dom";
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
 import {useEffect, useState} from "react";
+import {useLocation} from "react-router-dom";
 
-export default function SkeletalFormula() {
-    const {formula} = useParams();
+export default function Skeletal() {
+    const search = useLocation().search;
+    const searchParams = new URLSearchParams(search);
+    const formula = searchParams.get("formula");
     // @ts-ignore
     const [bioModule, setBioModule] = useState({
         //bio_test() {
@@ -22,7 +24,7 @@ export default function SkeletalFormula() {
     }, []);
     return (
         bioModuleLoaded ?
-            <div className={"SkeletalFormula"}>
+            <div className={"Skeletal"}>
                 <h1>Skeletal Formula</h1>
                 <div id="svgDiv" style={{height: "45vh", maxWidth: "1000vw", margin: "auto", backgroundColor: "white"}}
                      dangerouslySetInnerHTML={

@@ -1,15 +1,11 @@
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
 
 function App() {
-    const [bioModule, setBioModule] = useState({
-        //bio_test() {
-        //    return Number();
-        //},
-    });
+    const [bioModule, setBioModule] = useState({});
     const [bioModuleLoaded, setBioModuleLoaded] = useState(false);
 
     useEffect(() => {
@@ -26,9 +22,7 @@ function App() {
             return;
         }
         // @ts-ignore
-        console.log(window.location.href);
-        // @ts-ignore
-        window.open(`${window.location.href}skeletal/${event.target.text}`, "_blank");
+        window.open(`skeletal.html?formula=${event.target.text}`, '_blank', 'noopener noreferrer');
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
