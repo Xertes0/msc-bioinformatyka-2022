@@ -21,8 +21,7 @@ function App() {
         if (element.tagName != "A") {
             return;
         }
-        // @ts-ignore
-        window.open(`skeletal.html?formula=${element.text}`, '_blank', 'noopener noreferrer');
+        window.open(`skeletal.html?formula=${element.innerText}`, '_blank', 'noopener noreferrer');
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
