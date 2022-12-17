@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from "react";
 import "./App.css";
-import Orf from "./components/Orf";
 
+// @ts-ignore
+import Orf from "./components/Orf";
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
 
@@ -29,8 +30,9 @@ function App() {
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         let form = event.target as HTMLFormElement;
-        let input = form.children[0] as HTMLInputElement;
+        let input = form.children[0].children[1] as HTMLInputElement;
         let str = input.value;
+        console.log(input);
         if (str == "") {
             return;
         }
@@ -41,9 +43,6 @@ function App() {
                 }
             )
         );
-        // document.getElementById("orf0").innerHTML = orfs[0];
-        // document.getElementById("orf1").innerHTML = orfs[1];
-        // document.getElementById("orf2").innerHTML = orfs[2];
     }
 
     return (
