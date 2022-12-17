@@ -57,7 +57,7 @@ translate(std::string const& sequence, std::function<std::tuple<std::string, std
 
 #include <emscripten/bind.h>
 
-EMSCRIPTEN_BINDINGS(bio_translatet)
+EMSCRIPTEN_BINDINGS(bio_translate)
 {
     emscripten::value_array<std::array<std::string, 2>>("array_string_2")
             .element(emscripten::index<0>())
@@ -68,7 +68,7 @@ EMSCRIPTEN_BINDINGS(bio_translatet)
             .element(emscripten::index<1>())
             .element(emscripten::index<2>());
 
-    emscripten::function("bio_translate", &bio::translate);
+    emscripten::function("translate", &bio::translate);
 }
 
 #endif

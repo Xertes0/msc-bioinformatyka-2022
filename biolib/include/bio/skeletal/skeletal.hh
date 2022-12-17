@@ -36,7 +36,7 @@ draw_skeletal(std::string const& sequence);
 
 EMSCRIPTEN_BINDINGS(bio_skeletal_skeletal)
 {
-    emscripten::function("bio_draw_skeletal", &bio::draw_skeletal);
+    emscripten::function("drawSkeletal", &bio::draw_skeletal);
 }
 
 #endif

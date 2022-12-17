@@ -23,7 +23,7 @@ test();
 
 EMSCRIPTEN_BINDINGS(bio_example)
 {
-    emscripten::function("bio_test", &bio::test);
+    emscripten::function("test", &bio::test);
 }
 
 #endif
