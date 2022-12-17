@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import "./App.css";
 
 // @ts-ignore
-import Orf from "./components/Orf";
+import OpenReadingFrame from "./components/OpenReadingFrame";
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
 
@@ -63,7 +63,7 @@ function App() {
                 <div onClick={orfClick}>
                     {
                         orfs.map((orf, index) => {
-                                return <Orf id={index} content={orf}/>
+                                return <OpenReadingFrame id={index} content={orf}/>
                             }
                         )
                     }
