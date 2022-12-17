@@ -10,6 +10,7 @@
 #include "bio/skeletal/cache.hh"
 #include "bio/skeletal/draw_context.hh"
 #include "bio/skeletal/skeletal.hh"
+#include "bio/skeletal/svg_defs.hh"
 
 namespace bio::skeletal
 {
@@ -37,15 +38,15 @@ draw_end(std::string& str, draw_context& ctx)
 {
     fixed_offset<static_cast<int>(TEXT_MARGIN*2), 0>::draw(str, ctx, false);
     basic_text<
-            text_placement_right,
-            basic_text_span<
-                    text_style_normal,
-                    basic_text_rep<'O'>
-            >,
-            basic_text_span<
-                    text_style_high_nm,
-                    basic_text_rep<'-'>
-            >
+        text_placement_right,
+        basic_text_span<
+            text_style_normal,
+            basic_text_rep<'O'>
+        >,
+        basic_text_span<
+            text_style_high_nm,
+            basic_text_rep<'-'>
+        >
     >::draw(str, ctx, false);
 }
 
@@ -60,6 +61,12 @@ draw_skeletal(std::string const& sequence)
     auto [header_arr, header_length] = bio::skeletal::cache_header();
 
     std::stringstream sstream{};
+    sstream
+        << "<svg width='100%' height='100%' viewBox='60.25 25.08 "
+        << (bio::skeletal::SVG_AA_WIDTH*static_cast<double>(sequence.length()))+bio::skeletal::SVG_SIDE_WIDTH
+        << ' '
+        << bio::skeletal::SVG_MAX_HEIGHT
+        << "'>";
     std::copy(header_arr.begin(), header_arr.begin()+header_length, std::ostream_iterator<char>(sstream));
 
     bio::skeletal::draw_context ctx{};
@@ -70,6 +77,8 @@ draw_skeletal(std::string const& sequence)
 
     auto str = sstream.str();
     bio::skeletal::draw_end(str, ctx);
+
+    str += "</svg>";
 
     return str;
 }
