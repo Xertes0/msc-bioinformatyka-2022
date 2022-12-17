@@ -24,6 +24,17 @@ translate(std::string const& sequence, std::function<std::tuple<std::string, std
 {
     auto const orf = [&surround_cb](auto range){
         auto new_range = range
+            // To upper case
+            | ranges::views::transform([](auto const nucl){ return std::toupper(nucl); })
+            // Filter out invalid characters
+            | ranges::views::filter([](auto const nucl) {
+                return
+                    nucl == 'T' ||
+                    nucl == 'U' ||
+                    nucl == 'C' ||
+                    nucl == 'A' ||
+                    nucl == 'G';
+            })
             // Chunk by 3 nucleotides
             | ranges::views::chunk(3)
             // Last group can be < 3 so filter it out
@@ -89,14 +100,10 @@ translate(std::string const& sequence, std::function<std::tuple<std::string, std
         return str;
     };
 
-    auto prepared = sequence
-        // Filter out whitespaces
-        | ranges::views::filter([](auto const nucl) { return std::isspace(nucl) == 0; });
-
     return std::array<std::string, 3> {
-        orf(prepared),
-        orf(prepared | ranges::views::drop(1)),
-        orf(prepared | ranges::views::drop(2))
+        orf(sequence),
+        orf(sequence | ranges::views::drop(1)),
+        orf(sequence | ranges::views::drop(2))
     };
 }
 
