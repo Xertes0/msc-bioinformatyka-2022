@@ -2,18 +2,14 @@ import "./App.css";
 import React, { useEffect, useState } from "react";
 
 import OpenReadingFrame from "./components/OpenReadingFrame";
-// @ts-ignore
-import BioModule from "@cxx/biolib/bio.mjs";
+import BioModuleLoad from "@cxx/biolib/bio.mjs";
 
 function App() {
-    const [bioModule, setBioModule] = useState({ bio_translate: (_string: string, _callback: Function) => [] });
-    const [bioModuleLoaded, setBioModuleLoaded] = useState(false);
+    const [bioModule, setBioModule] = useState<null | BioModule>(null);
     const [orfs, setOrfs] = useState([]);
 
     useEffect(() => {
-        setBioModuleLoaded(false);
-        BioModule().then((res: any) => {
-            setBioModuleLoaded(true);
+        BioModuleLoad().then((res) => {
             setBioModule(res);
         })
     }, []);
@@ -28,14 +24,18 @@ function App() {
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
+        if (!bioModule) {
+            return;
+        }
+
         let form = event.target as HTMLFormElement;
         let input = form.children[0].children[1] as HTMLInputElement;
         let str = input.value;
-        console.log(input);
         if (str == "") {
             return;
         }
-        setOrfs(bioModule.bio_translate(
+
+        setOrfs(bioModule.translate(
             str,
             (index: Number) => {
                 return [`<a id='proteinSeq${index}'>`, "</a>"];
@@ -49,7 +49,7 @@ function App() {
             <div className="card">
                 <h1>Translate a sequence</h1>
                 {
-                    bioModuleLoaded &&
+                    bioModule &&
                     <div className="card">
                         <form onSubmit={transSubmit}>
                             <label>

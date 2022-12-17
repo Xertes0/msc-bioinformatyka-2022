@@ -1,4 +1,5 @@
 cmake-autogen.config.ts
+cmake-autogen.tsconfig.json
 
 ### Node template
 # Logs
