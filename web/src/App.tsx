@@ -1,13 +1,12 @@
-import React, {useEffect, useState} from "react";
 import "./App.css";
+import React, { useEffect, useState } from "react";
 
-// @ts-ignore
 import OpenReadingFrame from "./components/OpenReadingFrame";
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
 
 function App() {
-    const [bioModule, setBioModule] = useState({bio_translate: (string: string, callback: Function) => []});
+    const [bioModule, setBioModule] = useState({ bio_translate: (_string: string, _callback: Function) => [] });
     const [bioModuleLoaded, setBioModuleLoaded] = useState(false);
     const [orfs, setOrfs] = useState([]);
 
@@ -37,11 +36,11 @@ function App() {
             return;
         }
         setOrfs(bioModule.bio_translate(
-                str,
-                (index: Number) => {
-                    return [`<a id='proteinSeq${index}'>`, "</a>"];
-                }
-            )
+            str,
+            (index: Number) => {
+                return [`<a id='proteinSeq${index}'>`, "</a>"];
+            }
+        )
         );
     }
 
@@ -63,9 +62,8 @@ function App() {
                 <div onClick={orfClick}>
                     {
                         orfs.map((orf, index) => {
-                                return <OpenReadingFrame key={index} id={index} content={orf}/>
-                            }
-                        )
+                            return <OpenReadingFrame key={index} id={index} content={orf} />
+                        })
                     }
                 </div>
             </div>

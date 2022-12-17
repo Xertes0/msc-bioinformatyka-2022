@@ -1,10 +1,15 @@
-export default function OpenReadingFrame(porps: { id: number, content: string }) {
+export default function OpenReadingFrame(props: { id: number, content: string }) {
     return (
-        <div id={`orf${porps.id}`} dangerouslySetInnerHTML={{__html: porps.content}} className="card" style={{
-            border: "1px" +
-                " solid" +
-                " grey", marginBottom: "2px"
-        }}>
-        </div>
+        <div
+            id={`orf${props.id}`}
+            dangerouslySetInnerHTML={{ __html: props.content }}
+            className="card"
+            style={{
+                marginBottom: "2px",
+                borderColor: "grey",
+                borderStyle: "solid",
+                borderWidth: "1px",
+            }}
+        ></div>
     )
 }
