@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
@@ -15,7 +15,7 @@ function App() {
             setBioModule(res);
         })
     }, []);
-    
+
     function orfClick(event: React.MouseEvent<HTMLElement>) {
         // @ts-ignore
         if (event.target.tagName != "A") {
@@ -63,11 +63,11 @@ function App() {
                     </div>
                 }
                 <div onClick={orfClick}>
-                    <div id="orf0" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
+                    <div id="orf0" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
                     </div>
-                    <div id="orf1" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
+                    <div id="orf1" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
                     </div>
-                    <div id="orf2" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
+                    <div id="orf2" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
                     </div>
                 </div>
             </div>
