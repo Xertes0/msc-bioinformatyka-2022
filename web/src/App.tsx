@@ -67,12 +67,6 @@ function App() {
                             }
                         )
                     }
-                    {/*<div id="orf0" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>*/}
-                    {/*</div>*/}
-                    {/*<div id="orf1" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>*/}
-                    {/*</div>*/}
-                    {/*<div id="orf2" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>*/}
-                    {/*</div>*/}
                 </div>
             </div>
         </div>
