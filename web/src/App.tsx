@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./App.css";
 
 // @ts-ignore
@@ -16,13 +16,13 @@ function App() {
         })
     }, []);
 
-    function orfClick(event: React.MouseEvent<HTMLElement>) {
-        // @ts-ignore
-        if (event.target.tagName != "A") {
+    function orfClick(event: React.MouseEvent<HTMLDivElement>) {
+        let element = event.target as HTMLDivElement;
+        if (element.tagName != "A") {
             return;
         }
         // @ts-ignore
-        window.open(`skeletal.html?formula=${event.target.text}`, '_blank', 'noopener noreferrer');
+        window.open(`skeletal.html?formula=${element.text}`, '_blank', 'noopener noreferrer');
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -63,11 +63,11 @@ function App() {
                     </div>
                 }
                 <div onClick={orfClick}>
-                    <div id="orf0" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
+                    <div id="orf0" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
-                    <div id="orf1" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
+                    <div id="orf1" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
-                    <div id="orf2" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
+                    <div id="orf2" className="card" style={{border: "1px solid grey", marginBottom: "2px"}}>
                     </div>
                 </div>
             </div>
