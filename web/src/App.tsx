@@ -63,7 +63,7 @@ function App() {
                 <div onClick={orfClick}>
                     {
                         orfs.map((orf, index) => {
-                                return <OpenReadingFrame id={index} content={orf}/>
+                                return <OpenReadingFrame key={index} id={index} content={orf}/>
                             }
                         )
                     }
