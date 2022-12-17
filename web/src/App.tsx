@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
 import "./App.css";
+import React, { useEffect, useState } from "react";
 
+import OpenReadingFrame from "./components/OpenReadingFrame";
 // @ts-ignore
 import BioModule from "@cxx/biolib/bio.mjs";
 
 function App() {
-    const [bioModule, setBioModule] = useState({});
+    const [bioModule, setBioModule] = useState({ bio_translate: (_string: string, _callback: Function) => [] });
     const [bioModuleLoaded, setBioModuleLoaded] = useState(false);
+    const [orfs, setOrfs] = useState([]);
 
     useEffect(() => {
         setBioModuleLoaded(false);
@@ -16,35 +18,30 @@ function App() {
         })
     }, []);
 
-    function orfClick(event: React.MouseEvent<HTMLElement>) {
-        // @ts-ignore
-        if (event.target.tagName != "A") {
+    function orfClick(event: React.MouseEvent<HTMLDivElement>) {
+        let element = event.target as HTMLDivElement;
+        if (element.tagName != "A") {
             return;
         }
-        // @ts-ignore
-        window.open(`skeletal.html?formula=${event.target.text}`, '_blank', 'noopener noreferrer');
+        window.open(`skeletal.html?formula=${element.innerText}`, '_blank', 'noopener noreferrer');
     }
 
     function transSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        // @ts-ignore
-        let str = event.target[0].value;
+        let form = event.target as HTMLFormElement;
+        let input = form.children[0].children[1] as HTMLInputElement;
+        let str = input.value;
+        console.log(input);
         if (str == "") {
             return;
         }
-        // @ts-ignore
-        let orfs = bioModule.bio_translate(
+        setOrfs(bioModule.bio_translate(
             str,
             (index: Number) => {
                 return [`<a id='proteinSeq${index}'>`, "</a>"];
             }
+        )
         );
-        // @ts-ignore
-        document.getElementById("orf0").innerHTML = orfs[0];
-        // @ts-ignore
-        document.getElementById("orf1").innerHTML = orfs[1];
-        // @ts-ignore
-        document.getElementById("orf2").innerHTML = orfs[2];
     }
 
     return (
@@ -63,12 +60,11 @@ function App() {
                     </div>
                 }
                 <div onClick={orfClick}>
-                    <div id="orf0" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
-                    </div>
-                    <div id="orf1" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
-                    </div>
-                    <div id="orf2" className="card" style={{ border: "1px solid grey", marginBottom: "2px" }}>
-                    </div>
+                    {
+                        orfs.map((orf, index) => {
+                            return <OpenReadingFrame key={index} id={index} content={orf} />
+                        })
+                    }
                 </div>
             </div>
         </div>
