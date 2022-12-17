@@ -18,7 +18,6 @@ namespace bio
  * auto svg = bio::draw_skeletal("MKLISA");
  * @endcode
  *
- * @attention Returned svg file does not contain @c viewBox attribute.
  * @remark This function takes <tt>std::string const&</tt> instead of <tt>std::span<char></tt> because of embind does not support the later.
  *
  * @param sequence Amino acid sequence.
