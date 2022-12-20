@@ -18,7 +18,7 @@ This application is made for Motorola's science cup.
  - Displays various information about peptides.
 
 ## GitHub pages
-This project is publicly accessible on GitHub pages [under this url](https://Xertes0.github.io/msc-bioinformatyka-2022).
+This project is publicly accessible on GitHub pages [under this url](https://Xertes0.github.io/msc-bioinformatyka-2022/index.html).
 
 ## Building from source
 
