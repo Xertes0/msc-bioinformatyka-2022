@@ -11,7 +11,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         <BrowserRouter basename={"/msc-bioinformatyka-2022"}>
             <Routes>
               <Route path={"/"}>
-                <Route index element={<App />} />
+                <Route index                  element={<App />}      />
+                <Route path={"index.html"}    element={<App />}      />
+
                 <Route path={"skeletal.html"} element={<Skeletal />} />
               </Route>
             </Routes>
