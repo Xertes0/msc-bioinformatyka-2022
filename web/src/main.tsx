@@ -10,8 +10,10 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
         <BrowserRouter basename={"/msc-bioinformatyka-2022"}>
             <Routes>
-              <Route path={"/"} element={<App />}>
-                <Route path={"index.html"} element={<App />} />
+              <Route path={"/"}>
+                <Route index                  element={<App />}      />
+                <Route path={"index.html"}    element={<App />}      />
+
                 <Route path={"skeletal.html"} element={<Skeletal />} />
               </Route>
             </Routes>
