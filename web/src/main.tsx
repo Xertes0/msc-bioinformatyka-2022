@@ -13,7 +13,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
               <Route path={"/"}>
                 <Route index                  element={<App />}      />
                 <Route path={"index.html"}    element={<App />}      />
-
                 <Route path={"skeletal.html"} element={<Skeletal />} />
               </Route>
             </Routes>
