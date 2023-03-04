@@ -20,12 +20,27 @@ td:not(:empty), th:not(:empty) {
 
 tbody > tr, th {
   background: var(--bg-dark-primary);
-  color: var(--accent-secondary);
+}
+
+th {
+  color: var(--accent-primary);
 }
 
 tbody > tr:hover, th:hover, tr.active {
   background: var(--bg-dark-tertiary);
   color: white;
+}
+
+tr.orf {
+  background: var(--accent-tertiary);
+}
+
+tr.orf:hover {
+  background: var(--accent-secondary);
+}
+
+tr.orf.active {
+  background: var(--accent-primary);
 }
 
 td:first-child:not(:empty),

@@ -1,13 +1,13 @@
 :root {
   --bg-dark-primary: #242424;
-  --bg-dark-secondary: #282828;
+  --bg-dark-secondary: #303030;
   --bg-dark-tertiary: #3c3c3c;
   --bg-dark-quaternary: #1e1e1e;
   --accent-primary: #646cff;
   --accent-secondary: #535bf2;
   --accent-tertiary: #424bd5;
   --border-radius: 0.4em;
-  --border-width: 0.2em;
+  --border-width: 0.3em;
   --padding-xxsmall: 0.1em;
   --padding-xsmall: 0.2em;
   --padding-small: 0.5em;
