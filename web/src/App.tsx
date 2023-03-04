@@ -1,22 +1,11 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import OpenReadingFrame from "./components/OpenReadingFrame";
-import BioModuleLoad from "@cxx/biolib/bio.mjs";
 import SequenceInput from "./SequenceInput";
 import ProteinView from "./ProteinView";
 
 function App() {
-    const [orfs, setOrfs] = useState([]);
     const [sequence, setSequence] = useState("");
-
-    function orfClick(event: React.MouseEvent<HTMLDivElement>) {
-        let element = event.target as HTMLDivElement;
-        if (element.tagName != "A") {
-            return;
-        }
-        window.open(`skeletal.html?formula=${element.innerText}`, '_blank', 'noopener noreferrer');
-    }
 
     function submit(sequence: string) {
         setSequence(sequence);
