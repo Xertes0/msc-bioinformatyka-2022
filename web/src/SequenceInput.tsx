@@ -1,6 +1,7 @@
 import "./SequenceInput.css";
 import React, { FormEvent } from "react";
 
+
 export interface SequenceInputProps {
     onSubmit(sequence: string): void;
 }
@@ -17,20 +18,22 @@ function SequenceInput({ onSubmit }: SequenceInputProps) {
     const regex = /[^ACTGU]/gi;
     const validateInput = ({ target }: SequenceInputEvent) =>
       target.value = target.value.replace(regex, '').toUpperCase()
-    const submit = (event: SequenceSubmitEvent) => {
+    const handleSubmit = (event: SequenceSubmitEvent) => {
         event.preventDefault();
         const sequence = (event.target.elements.namedItem("formula") as HTMLTextAreaElement).value;
         return regex.test(sequence) || onSubmit(sequence);
     }
+
+    const submitForm = (form: HTMLFormElement) => form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true  }));
+
     const checkForEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key == 'Enter')
-            ((event.target as HTMLTextAreaElement).parentElement as HTMLFormElement)
-                .dispatchEvent(new Event("submit", { cancelable: true, bubbles: true  }));
+            submitForm(((event.target as HTMLTextAreaElement).parentElement as HTMLFormElement));
     }
     return (
-        <form onSubmit={submit}>
-            <textarea name="formula" onInput={validateInput} onKeyDown={checkForEnter} /><br/>
-            <input type="submit" value="Translate" />
+        <form onSubmit={handleSubmit} className="sequence-input">
+            <textarea name="formula" onInput={validateInput} onKeyDown={checkForEnter} className="sequence-input-box" />
+            <input type="submit" value="Translate" className="sequence-submit" />
         </form>
     )
 }

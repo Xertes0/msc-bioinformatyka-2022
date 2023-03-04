@@ -1,50 +1,47 @@
-@import "colors.css";
-
-:root {
-    --border-radius: 0.4em;
-    --border-width: 0.2em;
-}
+@import "variables.css";
 
 * { box-sizing: border-box; }
 
-.protein-view { font-family: monospace; }
-.protein-view > * { cursor: default; }
+table.protein-view { font-family: monospace; }
+table.protein-view > * { cursor: default; }
 
 table { border-spacing: 0 0.5em; }
+
+tbody td, thead th { text-align: center; }
 
 thead th:nth-child(3n + 1) { background: var(--bg-dark-primary) }
 thead th:nth-child(3n + 2) { background: var(--bg-dark-secondary) }
 thead th:nth-child(3n + 3) { background: var(--bg-dark-tertiary) }
 
 td:not(:empty), th:not(:empty) {
-    border-block: var(--border-width) solid;
-    padding: 0.1em 0.3em;
+  border-block: var(--border-width) solid;
+  padding: var(--padding-xxsmall) var(--padding-xsmall);
 }
 
 tbody > tr, th {
-    background: var(--bg-dark-secondary);
-    color: var(--accent-secondary);
+  background: var(--bg-dark-primary);
+  color: var(--accent-secondary);
 }
+
 tbody > tr:hover, th:hover, tr.active {
-    background: var(--bg-dark-tertiary);
-    color: white;
+  background: var(--bg-dark-tertiary);
+  color: white;
 }
 
 td:first-child:not(:empty),
 td:first-child:empty + td:not(:empty),
 th:first-child:not(:empty),
 th:first-child:empty + th:not(:empty) {
-    border-left: var(--border-width) solid;
-    border-start-start-radius: var(--border-radius);
-    border-end-start-radius: var(--border-radius);
+  border-left: var(--border-width) solid;
+  border-start-start-radius: var(--border-radius);
+  border-end-start-radius: var(--border-radius);
 }
 
 td:last-child, th:last-child {
-    border-right: var(--border-width) solid;
-    border-end-end-radius: var(--border-radius);
-    border-start-end-radius: var(--border-radius);
+  border-right: var(--border-width) solid;
+  border-end-end-radius: var(--border-radius);
+  border-start-end-radius: var(--border-radius);
 }
-
 
 td:empty { visibility: hidden; }
 th:empty { visibility: hidden; }

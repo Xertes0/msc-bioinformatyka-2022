@@ -1,8 +1,9 @@
+@import "variables.css";
+
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  display: flex;
 }
 
 .logo {
@@ -32,6 +33,32 @@
   }
 }
 
-.form-container {
-  padding: 2em;
+div.App {
+  display: grid;
+  grid-template-columns: 3fr 2fr 5fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "header header ."
+    "input description ."
+    "protein-view protein-view .";
+  grid-gap: 2rem;
+}
+
+h1 {
+  grid-area: header;
+  margin: 0;
+  padding: 0;
+}
+
+form.sequence-input { grid-area: input; }
+div.form-description-container { grid-area: description; }
+
+div.protein-view-container {
+  grid-area: protein-view;
+  background: var(--bg-dark-secondary);
+  padding: var(--padding-medium);
+  border-radius: var(--border-radius);
+  text-align: center;
+  display: flex;
+  overflow: scroll;
 }
