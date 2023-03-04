@@ -15,14 +15,10 @@
 namespace bio
 {
 
-std::array<std::string, 3>
-#ifdef EMSCRIPTEN
-translate(std::string const& sequence, emscripten::val surround_cb)
-#else
-translate(std::string const& sequence, std::function<std::tuple<std::string, std::string>(std::size_t)> surround_cb)
-#endif
+std::array<bio::orf_result, 3>
+translate(std::string const& sequence)
 {
-    auto const orf = [&surround_cb](auto range){
+    auto const orf = [](auto range){
         auto new_range = range
             // To upper case
             | ranges::views::transform([](auto const nucl){ return std::toupper(nucl); })
@@ -53,54 +49,24 @@ translate(std::string const& sequence, std::function<std::tuple<std::string, std
             })
             | ranges::to<std::string>();
 
-        std::string str{};
-        std::string close_str{};
-        str.reserve(new_range.size());
-        bool open = false;
-        std::size_t index = 0;
-        for(char const amino_acid : new_range) {
-            if(amino_acid == 'M') {
-                if(!open) {
-                    struct helper
-                    {
-                        std::string& to_insert;
-
-                        helper&
-                        operator=(std::string const& str)
-                        {
-                            to_insert.append(str);
-                            return *this;
-                        }
-                    } helper{str};
-                    std::tie(helper, close_str) = surround_cb(index++)
-                    #ifdef EMSCRIPTEN
-                            .as<std::array<std::string, 2>>()
-                    #endif
-                    ;
-                    str.push_back(amino_acid);
-                    open = true;
-                } else {
-                    str.push_back(amino_acid);
+        bio::orf_result res{};
+        res.sequence = std::move(new_range);
+        for(std::size_t str_i=0;str_i<res.sequence.length();++str_i) {
+            if(res.sequence[str_i] == 'M') {
+                for(std::size_t find_i=str_i+1;find_i<res.sequence.length();++find_i) {
+                    if(res.sequence[find_i] == '-') {
+                        res.indices.emplace_back(std::pair{str_i, find_i});
+                        break;
+                    }
                 }
-            } else if(amino_acid == '-') {
-                if(open) {
-                    str.append(close_str);
-                    open = false;
-                }
-                str.push_back('-');
-            } else {
-                str.push_back(amino_acid);
+                // ignore peptides without terminator
             }
         }
 
-        if(open) {
-            str.append(close_str);
-        }
-
-        return str;
+        return res;
     };
 
-    return std::array<std::string, 3> {
+    return std::array<bio::orf_result, 3> {
         orf(sequence),
         orf(sequence | ranges::views::drop(1)),
         orf(sequence | ranges::views::drop(2))

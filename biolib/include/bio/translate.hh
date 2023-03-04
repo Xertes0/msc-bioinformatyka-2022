@@ -21,34 +21,61 @@ namespace bio
 {
 
 /**
+ * Result of one translating one ORF.
+ *
+ * @see bio::translate for example usage
+ */
+struct orf_result
+{
+    /**
+     * Translated sequence.
+     */
+    std::string sequence;
+
+    /**
+     * Vector of pairs specifying the start and end indexes of peptides.
+     */
+    std::vector<std::pair<std::size_t, std::size_t>> indices;
+};
+
+/**
  * Translate a DNA/RNA sequence into 3 ORFs.
  *
  * Example:
  * @code
  *  auto orfs = bio::translate(
- *          std::string{"AGCAGCAGAGAUGACGAGCAGAGCGAGCUGAAAGAAAAUGGAGCGCUGA"},
- *          [](std::size_t const index){
- *              return std::tuple{std::string{"b"} + std::to_string(index), std::to_string(index) + "e"};
- *          }
+ *      std::string{"AGCAGCAGAGAUGACGAGCAGAGCGAGCUGAAAGAAAAUGGAGCGCUGA"}
  *  );
  *
- *  assert(orfs[0] == "SSRDDEQSELKENGAL");
- *  assert(orfs[1] == "AAEb0MTSRAS0e-KKb1MER1e-");
- *  assert(orfs[2] == "QQR-RAERAERKWSA");
+ *  assert(orfs[0].sequence == "SSRDDEQSELKENGAL");
+ *  assert(orfs[0].indices.empty());
+ *
+ *  assert(orfs[1].sequence == "AAEMTSRAS-KKMER-");
+ *  assert(orfs[1].indices.size() == 2);
+ *
+ *  assert(orfs[1].indices[0].first == 3);
+ *  assert(orfs[1].indices[0].second == 9);
+ *
+ *  assert(orfs[1].indices[1].first == 12);
+ *  assert(orfs[1].indices[1].second == 15);
+ *
+ *  assert(orfs[2].sequence == "QQR-RAERAERKWSA");
+ *  assert(orfs[2].indices.empty());
  * @endcode
  *
  * @remark This function takes <tt>std::string const&</tt> instead of <tt>std::string_view</tt> because embind dosen't support the later.
  *
  * @param sequence DNA/RNA sequence.
- * @param surround_cb Function returning a tuple <i>(or array when using emscripten)</i> of two strings which will surround a peptide sequence.
- * @return Array of 3 ORFs.
+ * @return Array of 3 bio::orf_result.
+ *
+ * @see bio::orf_result
  */
 [[nodiscard]]
-std::array<std::string, 3>
+std::array<bio::orf_result, 3>
 #ifdef EMSCRIPTEN
-translate(std::string const& sequence, emscripten::val surround_cb);
+translate(std::string const& sequence);
 #else
-translate(std::string const& sequence, std::function<std::tuple<std::string, std::string>(std::size_t)> surround_cb);
+translate(std::string const& sequence);
 #endif
 
 } // namespace bio
@@ -59,14 +86,20 @@ translate(std::string const& sequence, std::function<std::tuple<std::string, std
 
 EMSCRIPTEN_BINDINGS(bio_translate)
 {
-    emscripten::value_array<std::array<std::string, 2>>("array_string_2")
-            .element(emscripten::index<0>())
-            .element(emscripten::index<1>());
+    emscripten::class_<bio::orf_result>("orf_result")
+        .property("sequence", &bio::orf_result::sequence)
+        .property("indices", &bio::orf_result::indices);
 
-    emscripten::value_array<std::array<std::string, 3>>("array_string_3")
+    emscripten::value_array<std::array<bio::orf_result, 3>>("array-orf_result-3")
             .element(emscripten::index<0>())
             .element(emscripten::index<1>())
             .element(emscripten::index<2>());
+
+    emscripten::class_<std::pair<std::size_t, std::size_t>>("pair-size_t-size_t")
+            .property("start", &std::pair<std::size_t, std::size_t>::first)
+            .property("end", &std::pair<std::size_t, std::size_t>::second);
+
+    emscripten::register_vector<std::pair<std::size_t, std::size_t>>("vector-pair-size_t-size_t");
 
     emscripten::function("translate", &bio::translate);
 }
