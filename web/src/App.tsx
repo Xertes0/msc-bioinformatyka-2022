@@ -1,66 +1,34 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
-import OpenReadingFrame from "./components/OpenReadingFrame";
-import BioModuleLoad from "@cxx/biolib/bio.mjs";
+import SequenceInput from "./SequenceInput";
+import ProteinView from "./ProteinView";
 
 function App() {
-    const [bioModule, setBioModule] = useState<null | BioModule>(null);
-    const [orfs, setOrfs] = useState<null | [OrfResult, OrfResult, OrfResult]>();
+    const [sequence, setSequence] = useState("");
 
-    useEffect(() => {
-        BioModuleLoad().then((res) => {
-            setBioModule(res);
-        })
-    }, []);
-
-    function orfClick(event: React.MouseEvent<HTMLDivElement>) {
-        let element = event.target as HTMLDivElement;
-        if (element.tagName != "A") {
-            return;
-        }
-        window.open(`skeletal.html?formula=${element.innerText}`, '_blank', 'noopener noreferrer');
-    }
-
-    function transSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        if (!bioModule) {
-            return;
-        }
-
-        let form = event.target as HTMLFormElement;
-        let input = form.children[0].children[1] as HTMLInputElement;
-        let str = input.value;
-        if (str == "") {
-            return;
-        }
-
-        setOrfs(bioModule.translate(str));
+    function submit(sequence: string) {
+        setSequence(sequence);
     }
 
     return (
         <div className="App">
             <div className="card">
-                <h1>Translate a sequence</h1>
-                {
-                    bioModule &&
-                    <div className="card">
-                        <form onSubmit={transSubmit}>
-                            <label>
-                                Sequence<br></br>
-                                <input type="text"></input>
-                            </label>
-                        </form>
+                <h1>Input a nucleic acid sequence:</h1>
+                <div className="form-container">
+                    <SequenceInput onSubmit={submit} />
+                    <div className="form-description-container">
+                        <h2>The input accepts nucleobases mapped as follows:</h2>
+                        <ul>
+                            <li>A = Adenine</li>
+                            <li>C = Cytosine</li>
+                            <li>G = Guanine</li>
+                            <li>T = Thymine</li>
+                            <li>U = Uracil</li>
+                        </ul>
                     </div>
-                }
-                <div onClick={orfClick}>
-                    {
-                        orfs && orfs.map((orf, _index) => {
-                            return <span> { orf.sequence } </span>;
-                            //return <OpenReadingFrame key={index} id={index} content={orf} />
-                        })
-                    }
                 </div>
+                { /* sequence  && */ <ProteinView sequence={sequence} onProteinClick={() => {  }}/> }
             </div>
         </div>
     )
