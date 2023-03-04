@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 import SequenceInput from "./SequenceInput";
 import ProteinView from "./ProteinView";
+import {ScrollContainer} from "react-indiana-drag-scroll";
 
 function App() {
     const [sequence, setSequence] = useState("");
@@ -28,7 +29,11 @@ function App() {
                         </ul>
                     </div>
                 </div>
-                { /* sequence  && */ <ProteinView sequence={sequence} onOpenReadingFrameClick={() => {  }}/> }
+                { sequence &&
+                  <ScrollContainer mouseScroll={true} hideScrollbars={true} style={{ overflow: "scroll", maxHeight: "350px" }}>
+                      <ProteinView sequence={sequence} onOpenReadingFrameClick={() => {  }}/>
+                  </ScrollContainer>
+                }
             </div>
         </div>
     )
