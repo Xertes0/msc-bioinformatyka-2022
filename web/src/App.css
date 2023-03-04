@@ -51,7 +51,12 @@ h1 {
 }
 
 form.sequence-input { grid-area: input; }
-div.form-description-container { grid-area: description; }
+div.form-description-container {
+  grid-area: description;
+  background: var(--bg-dark-quaternary);
+  border-radius: var(--border-radius);
+  padding: 10px 24px 16px;
+}
 
 div.protein-view-container {
   grid-area: protein-view;
@@ -60,5 +65,5 @@ div.protein-view-container {
   border-radius: var(--border-radius);
   text-align: center;
   display: flex;
-  overflow: scroll;
+  overflow: auto;
 }
