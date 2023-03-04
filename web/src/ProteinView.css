@@ -12,11 +12,11 @@
 
 table { border-spacing: 0 0.5em; }
 
-th:nth-child(3n + 1) { background: var(--bg-dark-primary) }
-th:nth-child(3n + 2) { background: var(--bg-dark-secondary) }
-th:nth-child(3n + 3) { background: var(--bg-dark-tertiary) }
+thead th:nth-child(3n + 1) { background: var(--bg-dark-primary) }
+thead th:nth-child(3n + 2) { background: var(--bg-dark-secondary) }
+thead th:nth-child(3n + 3) { background: var(--bg-dark-tertiary) }
 
-td:not(:empty), th {
+td:not(:empty), th:not(:empty) {
     border-block: var(--border-width) solid;
     padding: 0.1em 0.3em;
 }
@@ -32,7 +32,8 @@ tbody > tr:hover, th:hover, tr.active {
 
 td:first-child:not(:empty),
 td:first-child:empty + td:not(:empty),
-th:first-child:not(:empty) {
+th:first-child:not(:empty),
+th:first-child:empty + th:not(:empty) {
     border-left: var(--border-width) solid;
     border-start-start-radius: var(--border-radius);
     border-end-start-radius: var(--border-radius);
@@ -46,3 +47,4 @@ td:last-child, th:last-child {
 
 
 td:empty { visibility: hidden; }
+th:empty { visibility: hidden; }
