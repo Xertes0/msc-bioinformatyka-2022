@@ -28,7 +28,7 @@ function App() {
                         </ul>
                     </div>
                 </div>
-                { /* sequence  && */ <ProteinView sequence={sequence} onProteinClick={() => {  }}/> }
+                { /* sequence  && */ <ProteinView sequence={sequence} onOpenReadingFrameClick={() => {  }}/> }
             </div>
         </div>
     )

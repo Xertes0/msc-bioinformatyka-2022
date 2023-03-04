@@ -6,12 +6,12 @@ import { data } from "./AminoAcidData";
 
 export interface FoundProteinsViewProps {
   sequence: string;
-  onProteinClick(event: OpenReadingFrameClick): void;
+  onOpenReadingFrameClick(event: OpenReadingFrameClick): void;
 }
 
 export interface OpenReadingFrameClick extends SyntheticEvent<HTMLTableRowElement> {
   target: HTMLTableRowElement;
-  sequence: string;
+  openReadingFrame: OpenReadingFrame;
 }
 
 export class OpenReadingFrame {
@@ -22,7 +22,7 @@ export class OpenReadingFrame {
   aaEnd?: number;
 }
 
-function ProteinView({ sequence, onProteinClick }: FoundProteinsViewProps) {
+function ProteinView({ sequence, onOpenReadingFrameClick }: FoundProteinsViewProps) {
 
   const [bioModule, setBioModule] = useState<null | BioModule>(null);
 
@@ -93,16 +93,26 @@ function ProteinView({ sequence, onProteinClick }: FoundProteinsViewProps) {
                           activeOpenReadingFrame?.nbEnd == orf.nbEnd
                             ? " active" : ""
                         }`}
+                        onClick={(event) => {
+                          setActiveOpenReadingFrame(orf);
+                          onOpenReadingFrameClick(Object.assign(event,
+                            {openReadingFrame: orf, target: event.target as HTMLTableRowElement}
+                          ) as OpenReadingFrameClick);
+                        }}
                         data-shift={seqIdx}
                         data-orf={JSON.stringify(orf)}>
                       {(orf.nbStart || 0) > 0 && <td colSpan={orf.nbStart}></td>}
-                      {Array.from(seq.slice(orf.aaStart, orf.aaEnd)).map((aa, aaIdx) =>
-                        <td key={aaIdx}
-                            colSpan={3}
-                            className="aa"
-                            data-idx={aaIdx}
-                            style={{ borderColor: higlightColors[orfs] }}>{data.find(aad => aad.symbol == aa)?.abbreviation}</td>
-                      )}
+                      {
+                        Array.from(seq.slice(orf.aaStart, orf.aaEnd)).map((aa, aaIdx) =>
+                          <td key={aaIdx}
+                              colSpan={3}
+                              className="aa"
+                              data-idx={aaIdx}
+                              style={{borderColor: higlightColors[orfs]}}>
+                            {data.find(aad => aad.symbol == aa)?.abbreviation}
+                          </td>
+                        )
+                      }
                     </tr>
                   );
                 })}
