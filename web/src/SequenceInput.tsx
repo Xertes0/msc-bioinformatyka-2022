@@ -1,15 +1,15 @@
 import "./SequenceInput.css";
-import React, {FormEvent} from "react";
+import React, { FormEvent } from "react";
 
-interface SequenceInputProps {
-    onSubmit: (sequence: string) => void;
+export interface SequenceInputProps {
+    onSubmit(sequence: string): void;
 }
 
-interface SequenceInputEvent extends FormEvent<HTMLTextAreaElement> {
+export interface SequenceInputEvent extends FormEvent<HTMLTextAreaElement> {
     target: HTMLTextAreaElement;
 }
 
-interface SequenceSubmitEvent extends FormEvent<HTMLFormElement> {
+export interface SequenceSubmitEvent extends FormEvent<HTMLFormElement> {
     target: HTMLFormElement;
 }
 
@@ -20,7 +20,7 @@ function SequenceInput({ onSubmit }: SequenceInputProps) {
     const submit = (event: SequenceSubmitEvent) => {
         event.preventDefault();
         const sequence = (event.target.elements.namedItem("formula") as HTMLTextAreaElement).value;
-        if (!regex.test(sequence)) onSubmit(sequence);
+        return regex.test(sequence) || onSubmit(sequence);
     }
     const checkForEnter = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key == 'Enter')

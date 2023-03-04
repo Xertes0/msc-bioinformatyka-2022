@@ -1,0 +1,48 @@
+@import "colors.css";
+
+:root {
+    --border-radius: 0.4em;
+    --border-width: 0.2em;
+}
+
+* { box-sizing: border-box; }
+
+.protein-view { font-family: monospace; }
+.protein-view > * { cursor: default; }
+
+table { border-spacing: 0 0.5em; }
+
+th:nth-child(3n + 1) { background: var(--bg-dark-primary) }
+th:nth-child(3n + 2) { background: var(--bg-dark-secondary) }
+th:nth-child(3n + 3) { background: var(--bg-dark-tertiary) }
+
+td:not(:empty), th {
+    border-block: var(--border-width) solid;
+    padding: 0.1em 0.3em;
+}
+
+tbody > tr, th {
+    background: var(--bg-dark-secondary);
+    color: var(--accent-secondary);
+}
+tbody > tr:hover, th:hover, tr.active {
+    background: var(--bg-dark-tertiary);
+    color: white;
+}
+
+td:first-child:not(:empty),
+td:first-child:empty + td:not(:empty),
+th:first-child:not(:empty) {
+    border-left: var(--border-width) solid;
+    border-start-start-radius: var(--border-radius);
+    border-end-start-radius: var(--border-radius);
+}
+
+td:last-child, th:last-child {
+    border-right: var(--border-width) solid;
+    border-end-end-radius: var(--border-radius);
+    border-start-end-radius: var(--border-radius);
+}
+
+
+td:empty { visibility: hidden; }
