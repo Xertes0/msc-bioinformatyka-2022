@@ -6,7 +6,7 @@ import BioModuleLoad from "@cxx/biolib/bio.mjs";
 
 function App() {
     const [bioModule, setBioModule] = useState<null | BioModule>(null);
-    const [orfs, setOrfs] = useState([]);
+    const [orfs, setOrfs] = useState<null | [OrfResult, OrfResult, OrfResult]>();
 
     useEffect(() => {
         BioModuleLoad().then((res) => {
@@ -35,13 +35,7 @@ function App() {
             return;
         }
 
-        setOrfs(bioModule.translate(
-            str,
-            (index: Number) => {
-                return [`<a id='proteinSeq${index}'>`, "</a>"];
-            }
-        )
-        );
+        setOrfs(bioModule.translate(str));
     }
 
     return (
@@ -61,8 +55,9 @@ function App() {
                 }
                 <div onClick={orfClick}>
                     {
-                        orfs.map((orf, index) => {
-                            return <OpenReadingFrame key={index} id={index} content={orf} />
+                        orfs && orfs.map((orf, _index) => {
+                            return <span> { orf.sequence } </span>;
+                            //return <OpenReadingFrame key={index} id={index} content={orf} />
                         })
                     }
                 </div>

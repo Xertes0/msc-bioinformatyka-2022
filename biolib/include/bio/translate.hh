@@ -95,6 +95,12 @@ EMSCRIPTEN_BINDINGS(bio_translate)
             .element(emscripten::index<1>())
             .element(emscripten::index<2>());
 
+    emscripten::class_<std::pair<std::size_t, std::size_t>>("pair-size_t-size_t")
+            .property("start", &std::pair<std::size_t, std::size_t>::first)
+            .property("end", &std::pair<std::size_t, std::size_t>::second);
+
+    emscripten::register_vector<std::pair<std::size_t, std::size_t>>("vector-pair-size_t-size_t");
+
     emscripten::function("translate", &bio::translate);
 }
 
