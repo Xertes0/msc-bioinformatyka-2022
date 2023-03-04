@@ -1,6 +1,8 @@
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import BioModuleLoad from "@cxx/biolib/bio.mjs";
 import "./ProteinView.css"
+import { data } from "./AminoAcidData";
+
 
 export interface FoundProteinsViewProps {
   sequence: string;
@@ -75,8 +77,12 @@ function ProteinView({ sequence, onProteinClick }: FoundProteinsViewProps) {
               <>
                 <tr key={`seq-${seqIdx}`} className="aa-seq header" data-shift={seqIdx} data-seq={seq}>
                   {seqIdx > 0 && <th colSpan={seqIdx}></th>}
-                  {Array.from(seq).map((aa, aaIdx) => <th key={aaIdx} colSpan={3} className="aa"
-                                                          data-idx={aaIdx}>{aa}</th>)}
+                  {
+                    Array.from(seq).map((aa, aaIdx) =>
+                      <th key={aaIdx} colSpan={3} className="aa" data-idx={aaIdx}>
+                        {data.find(aad => aad.symbol == aa)?.abbreviation || "-"}
+                      </th>)
+                  }
                 </tr>
                 {openReadingFrames[seqIdx].map((orf, orfIdx) => {
                   orfs++;
@@ -95,7 +101,7 @@ function ProteinView({ sequence, onProteinClick }: FoundProteinsViewProps) {
                             colSpan={3}
                             className="aa"
                             data-idx={aaIdx}
-                            style={{borderColor: higlightColors[orfs]}}>{aa}</td>
+                            style={{ borderColor: higlightColors[orfs] }}>{data.find(aad => aad.symbol == aa)?.abbreviation}</td>
                       )}
                     </tr>
                   );
