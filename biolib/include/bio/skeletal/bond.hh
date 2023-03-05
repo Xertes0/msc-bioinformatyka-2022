@@ -23,8 +23,10 @@ bond_type
     dashed,
     // wavy,
     double_bond,
+    half_double,
 };
 
+template<int BOND_LENGTH = ::bio::skeletal::BOND_LENGTH>
 constexpr
 void
 draw_bond(std::string &str, draw_context &ctx, bond_type bond, double rot_a,
@@ -79,6 +81,18 @@ draw_bond(std::string &str, draw_context &ctx, bond_type bond, double rot_a,
             detail::format(str, "<line x1='", ctx.x + offset_x, "' y1='", ctx.y + offset_y, "' x2='",
                            ctx.x + (gcem::cos(detail::to_radians(rot)) * BOND_LENGTH) + offset_x, "' y2='",
                            ctx.y + (gcem::sin(detail::to_radians(rot)) * BOND_LENGTH) + offset_y, "' stroke='black'></line>");
+        };
+
+        draw(-1.0);
+        draw(1.0);
+    } else if(bond == bond_type::half_double) {
+        auto draw = [&](double move_dir) constexpr {
+            auto offset_x = (gcem::cos(detail::to_radians(rot + (90.0 * move_dir))));
+            auto offset_y = (gcem::sin(detail::to_radians(rot + (90.0 * move_dir))));
+
+            detail::format(str, "<line x1='", ctx.x + offset_x, "' y1='", ctx.y + offset_y, "' x2='",
+                           ctx.x + (gcem::cos(detail::to_radians(rot)) * BOND_LENGTH) + offset_x, "' y2='",
+                           ctx.y + (gcem::sin(detail::to_radians(rot)) * BOND_LENGTH) + offset_y, "' stroke='black' ", move_dir==-1.0?"stroke-dasharray=\"2\"":"", "></line>");
         };
 
         draw(-1.0);
