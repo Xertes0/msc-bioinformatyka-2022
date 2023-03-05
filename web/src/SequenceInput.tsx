@@ -15,9 +15,9 @@ export interface SequenceSubmitEvent extends FormEvent<HTMLFormElement> {
 }
 
 function SequenceInput({ onSubmit }: SequenceInputProps) {
-    const regex = /[^ACTGU]/gi;
+    const regex = /[^ACGU]/gi;
     const validateInput = ({ target }: SequenceInputEvent) =>
-      target.value = target.value.replace(regex, '').toUpperCase()
+      target.value = target.value.replace(/T/gi, 'U').replace(regex, '').toUpperCase()
     const handleSubmit = (event: SequenceSubmitEvent) => {
         event.preventDefault();
         const sequence = (event.target.elements.namedItem("formula") as HTMLTextAreaElement).value;
