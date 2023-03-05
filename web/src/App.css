@@ -40,9 +40,9 @@ div.App {
   grid-template-columns: 3fr 2fr 5fr;
   grid-template-rows: auto auto auto;
   grid-template-areas:
-    "header header ."
-    "input description ."
-    "protein-view protein-view .";
+    "header header protein-info"
+    "input description protein-info"
+    "aa-view aa-view protein-info";
   grid-gap: 2rem;
 }
 
@@ -63,8 +63,18 @@ div.form-description-container {
   padding: 10px 24px 16px;
 }
 
-div.protein-view-container {
-  grid-area: protein-view;
+div.aa-view-container {
+  grid-area: aa-view;
+  background: var(--bg-dark-secondary);
+  padding: var(--padding-medium);
+  border-radius: var(--border-radius);
+  text-align: center;
+  display: flex;
+  overflow: auto;
+}
+
+div.protein-info-container {
+  grid-area: protein-info;
   background: var(--bg-dark-secondary);
   padding: var(--padding-medium);
   border-radius: var(--border-radius);

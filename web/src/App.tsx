@@ -8,6 +8,7 @@ import AminoAcidView, {
 import { ScrollContainer } from "react-indiana-drag-scroll";
 import BioModuleLoad from "@cxx/biolib/bio.mjs";
 import { data } from "./AminoAcidData";
+import ProteinInfo from "./components/ProteinInfo";
 
 export interface OpenReadingFrameIndicesInfo {
   nbStart: number;
@@ -63,7 +64,9 @@ function App() {
     );
   }, [sequence, !!bioModule]);
 
-  const [selectedOrf, setSelectedOrf] = useState<[number, number]>();
+  const [selectedOrfIndices, setSelectedOrfIndices] =
+    useState<[number, number]>();
+  const [selectedOrf, setSelectedOrf] = useState<string[]>();
 
   function submit(sequence: string) {
     setSequence(sequence);
@@ -87,7 +90,7 @@ function App() {
         <ScrollContainer
           mouseScroll={true}
           hideScrollbars={true}
-          className="protein-view-container"
+          className="aa-view-container"
         >
           <AminoAcidView
             sequence={Array.from(sequence)}
@@ -99,12 +102,24 @@ function App() {
               ) as [string[], string[], string[]]
             }
             orfData={orfData}
-            onOpenReadingFrameClick={(event) => {
-              setSelectedOrf(event.idx);
+            onOpenReadingFrameClick={({ idx }) => {
+              setSelectedOrfIndices(idx);
+              setSelectedOrf(orfData[idx[0]][idx[1]].sequence);
             }}
-            selectedOrf={selectedOrf}
+            selectedOrf={selectedOrfIndices}
           />
         </ScrollContainer>
+      )}
+      {selectedOrf && (
+        <>
+          <div className="protein-info-container">
+            <ProteinInfo
+              seq={selectedOrf?.map((s) =>
+                data.find((data) => data.abbreviation === s)
+              )}
+            />
+          </div>
+        </>
       )}
     </div>
   );
