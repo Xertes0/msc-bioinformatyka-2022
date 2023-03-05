@@ -27,7 +27,7 @@ basic_text_placement_straight
     }
 };
 
-template<bool Right>
+template<bool Right, bool Reverse>
 struct
 basic_text_placement_angle
 {
@@ -40,7 +40,7 @@ basic_text_placement_angle
                        "text-anchor='",
                        (Right ? "start" : "end"),
                        "' dominant-baseline='",
-                       (flip ? "hanging" : "text-top"),
+                       ((Reverse?!flip:flip) ? "hanging" : "text-top"),
                        "' x='", ctx.x + (Right ? TEXT_MARGIN : 0),
                        "' y='", ctx.y + ((Right ? 0 : TEXT_MARGIN) * (flip ? 1 : -1)),
                        "'");
@@ -49,7 +49,11 @@ basic_text_placement_angle
 
 using text_placement_right = basic_text_placement_straight<true>;
 using text_placement_down  = basic_text_placement_straight<false>;
-using text_placement_down_right = basic_text_placement_angle<true>;
-using text_placement_down_left  = basic_text_placement_angle<false>;
+
+using text_placement_down_right = basic_text_placement_angle<true, false>;
+using text_placement_down_left  = basic_text_placement_angle<false, false>;
+
+using text_placement_up_right = basic_text_placement_angle<true, true>;
+using text_placement_up_left  = basic_text_placement_angle<false, true>;
 
 } // namespace bio::skeletal
