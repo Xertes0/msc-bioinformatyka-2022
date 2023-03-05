@@ -79,6 +79,22 @@ div.protein-info-container {
   padding: var(--padding-medium);
   border-radius: var(--border-radius);
   text-align: center;
-  display: flex;
   overflow: auto;
+  display: grid;
+  place-items: stretch;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 100%;
+  grid-gap: 2rem;
+}
+
+div.protein-formula {
+  height: 100%;
+  width: 100%;
+  overflow: auto hidden;
+}
+
+div.protein-formula svg {
+  height: 100%;
+  width: auto;
+  filter: invert(1);
 }

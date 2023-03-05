@@ -67,6 +67,7 @@ function App() {
   const [selectedOrfIndices, setSelectedOrfIndices] =
     useState<[number, number]>();
   const [selectedOrf, setSelectedOrf] = useState<string[]>();
+  const [svg, setSvg] = useState<string>();
 
   function submit(sequence: string) {
     setSequence(sequence);
@@ -88,8 +89,8 @@ function App() {
       </div>
       {sequence && (
         <ScrollContainer
-          mouseScroll={true}
-          hideScrollbars={true}
+          mouseScroll
+          hideScrollbars
           className="aa-view-container"
         >
           <AminoAcidView
@@ -105,21 +106,33 @@ function App() {
             onOpenReadingFrameClick={({ idx }) => {
               setSelectedOrfIndices(idx);
               setSelectedOrf(orfData[idx[0]][idx[1]].sequence);
+              setSvg(
+                bioModule?.drawSkeletal(
+                  orfData[idx[0]][idx[1]].sequence.join("") || "NaN"
+                )
+              );
             }}
             selectedOrf={selectedOrfIndices}
           />
         </ScrollContainer>
       )}
       {selectedOrf && (
-        <>
-          <div className="protein-info-container">
-            <ProteinInfo
-              seq={selectedOrf?.map((s) =>
-                data.find((data) => data.abbreviation === s)
-              )}
-            />
-          </div>
-        </>
+        <div className="protein-info-container">
+          <ProteinInfo
+            // @ts-ignore
+            seq={selectedOrf.map((s) =>
+              data.find((data) => data.abbreviation === s)
+            )}
+          />
+          <ScrollContainer
+            mouseScroll
+            hideScrollbars
+            className="protein-formula"
+            dangerouslySetInnerHTML={{
+              __html: svg || "",
+            }}
+          />
+        </div>
       )}
     </div>
   );
