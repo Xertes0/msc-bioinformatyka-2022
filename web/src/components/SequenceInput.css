@@ -6,7 +6,7 @@ form.sequence-input {
   grid-template-rows: 10fr 2fr;
   grid-template-areas:
     "input input"
-    ". submit";
+    "file submit";
   grid-gap: 1rem;
   place-items: center;
 }
@@ -17,6 +17,14 @@ textarea.sequence-input-box {
   height: 100%;
   resize: none;
   font-size: 18px;
+  border-radius: var(--border-radius);
+  padding: var(--padding-small);
+}
+
+input.sequence-input-file {
+  grid-area: file;
+  width: 100%;
+  height: 100%;
   border-radius: var(--border-radius);
   padding: var(--padding-small);
 }

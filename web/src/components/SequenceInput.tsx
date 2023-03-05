@@ -50,6 +50,15 @@ function SequenceInput({ onSubmit }: SequenceInputProps) {
         onKeyDown={checkForEnter}
         className="sequence-input-box"
       />
+      <input
+        type="file"
+        onInput={(event) => {
+          (event.target as HTMLInputElement).files?.[0]
+            .text()
+            .then(text => ((event.target as HTMLInputElement).previousElementSibling as HTMLTextAreaElement).value = text);
+        }}
+        className="sequence-input-file"
+      />
       <input type="submit" value="Translate" className="sequence-submit" />
     </form>
   );
