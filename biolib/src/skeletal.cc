@@ -62,7 +62,7 @@ draw_skeletal(std::string const& sequence)
 
     std::stringstream sstream{};
     sstream
-        << "<svg width='100%' height='100%' viewBox='60.25 25.08 "
+        << "<svg viewBox='60.25 25.08 "
         << (bio::skeletal::SVG_AA_WIDTH*static_cast<double>(sequence.length()))+bio::skeletal::SVG_SIDE_WIDTH
         << ' '
         << bio::skeletal::SVG_MAX_HEIGHT
