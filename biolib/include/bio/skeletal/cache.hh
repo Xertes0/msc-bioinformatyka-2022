@@ -54,18 +54,24 @@ cache_header()
     };
 
     append(defs::alanine{});
+    append(defs::arqinine{});
     append(defs::aspariqine{});
     append(defs::aspartate{});
     append(defs::cysteine{});
-    append(defs::glycine{});
-    append(defs::glutamate{});
     append(defs::glutamine{});
+    append(defs::glutamate{});
+    append(defs::glycine{});
+    append(defs::histidine{});
     append(defs::isoleucine{});
     append(defs::leucine{});
     append(defs::lysine{});
     append(defs::methionine{});
+    append(defs::phenylalanine{});
+    append(defs::proline{});
     append(defs::serine{});
     append(defs::threonine{});
+    append(defs::tryptophan{});
+    append(defs::tyrosine{});
     append(defs::valine{});
 
     draw_context ctx{};

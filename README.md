@@ -30,11 +30,11 @@ These are common dependencies required to build the project.
  - `git`
  - `CMake`
  - `Ninja` or `make`
- - [`Conan`](https://conan.io/) can be installed using `pip`
+ - [`Conan`](https://conan.io/) **version < 2.0**, can be installed using `pip`
 
 #### Web dependencies
 These are the dependencies required to build and deploy this project on a web server.
- - [`Latest emsdk`](https://github.com/emscripten-core/emsdk)
+ - [`emsdk`](https://github.com/emscripten-core/emsdk) **version 3.1.27**
  - [`Yarn`](https://yarnpkg.com/)
 
 #### Testing dependencies

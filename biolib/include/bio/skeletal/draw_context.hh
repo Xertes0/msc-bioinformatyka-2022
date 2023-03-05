@@ -4,7 +4,7 @@ namespace bio::skeletal
 {
 
 static constexpr double DRAW_CTX_OFFSET_X = 75;
-static constexpr double DRAW_CTX_OFFSET_Y = 150;
+static constexpr double DRAW_CTX_OFFSET_Y = 200;
 
 struct
 draw_context
