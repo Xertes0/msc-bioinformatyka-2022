@@ -10,8 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "chart.js": "^4.2.1",
+    "chartjs-plugin-zoom": "^2.0.0",
+    "prop-types": "^15.5.4",
     "react": "^18.2.0",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
+    "react-indiana-drag-scroll": "^3.0.3-alpha",
+    "react-latex-next": "^2.2.0",
     "react-router-dom": "^6.4.4"
   },
   "devDependencies": {
@@ -19,6 +25,7 @@
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
     "@vitejs/plugin-react": "^2.2.0",
+    "prettier": "^2.8.4",
     "typescript": "^4.6.4",
     "vite": "^3.2.3"
   }

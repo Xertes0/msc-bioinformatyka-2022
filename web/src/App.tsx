@@ -1,74 +1,141 @@
 import "./App.css";
 import React, { useEffect, useState } from "react";
 
-import OpenReadingFrame from "./components/OpenReadingFrame";
+import SequenceInput from "./components/SequenceInput";
+import AminoAcidView, {
+  OpenReadingFrameViewData,
+} from "./components/AminoAcidView";
+import { ScrollContainer } from "react-indiana-drag-scroll";
 import BioModuleLoad from "@cxx/biolib/bio.mjs";
+import { data } from "./AminoAcidData";
+import ProteinInfo from "./components/ProteinInfo";
+
+export interface OpenReadingFrameIndicesInfo {
+  nbStart: number;
+  nbEnd: number;
+  aaStart: number;
+  aaEnd: number;
+}
 
 function App() {
-    const [bioModule, setBioModule] = useState<null | BioModule>(null);
-    const [orfs, setOrfs] = useState([]);
+  const [bioModule, setBioModule] = useState<null | BioModule>(null);
+  const [sequence, setSequence] = useState("");
 
-    useEffect(() => {
-        BioModuleLoad().then((res) => {
-            setBioModule(res);
-        })
-    }, []);
+  useEffect(() => {
+    BioModuleLoad().then((res) => {
+      setBioModule(res);
+    });
+  }, []);
 
-    function orfClick(event: React.MouseEvent<HTMLDivElement>) {
-        let element = event.target as HTMLDivElement;
-        if (element.tagName != "A") {
-            return;
+  const [orfData, setOrfData] = useState([[], [], []] as [
+    OpenReadingFrameViewData[],
+    OpenReadingFrameViewData[],
+    OpenReadingFrameViewData[]
+  ]);
+
+  const [translatedSequences, setTranslatedSequences] = useState<
+    [string, string, string]
+  >([] as unknown as [string, string, string]);
+
+  useEffect(() => {
+    if (!bioModule) return;
+    let result = bioModule.translate(sequence);
+    setOrfData(
+      result.map((result) => {
+        let indices: OpenReadingFrameViewData[] = [];
+        for (let i = 0; i < result.indices.size(); i++) {
+          const { end, start } = result.indices.get(i);
+          indices[i] = {
+            sequence: Array.from(result.sequence.slice(start, end)).map(
+              (c) => data.find((d) => d.symbol === c)?.abbreviation || "-"
+            ),
+            shift: start,
+          };
         }
-        window.open(`skeletal.html?formula=${element.innerText}`, '_blank', 'noopener noreferrer');
-    }
+        return indices;
+      }) as [
+        OpenReadingFrameViewData[],
+        OpenReadingFrameViewData[],
+        OpenReadingFrameViewData[]
+      ]
+    );
+    setTranslatedSequences(
+      (result?.map((v) => v.sequence) as [string, string, string]) || []
+    );
+  }, [sequence, !!bioModule]);
 
-    function transSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        if (!bioModule) {
-            return;
-        }
+  const [selectedOrfIndices, setSelectedOrfIndices] =
+    useState<[number, number]>();
+  const [selectedOrf, setSelectedOrf] = useState<string[]>();
+  const [svg, setSvg] = useState<string>();
 
-        let form = event.target as HTMLFormElement;
-        let input = form.children[0].children[1] as HTMLInputElement;
-        let str = input.value;
-        if (str == "") {
-            return;
-        }
+  function submit(sequence: string) {
+    setSequence(sequence);
+  }
 
-        setOrfs(bioModule.translate(
-            str,
-            (index: Number) => {
-                return [`<a id='proteinSeq${index}'>`, "</a>"];
+  return (
+    <div className="App">
+      <h1>Input a nucleic acid sequence:</h1>
+      <SequenceInput onSubmit={submit} />
+      <div className="form-description-container">
+        <h2>The input accepts nucleobases mapped as follows:</h2>
+        <ul>
+          <li>A = Adenine</li>
+          <li>C = Cytosine</li>
+          <li>G = Guanine</li>
+          <li>T = Thymine</li>
+          <li>U = Uracil</li>
+        </ul>
+      </div>
+      {sequence && (
+        <ScrollContainer
+          mouseScroll
+          hideScrollbars
+          className="aa-view-container"
+        >
+          <AminoAcidView
+            sequence={Array.from(sequence)}
+            sequences={
+              translatedSequences.map((s) =>
+                Array.from(s).map(
+                  (c) => data.find((d) => d.symbol === c)?.abbreviation || "-"
+                )
+              ) as [string[], string[], string[]]
             }
-        )
-        );
-    }
-
-    return (
-        <div className="App">
-            <div className="card">
-                <h1>Translate a sequence</h1>
-                {
-                    bioModule &&
-                    <div className="card">
-                        <form onSubmit={transSubmit}>
-                            <label>
-                                Sequence<br></br>
-                                <input type="text"></input>
-                            </label>
-                        </form>
-                    </div>
-                }
-                <div onClick={orfClick}>
-                    {
-                        orfs.map((orf, index) => {
-                            return <OpenReadingFrame key={index} id={index} content={orf} />
-                        })
-                    }
-                </div>
-            </div>
+            orfData={orfData}
+            onOpenReadingFrameClick={({ idx }) => {
+              setSelectedOrfIndices(idx);
+              setSelectedOrf(orfData[idx[0]][idx[1]].sequence);
+              setSvg(
+                bioModule?.drawSkeletal(
+                  orfData[idx[0]][idx[1]].sequence.join("") || "NaN"
+                )
+              );
+            }}
+            selectedOrf={selectedOrfIndices}
+          />
+        </ScrollContainer>
+      )}
+      {selectedOrf && (
+        <div className="protein-info-container">
+          <ProteinInfo
+            // @ts-ignore
+            seq={selectedOrf.map((s) =>
+              data.find((data) => data.abbreviation === s)
+            )}
+          />
+          <ScrollContainer
+            mouseScroll
+            hideScrollbars
+            className="protein-formula"
+            dangerouslySetInnerHTML={{
+              __html: svg || "",
+            }}
+          />
         </div>
-    )
+      )}
+    </div>
+  );
 }
 
 export default App;

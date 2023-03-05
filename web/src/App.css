@@ -1,8 +1,9 @@
+@import "variables.css";
+
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  display: flex;
 }
 
 .logo {
@@ -10,9 +11,11 @@
   padding: 1.5em;
   will-change: filter;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -32,6 +35,66 @@
   }
 }
 
-.card {
-  padding: 2em;
+div.App {
+  display: grid;
+  grid-template-columns: 3fr 2fr 5fr;
+  grid-template-rows: auto auto 1fr;
+  grid-template-areas:
+    "header header protein-info"
+    "input description protein-info"
+    "aa-view aa-view protein-info";
+  grid-gap: 2rem;
+}
+
+h1 {
+  grid-area: header;
+  margin: 0;
+  padding: 0;
+}
+
+form.sequence-input {
+  grid-area: input;
+}
+
+div.form-description-container {
+  grid-area: description;
+  background: var(--bg-dark-quaternary);
+  border-radius: var(--border-radius);
+  padding: 10px 24px 16px;
+}
+
+div.aa-view-container {
+  grid-area: aa-view;
+  background: var(--bg-dark-secondary);
+  padding: var(--padding-medium);
+  border-radius: var(--border-radius);
+  text-align: center;
+  display: flex;
+  overflow: auto;
+}
+
+div.protein-info-container {
+  grid-area: protein-info;
+  background: var(--bg-dark-secondary);
+  padding: var(--padding-medium);
+  border-radius: var(--border-radius);
+  text-align: center;
+  overflow: auto;
+  display: grid;
+  place-items: stretch;
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 100%;
+  grid-gap: 2rem;
+}
+
+div.protein-formula {
+  height: 100%;
+  width: 100%;
+  overflow: auto hidden;
+}
+
+div.protein-formula svg {
+  height: 100%;
+  width: auto;
+  filter: invert(1);
 }

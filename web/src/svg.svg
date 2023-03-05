@@ -1,0 +1,604 @@
+<svg width='100%' height='100%' viewBox='60.25 25.08 254 283'>
+    <style>text {font-family:monospace;font-size:12px;font-weight:bold;}</style>
+    <defs>
+        <pattern id='bond-dashed' height='10%' width='10%'>
+            <line x1='0' y1='0' x2='10' y2='0' stroke-width='1' stroke='black'></line>
+        </pattern>
+    </defs>
+    <symbol id='aa_cache-A'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <line x1='87.0' y1='150.0' x2='107.61' y2='164.43' stroke='black'></line>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <polygon points='107.61 164.43, 109.125 189.43, 104.125 189.43' fill='url(#bond-dashed)'></polygon>
+    </symbol>
+    <symbol id='aa_cache-Af'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <line x1='87.0' y1='150.0' x2='107.61' y2='135.84' stroke='black'></line>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <polygon points='107.61 135.84, 104.125 110.84, 109.125 110.84' fill='black'></polygon>
+    </symbol>
+    <symbol id='aa_cache-N'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='128.122' y1='203.86' x2='128.122' y2='228.86' stroke='black'></line>
+        <line x1='126.122' y1='203.86' x2='126.122' y2='228.86' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='230.86'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='203.86' x2='152.122' y2='203.86' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='mathematical' x='154.122' y='203.86'>
+            <tspan>NH</tspan>
+            <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>2</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Nf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='126.122' y1='96.41' x2='126.122' y2='71.41' stroke='black'></line>
+        <line x1='128.122' y1='96.41' x2='128.122' y2='71.41' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='69.41'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='96.41' x2='152.122' y2='96.41' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='mathematical' x='154.122' y='96.41'>
+            <tspan>NH</tspan>
+            <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>2</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-D'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='128.122' y1='203.86' x2='128.122' y2='228.86' stroke='black'></line>
+        <line x1='126.122' y1='203.86' x2='126.122' y2='228.86' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='230.86'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='203.86' x2='152.122' y2='203.86' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='mathematical' x='154.122' y='203.86'>
+            <tspan>O</tspan>
+            <tspan dy='-0.6em'>-</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Df'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='126.122' y1='96.41' x2='126.122' y2='71.41' stroke='black'></line>
+        <line x1='128.122' y1='96.41' x2='128.122' y2='71.41' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='69.41'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='96.41' x2='152.122' y2='96.41' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='mathematical' x='154.122' y='96.41'>
+            <tspan>O</tspan>
+            <tspan dy='-0.6em'>-</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-C'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='hanging' x='129.122' y='203.86'>
+            <tspan>SH</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Cf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='text-top' x='129.122' y='96.41'>
+            <tspan>SH</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-G'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <line x1='87.0' y1='150.0' x2='107.61' y2='164.43' stroke='black'></line>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Gf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <line x1='87.0' y1='150.0' x2='107.61' y2='135.84' stroke='black'></line>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-E'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='127.122' y1='203.86' x2='127.122' y2='228.86' stroke='black'></line>
+        <line x1='128.85' y1='229.49' x2='110.126' y2='247.8' stroke='black'></line>
+        <line x1='127.32' y1='227.124' x2='109.73' y2='245.83' stroke='black'></line>
+        <text text-anchor='end' dominant-baseline='hanging' x='110.35' y='248.45'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='228.86' x2='145.81' y2='246.45' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='hanging' x='147.81' y='246.45'>
+            <tspan>O</tspan>
+            <tspan dy='-0.6em'>-</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Ef'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='127.122' y1='96.41' x2='127.122' y2='71.41' stroke='black'></line>
+        <line x1='127.32' y1='72.3' x2='109.73' y2='54.44' stroke='black'></line>
+        <line x1='128.85' y1='70.78' x2='110.126' y2='52.119' stroke='black'></line>
+        <text text-anchor='end' dominant-baseline='text-top' x='110.35' y='51.82'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='71.41' x2='145.81' y2='53.82' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='text-top' x='147.81' y='53.82'>
+            <tspan>O</tspan>
+            <tspan dy='-0.6em'>-</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Q'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='127.122' y1='203.86' x2='127.122' y2='228.86' stroke='black'></line>
+        <line x1='128.85' y1='229.49' x2='110.126' y2='247.8' stroke='black'></line>
+        <line x1='127.32' y1='227.124' x2='109.73' y2='245.83' stroke='black'></line>
+        <text text-anchor='end' dominant-baseline='hanging' x='110.35' y='248.45'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='228.86' x2='145.81' y2='246.45' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='hanging' x='147.81' y='246.45'>
+            <tspan>NH</tspan>
+            <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>2</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Qf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='127.122' y1='96.41' x2='127.122' y2='71.41' stroke='black'></line>
+        <line x1='127.32' y1='72.3' x2='109.73' y2='54.44' stroke='black'></line>
+        <line x1='128.85' y1='70.78' x2='110.126' y2='52.119' stroke='black'></line>
+        <text text-anchor='end' dominant-baseline='text-top' x='110.35' y='51.82'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='127.122' y1='71.41' x2='145.81' y2='53.82' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='text-top' x='147.81' y='53.82'>
+            <tspan>NH</tspan>
+            <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>2</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-I'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <polygon points='107.61 189.43, 91.72 208.100, 88.4 205.31' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='189.43' x2='125.20' y2='207.2' stroke='black'></line>
+        <line x1='125.20' y1='207.2' x2='125.20' y2='232.2' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-If'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <polygon points='107.61 110.84, 88.4 94.96, 91.72 91.27' fill='black'></polygon>
+        <line x1='107.61' y1='110.84' x2='125.20' y2='92.125' stroke='black'></line>
+        <line x1='125.20' y1='92.125' x2='125.20' y2='67.125' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-L'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='127.122' y1='203.86' x2='127.122' y2='228.86' stroke='black'></line>
+        <line x1='127.122' y1='203.86' x2='152.122' y2='203.86' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-Lf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='127.122' y1='96.41' x2='127.122' y2='71.41' stroke='black'></line>
+        <line x1='127.122' y1='96.41' x2='152.122' y2='96.41' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-K'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='127.122' y1='203.86' x2='127.122' y2='228.86' stroke='black'></line>
+        <line x1='127.122' y1='228.86' x2='148.55' y2='243.2' stroke='black'></line>
+        <line x1='148.55' y1='243.2' x2='148.55' y2='268.2' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='148.55' y='270.2'>
+            <tspan dy='-0.6em'>+</tspan>
+            <tspan dy='0.6em'>NH</tspan>
+            <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>3</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Kf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='127.122' y1='96.41' x2='127.122' y2='71.41' stroke='black'></line>
+        <line x1='127.122' y1='71.41' x2='148.55' y2='56.125' stroke='black'></line>
+        <line x1='148.55' y1='56.125' x2='148.55' y2='31.125' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='148.55' y='29.125'>
+            <tspan dy='-0.6em'>+</tspan>
+            <tspan dy='0.6em'>NH</tspan>
+            <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>3</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-M'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <line x1='127.122' y1='203.86' x2='127.122' y2='228.86' stroke='black'></line>
+        <text text-anchor='end' dominant-baseline='hanging' x='127.122' y='230.86'>
+            <tspan>S</tspan>
+        </text>
+        <line x1='127.122' y1='228.86' x2='148.55' y2='243.2' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-Mf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <line x1='127.122' y1='96.41' x2='127.122' y2='71.41' stroke='black'></line>
+        <text text-anchor='end' dominant-baseline='text-top' x='127.122' y='69.41'>
+            <tspan>S</tspan>
+        </text>
+        <line x1='127.122' y1='71.41' x2='148.55' y2='56.125' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-S'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='127.122' y2='203.86' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='hanging' x='129.122' y='203.86'>
+            <tspan>OH</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Sf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='127.122' y2='96.41' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='text-top' x='129.122' y='96.41'>
+            <tspan>OH</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-T'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='89.102' y2='207.2' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='125.20' y2='207.2' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='hanging' x='127.20' y='207.2'>
+            <tspan>OH</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-Tf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='89.102' y2='92.125' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='125.20' y2='92.125' stroke='black'></line>
+        <text text-anchor='start' dominant-baseline='text-top' x='127.20' y='92.125'>
+            <tspan>OH</tspan>
+        </text>
+    </symbol>
+    <symbol id='aa_cache-V'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='-1em'>H</tspan>
+        </text>
+        <polygon points='88.55 147.121, 85.72 152.6, 107.61 164.43' fill='url(#bond-dashed)'></polygon>
+        <line x1='107.61' y1='164.43' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='164.43' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='125.0' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='125.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='text-top' x='127.122' y='123.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='164.43' x2='107.61' y2='189.43' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='89.102' y2='207.2' stroke='black'></line>
+        <line x1='107.61' y1='189.43' x2='125.20' y2='207.2' stroke='black'></line>
+    </symbol>
+    <symbol id='aa_cache-Vf'>
+        <text text-anchor='start' dominant-baseline='mathematical' x='77.0' y='150.0'>
+            <tspan>N</tspan>
+            <tspan dx='-0.6em' dy='1em'>H</tspan>
+        </text>
+        <polygon points='85.72 147.121, 88.55 152.6, 107.61 135.84' fill='black'></polygon>
+        <line x1='107.61' y1='135.84' x2='127.122' y2='150.0' stroke='black'></line>
+        <line x1='127.122' y1='150.0' x2='148.55' y2='135.84' stroke='black'></line>
+        <line x1='128.122' y1='150.0' x2='128.122' y2='175.0' stroke='black'></line>
+        <line x1='126.122' y1='150.0' x2='126.122' y2='175.0' stroke='black'></line>
+        <text text-anchor='middle' dominant-baseline='hanging' x='127.122' y='177.0'>
+            <tspan>O</tspan>
+        </text>
+        <line x1='107.61' y1='135.84' x2='107.61' y2='110.84' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='89.102' y2='92.125' stroke='black'></line>
+        <line x1='107.61' y1='110.84' x2='125.20' y2='92.125' stroke='black'></line>
+    </symbol>
+    <text text-anchor='start' dominant-baseline='mathematical' x='64.25' y='150.0'>
+        <tspan>H</tspan>
+        <tspan style='font-size:6px;' dy='0.575em' dominant-baseline='mathematical'>2</tspan>
+    </text>
+    <text text-anchor='start' dominant-baseline='mathematical' x='72.25' y='142.0'>
+        <tspan>+</tspan>
+    </text>
+    <use href='#aa_cache-N' x='4' y='0'></use>
+    <use href='#aa_cache-af' x='77.4364' y='14.3394'></use>
+    <use href='#aa_cache-N' x='150.873' y='0'></use>
+    <text text-anchor='start' dominant-baseline='mathematical' x='301.39' y='164.43'>
+        <tspan>O</tspan>
+        <tspan dy='-0.6em'>-</tspan>
+    </text>
+</svg>
