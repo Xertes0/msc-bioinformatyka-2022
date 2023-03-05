@@ -1,4 +1,4 @@
-@import "variables.css";
+@import "../variables.css";
 
 form.sequence-input {
   display: grid;

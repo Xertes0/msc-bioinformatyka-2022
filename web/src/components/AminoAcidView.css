@@ -1,17 +1,36 @@
-@import "variables.css";
+@import "../variables.css";
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-table.protein-view { font-family: monospace; }
-table.protein-view > * { cursor: default; }
+table.amino-acid-view {
+  font-family: monospace;
+}
 
-table { border-spacing: 0 0.5em; }
+table.amino-acid-view > * {
+  cursor: default;
+}
 
-tbody td, thead th { text-align: center; }
+table {
+  border-spacing: 0 0.5em;
+}
 
-thead th:nth-child(3n + 1) { background: var(--bg-dark-primary) }
-thead th:nth-child(3n + 2) { background: var(--bg-dark-secondary) }
-thead th:nth-child(3n + 3) { background: var(--bg-dark-tertiary) }
+tbody td, thead th {
+  text-align: center;
+}
+
+thead th:nth-child(3n + 1) {
+  background: var(--bg-dark-primary)
+}
+
+thead th:nth-child(3n + 2) {
+  background: var(--bg-dark-secondary)
+}
+
+thead th:nth-child(3n + 3) {
+  background: var(--bg-dark-tertiary)
+}
 
 td:not(:empty), th:not(:empty) {
   border-block: var(--border-width) solid;
@@ -20,13 +39,14 @@ td:not(:empty), th:not(:empty) {
 
 tbody > tr, th {
   background: var(--bg-dark-primary);
+  font-variant: all-petite-caps;
 }
 
 th {
   color: var(--accent-primary);
 }
 
-tbody > tr:hover, th:hover, tr.active {
+tbody > tr:hover, th:hover {
   background: var(--bg-dark-tertiary);
   color: white;
 }
@@ -58,5 +78,10 @@ td:last-child, th:last-child {
   border-start-end-radius: var(--border-radius);
 }
 
-td:empty { visibility: hidden; }
-th:empty { visibility: hidden; }
+td:empty {
+  visibility: hidden;
+}
+
+th:empty {
+  visibility: hidden;
+}
