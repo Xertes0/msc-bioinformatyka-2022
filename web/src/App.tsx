@@ -108,7 +108,7 @@ function App() {
               setSelectedOrf(orfData[idx[0]][idx[1]].sequence);
               setSvg(
                 bioModule?.drawSkeletal(
-                  orfData[idx[0]][idx[1]].sequence.join("") || "NaN"
+                  orfData[idx[0]][idx[1]].sequence.map(x => x[0]).join("") || "NaN"
                 )
               );
             }}
